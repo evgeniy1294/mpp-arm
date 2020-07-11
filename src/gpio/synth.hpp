@@ -46,7 +46,7 @@ namespace mpp::gpio
   template < Port __port, std::uint32_t __pin, typename InitializerList >
   class Gpio /*: public Interface */
   {
-    // static_assert(::std::is_same_v< InitializerList, ::std::decay_t<decltype(InitializerList)>>);
+    static_assert(::std::is_same_v< InitializerList, ::std::decay_t<decltype(InitializerList())>>);
     static_assert((__pin < Configs::PIN_COUNT), "Pin index too big");
 
     public:
