@@ -7,39 +7,58 @@ from typing import Final
 # Constants
 PINNAME_MIN_LEN: Final = 3
 PINNAME_MAX_LEN: Final = 4
-	
+RESTRICT = ['PDR_ON', 'PDR_ON_CORE', 'ANA0', 'ANA1', 'PWR_LP', 'PWR_ON']	
+
+
+
+
 
 # XML parse
+#print("Set path to file.xml: ")
+
 tree = ET.parse(sys.argv[1])
 root = tree.getroot()
 ns   = {'mcu': 'http://mcd.rou.st.com/modules.php?name=mcu'}
 
 
+
+
+
+
 # Find all ports
-ports = []
+ports = {}
 for p in root.findall('mcu:GPIO_Port', ns):
-    ports.append(p.get('Name')[1])
+    ports[p.get('Name')[1]] = 0
 	
 	
-# Fill enum class 'Port'
-portlist = '\n'
-portstr  = "      {name} = GPIO{name}_BASE,\n"
-for name in ports:
-    portlist = portlist + portstr.format(name = name)
 
 
-
+	
+	
+	
+	
 # Fill 'Af' namespace
 pinlist = '\n'
 pinstr = "      namespace {name} {{ enum {{{fields}}}; }}\n"
 afstr  = " {name} = {val}ul, "
 
 for pin in root.findall('mcu:GPIO_Pin', ns):
-    name = pin.get('Name')[0:PINNAME_MAX_LEN]
+    name = pin.get('Name')
+    if name in RESTRICT:
+        continue
+    else:
+        name = name[0:PINNAME_MAX_LEN]
+	
     if len(name) == PINNAME_MIN_LEN:
         name = name + ' '
     elif name.endswith('-') or name.endswith ('_'):
         name = name[:-1] + ' ' 
+
+    portname = pin.get('PortName')[1] 
+    if ports.get(portname) != None:
+        ports[portname] = ports[portname] + 1
+    else:
+        continue
 
     fields = ''
     for signal in pin.findall('mcu:PinSignal', ns):
@@ -50,18 +69,46 @@ for pin in root.findall('mcu:GPIO_Pin', ns):
 
 
 
+	
+	
+	
+#Fill 'pincheck' field
+pincheck = '\n'
+checkstr = '        case Port::{port}: return pin < {val}u;\n'
+for key in ports:
+    if ports[key] != 0:
+        pincheck = pincheck + checkstr.format(port = key, val = ports[key])
 
+
+
+		
+		
+		
+		
+# Fill enum class 'Port'
+portlist = '\n'
+portstr  = "      {name} = GPIO{name}_BASE,\n"
+for key in ports:
+    if ports[key] != 0:
+        portlist = portlist + portstr.format(name = key)
+	
+	
+	
+	
+	
+	
+	
 # Create output file
 skeleton = Template(open('skeleton', 'r').read())
 
 filename  = root.get('Version') + '.hpp'
 namespace = root.get('Version')
 output = open(filename, 'w', encoding='UTF-8')
-output.write(skeleton.substitute(filename=filename, namespace=namespace, portlist=portlist, pinlist=pinlist))
+output.write(skeleton.substitute(filename=filename, namespace=namespace, portlist=portlist, pincheck = pincheck, pinlist=pinlist))
 output.close()
 
 
-
+print(ports)
 
 	
 	

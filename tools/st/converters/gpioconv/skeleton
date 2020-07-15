@@ -20,6 +20,14 @@ namespace mpp::gpio
   {
     enum class Port { $portlist    };
 
+    constexpr bool IsValidPinId(Port port, std::uint32_t pin)
+    {
+      switch(port)
+      { $pincheck
+        default: return false;
+      }
+    }
+
     namespace Af 
     { $pinlist    } // namespace Af
   } // inline namespace gpio401
