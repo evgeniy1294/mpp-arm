@@ -66,7 +66,7 @@ namespace mpp::gpio
     template < Port __port, std::uint32_t __pin, typename Trait >
     class Gpio /*: public Interface */
     {
-      static_assert(::std::is_same_v< Traits, ::std::decay_t< decltype(Traits()) > >);
+      static_assert(::std::is_same_v< Trait, ::std::decay_t< decltype(Trait()) > >);
       static_assert(IsValidPinId(port, pin), "You try use invalid pin id");
   
       static_assert(((type == Type::Input )&&(driver      == Driver::None)),     "Use 'Driver::None' for input pin");

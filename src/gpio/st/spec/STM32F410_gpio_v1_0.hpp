@@ -33,72 +33,373 @@ namespace mpp::gpio
       H = GPIOH_BASE,
     };
 
-    constexpr bool IsValidPinId(Port port, std::uint32_t pin)
+    template< typename IO >
+    constexpr bool IsValidIo()
     {
-      switch(port)
+      switch(IO::Port())
       { 
-        case Port::A: return pin < 16u;
-        case Port::B: return pin < 16u;
-        case Port::C: return pin < 16u;
-        case Port::H: return pin < 2u;
+        case Port::A: return IO::Pin() < 16u;
+        case Port::B: return IO::Pin() < 16u;
+        case Port::C: return IO::Pin() < 16u;
+        case Port::H: return IO::Pin() < 2u;
 
         default: return false;
       }
     }
 
-    namespace Af 
-    { 
-      namespace PA0  { enum { EVENTOUT = 15ul,  TIM5_CH1 = 2ul,  USART2_CTS = 7ul, }; }
-      namespace PA1  { enum { EVENTOUT = 15ul,  TIM5_CH2 = 2ul,  USART2_RTS = 7ul, }; }
-      namespace PA10 { enum { EVENTOUT = 15ul,  I2S5_SD = 6ul,  SPI5_MOSI = 6ul,  TIM1_CH3 = 1ul,  USART1_RX = 7ul, }; }
-      namespace PA11 { enum { EVENTOUT = 15ul,  TIM1_CH4 = 1ul,  USART1_CTS = 7ul,  USART6_TX = 8ul, }; }
-      namespace PA12 { enum { EVENTOUT = 15ul,  SPI5_MISO = 6ul,  TIM1_ETR = 1ul,  USART1_RTS = 7ul,  USART6_RX = 8ul, }; }
-      namespace PA13 { enum { EVENTOUT = 15ul,  SYS_JTMS_SWDIO = 0ul, }; }
-      namespace PA14 { enum { EVENTOUT = 15ul,  SYS_JTCK_SWCLK = 0ul, }; }
-      namespace PA15 { enum { EVENTOUT = 15ul,  I2S1_WS = 5ul,  SPI1_NSS = 5ul,  SYS_JTDI = 0ul,  USART1_TX = 7ul, }; }
-      namespace PA2  { enum { EVENTOUT = 15ul,  I2S_CKIN = 5ul,  TIM5_CH3 = 2ul,  TIM9_CH1 = 3ul,  USART2_TX = 7ul, }; }
-      namespace PA3  { enum { EVENTOUT = 15ul,  I2S2_MCK = 5ul,  TIM5_CH4 = 2ul,  TIM9_CH2 = 3ul,  USART2_RX = 7ul, }; }
-      namespace PA4  { enum { EVENTOUT = 15ul,  I2S1_WS = 5ul,  SPI1_NSS = 5ul,  USART2_CK = 7ul, }; }
-      namespace PA5  { enum { EVENTOUT = 15ul,  I2S1_CK = 5ul,  SPI1_SCK = 5ul, }; }
-      namespace PA6  { enum { EVENTOUT = 15ul,  I2S2_MCK = 6ul,  SPI1_MISO = 5ul,  TIM1_BKIN = 1ul, }; }
-      namespace PA7  { enum { EVENTOUT = 15ul,  I2S1_SD = 5ul,  SPI1_MOSI = 5ul,  TIM1_CH1N = 1ul, }; }
-      namespace PA8  { enum { EVENTOUT = 15ul,  FMPI2C1_SCL = 4ul,  RCC_MCO_1 = 0ul,  TIM1_CH1 = 1ul,  USART1_CK = 7ul, }; }
-      namespace PA9  { enum { EVENTOUT = 15ul,  TIM1_CH2 = 1ul,  USART1_TX = 7ul, }; }
-      namespace PB0  { enum { EVENTOUT = 15ul,  I2S5_CK = 6ul,  SPI5_SCK = 6ul,  TIM1_CH2N = 1ul, }; }
-      namespace PB1  { enum { EVENTOUT = 15ul,  I2S5_WS = 6ul,  SPI5_NSS = 6ul,  TIM1_CH3N = 1ul, }; }
-      namespace PB10 { enum { EVENTOUT = 15ul,  FMPI2C1_SCL = 9ul,  I2C2_SCL = 4ul,  I2S1_MCK = 6ul,  I2S2_CK = 5ul,  SPI2_SCK = 5ul, }; }
-      namespace PB11 { enum { EVENTOUT = 15ul,  I2C2_SDA = 4ul,  I2S_CKIN = 5ul,  SYS_TRACED3 = 0ul,  TIM5_CH4 = 2ul, }; }
-      namespace PB12 { enum { EVENTOUT = 15ul,  I2C2_SMBA = 4ul,  I2S2_WS = 5ul,  SPI2_NSS = 5ul,  TIM1_BKIN = 1ul,  TIM5_CH1 = 2ul, }; }
-      namespace PB13 { enum { EVENTOUT = 15ul,  FMPI2C1_SMBA = 4ul,  I2S2_CK = 5ul,  SPI2_SCK = 5ul,  TIM1_CH1N = 1ul, }; }
-      namespace PB14 { enum { EVENTOUT = 15ul,  FMPI2C1_SDA = 4ul,  SPI2_MISO = 5ul,  TIM1_CH2N = 1ul, }; }
-      namespace PB15 { enum { EVENTOUT = 15ul,  FMPI2C1_SCL = 4ul,  I2S2_SD = 5ul,  RTC_REFIN = 0ul,  SPI2_MOSI = 5ul,  TIM1_CH3N = 1ul, }; }
-      namespace PB2  { enum { EVENTOUT = 15ul,  LPTIM1_OUT = 1ul, }; }
-      namespace PB3  { enum { EVENTOUT = 15ul,  FMPI2C1_SDA = 4ul,  I2C2_SDA = 9ul,  I2S1_CK = 5ul,  SPI1_SCK = 5ul,  SYS_JTDO_SWO = 0ul,  USART1_RX = 7ul, }; }
-      namespace PB4  { enum { EVENTOUT = 15ul,  SPI1_MISO = 5ul,  SYS_JTRST = 0ul, }; }
-      namespace PB5  { enum { EVENTOUT = 15ul,  I2C1_SMBA = 4ul,  I2S1_SD = 5ul,  LPTIM1_IN1 = 1ul,  SPI1_MOSI = 5ul, }; }
-      namespace PB6  { enum { EVENTOUT = 15ul,  I2C1_SCL = 4ul,  LPTIM1_ETR = 1ul,  USART1_TX = 7ul, }; }
-      namespace PB7  { enum { EVENTOUT = 15ul,  I2C1_SDA = 4ul,  LPTIM1_IN2 = 1ul,  USART1_RX = 7ul, }; }
-      namespace PB8  { enum { EVENTOUT = 15ul,  I2C1_SCL = 4ul,  I2S5_SD = 6ul,  LPTIM1_OUT = 1ul,  SPI5_MOSI = 6ul, }; }
-      namespace PB9  { enum { EVENTOUT = 15ul,  I2C1_SDA = 4ul,  I2C2_SDA = 9ul,  I2S2_WS = 5ul,  SPI2_NSS = 5ul,  TIM11_CH1 = 3ul, }; }
-      namespace PC0  { enum { EVENTOUT = 15ul,  LPTIM1_IN1 = 1ul, }; }
-      namespace PC1  { enum { EVENTOUT = 15ul,  LPTIM1_OUT = 1ul, }; }
-      namespace PC10 { enum { EVENTOUT = 15ul,  SYS_TRACED0 = 0ul,  TIM5_CH2 = 2ul, }; }
-      namespace PC11 { enum { EVENTOUT = 15ul,  SYS_TRACED1 = 0ul,  TIM5_CH3 = 2ul, }; }
-      namespace PC12 { enum { EVENTOUT = 15ul,  SYS_TRACED2 = 0ul,  TIM11_CH1 = 3ul, }; }
-      namespace PC13 { enum { EVENTOUT = 15ul, }; }
-      namespace PC14 { enum { EVENTOUT = 15ul, }; }
-      namespace PC15 { enum { EVENTOUT = 15ul, }; }
-      namespace PC2  { enum { EVENTOUT = 15ul,  LPTIM1_IN2 = 1ul,  SPI2_MISO = 5ul, }; }
-      namespace PC3  { enum { EVENTOUT = 15ul,  I2S2_SD = 5ul,  LPTIM1_ETR = 1ul,  SPI2_MOSI = 5ul, }; }
-      namespace PC4  { enum { EVENTOUT = 15ul,  TIM9_CH1 = 3ul, }; }
-      namespace PC5  { enum { EVENTOUT = 15ul,  FMPI2C1_SMBA = 4ul,  TIM9_CH2 = 3ul, }; }
-      namespace PC6  { enum { EVENTOUT = 15ul,  FMPI2C1_SCL = 4ul,  I2S2_MCK = 5ul,  SYS_TRACECLK = 0ul,  USART6_TX = 8ul, }; }
-      namespace PC7  { enum { EVENTOUT = 15ul,  FMPI2C1_SDA = 4ul,  I2S1_MCK = 6ul,  I2S2_CK = 5ul,  SPI2_SCK = 5ul,  USART6_RX = 8ul, }; }
-      namespace PC8  { enum { EVENTOUT = 15ul,  USART6_CK = 8ul, }; }
-      namespace PC9  { enum { EVENTOUT = 15ul,  FMPI2C1_SDA = 4ul,  I2S_CKIN = 5ul,  RCC_MCO_2 = 0ul, }; }
-      namespace PH0  { enum { EVENTOUT = 15ul, }; }
-      namespace PH1  { enum { EVENTOUT = 15ul, }; }
-    } // namespace Af
+
+    
+
+    struct PA0  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 0u; }
+      enum { EVENTOUT = 15ul,  TIM5_CH1 = 2ul,  USART2_CTS = 7ul, }; 
+    };
+
+    struct PA1  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 1u; }
+      enum { EVENTOUT = 15ul,  TIM5_CH2 = 2ul,  USART2_RTS = 7ul, }; 
+    };
+
+    struct PA10 
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 10u; }
+      enum { EVENTOUT = 15ul,  I2S5_SD = 6ul,  SPI5_MOSI = 6ul,  TIM1_CH3 = 1ul,  USART1_RX = 7ul, }; 
+    };
+
+    struct PA11 
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 11u; }
+      enum { EVENTOUT = 15ul,  TIM1_CH4 = 1ul,  USART1_CTS = 7ul,  USART6_TX = 8ul, }; 
+    };
+
+    struct PA12 
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 12u; }
+      enum { EVENTOUT = 15ul,  SPI5_MISO = 6ul,  TIM1_ETR = 1ul,  USART1_RTS = 7ul,  USART6_RX = 8ul, }; 
+    };
+
+    struct PA13 
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 13u; }
+      enum { EVENTOUT = 15ul,  SYS_JTMS_SWDIO = 0ul, }; 
+    };
+
+    struct PA14 
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 14u; }
+      enum { EVENTOUT = 15ul,  SYS_JTCK_SWCLK = 0ul, }; 
+    };
+
+    struct PA15 
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 15u; }
+      enum { EVENTOUT = 15ul,  I2S1_WS = 5ul,  SPI1_NSS = 5ul,  SYS_JTDI = 0ul,  USART1_TX = 7ul, }; 
+    };
+
+    struct PA2  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 2u; }
+      enum { EVENTOUT = 15ul,  I2S_CKIN = 5ul,  TIM5_CH3 = 2ul,  TIM9_CH1 = 3ul,  USART2_TX = 7ul, }; 
+    };
+
+    struct PA3  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 3u; }
+      enum { EVENTOUT = 15ul,  I2S2_MCK = 5ul,  TIM5_CH4 = 2ul,  TIM9_CH2 = 3ul,  USART2_RX = 7ul, }; 
+    };
+
+    struct PA4  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 4u; }
+      enum { EVENTOUT = 15ul,  I2S1_WS = 5ul,  SPI1_NSS = 5ul,  USART2_CK = 7ul, }; 
+    };
+
+    struct PA5  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 5u; }
+      enum { EVENTOUT = 15ul,  I2S1_CK = 5ul,  SPI1_SCK = 5ul, }; 
+    };
+
+    struct PA6  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 6u; }
+      enum { EVENTOUT = 15ul,  I2S2_MCK = 6ul,  SPI1_MISO = 5ul,  TIM1_BKIN = 1ul, }; 
+    };
+
+    struct PA7  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 7u; }
+      enum { EVENTOUT = 15ul,  I2S1_SD = 5ul,  SPI1_MOSI = 5ul,  TIM1_CH1N = 1ul, }; 
+    };
+
+    struct PA8  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 8u; }
+      enum { EVENTOUT = 15ul,  FMPI2C1_SCL = 4ul,  RCC_MCO_1 = 0ul,  TIM1_CH1 = 1ul,  USART1_CK = 7ul, }; 
+    };
+
+    struct PA9  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 9u; }
+      enum { EVENTOUT = 15ul,  TIM1_CH2 = 1ul,  USART1_TX = 7ul, }; 
+    };
+
+    struct PB0  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 0u; }
+      enum { EVENTOUT = 15ul,  I2S5_CK = 6ul,  SPI5_SCK = 6ul,  TIM1_CH2N = 1ul, }; 
+    };
+
+    struct PB1  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 1u; }
+      enum { EVENTOUT = 15ul,  I2S5_WS = 6ul,  SPI5_NSS = 6ul,  TIM1_CH3N = 1ul, }; 
+    };
+
+    struct PB10 
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 10u; }
+      enum { EVENTOUT = 15ul,  FMPI2C1_SCL = 9ul,  I2C2_SCL = 4ul,  I2S1_MCK = 6ul,  I2S2_CK = 5ul,  SPI2_SCK = 5ul, }; 
+    };
+
+    struct PB11 
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 11u; }
+      enum { EVENTOUT = 15ul,  I2C2_SDA = 4ul,  I2S_CKIN = 5ul,  SYS_TRACED3 = 0ul,  TIM5_CH4 = 2ul, }; 
+    };
+
+    struct PB12 
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 12u; }
+      enum { EVENTOUT = 15ul,  I2C2_SMBA = 4ul,  I2S2_WS = 5ul,  SPI2_NSS = 5ul,  TIM1_BKIN = 1ul,  TIM5_CH1 = 2ul, }; 
+    };
+
+    struct PB13 
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 13u; }
+      enum { EVENTOUT = 15ul,  FMPI2C1_SMBA = 4ul,  I2S2_CK = 5ul,  SPI2_SCK = 5ul,  TIM1_CH1N = 1ul, }; 
+    };
+
+    struct PB14 
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 14u; }
+      enum { EVENTOUT = 15ul,  FMPI2C1_SDA = 4ul,  SPI2_MISO = 5ul,  TIM1_CH2N = 1ul, }; 
+    };
+
+    struct PB15 
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 15u; }
+      enum { EVENTOUT = 15ul,  FMPI2C1_SCL = 4ul,  I2S2_SD = 5ul,  RTC_REFIN = 0ul,  SPI2_MOSI = 5ul,  TIM1_CH3N = 1ul, }; 
+    };
+
+    struct PB2  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 2u; }
+      enum { EVENTOUT = 15ul,  LPTIM1_OUT = 1ul, }; 
+    };
+
+    struct PB3  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 3u; }
+      enum { EVENTOUT = 15ul,  FMPI2C1_SDA = 4ul,  I2C2_SDA = 9ul,  I2S1_CK = 5ul,  SPI1_SCK = 5ul,  SYS_JTDO_SWO = 0ul,  USART1_RX = 7ul, }; 
+    };
+
+    struct PB4  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 4u; }
+      enum { EVENTOUT = 15ul,  SPI1_MISO = 5ul,  SYS_JTRST = 0ul, }; 
+    };
+
+    struct PB5  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 5u; }
+      enum { EVENTOUT = 15ul,  I2C1_SMBA = 4ul,  I2S1_SD = 5ul,  LPTIM1_IN1 = 1ul,  SPI1_MOSI = 5ul, }; 
+    };
+
+    struct PB6  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 6u; }
+      enum { EVENTOUT = 15ul,  I2C1_SCL = 4ul,  LPTIM1_ETR = 1ul,  USART1_TX = 7ul, }; 
+    };
+
+    struct PB7  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 7u; }
+      enum { EVENTOUT = 15ul,  I2C1_SDA = 4ul,  LPTIM1_IN2 = 1ul,  USART1_RX = 7ul, }; 
+    };
+
+    struct PB8  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 8u; }
+      enum { EVENTOUT = 15ul,  I2C1_SCL = 4ul,  I2S5_SD = 6ul,  LPTIM1_OUT = 1ul,  SPI5_MOSI = 6ul, }; 
+    };
+
+    struct PB9  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 9u; }
+      enum { EVENTOUT = 15ul,  I2C1_SDA = 4ul,  I2C2_SDA = 9ul,  I2S2_WS = 5ul,  SPI2_NSS = 5ul,  TIM11_CH1 = 3ul, }; 
+    };
+
+    struct PC0  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 0u; }
+      enum { EVENTOUT = 15ul,  LPTIM1_IN1 = 1ul, }; 
+    };
+
+    struct PC1  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 1u; }
+      enum { EVENTOUT = 15ul,  LPTIM1_OUT = 1ul, }; 
+    };
+
+    struct PC10 
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 10u; }
+      enum { EVENTOUT = 15ul,  SYS_TRACED0 = 0ul,  TIM5_CH2 = 2ul, }; 
+    };
+
+    struct PC11 
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 11u; }
+      enum { EVENTOUT = 15ul,  SYS_TRACED1 = 0ul,  TIM5_CH3 = 2ul, }; 
+    };
+
+    struct PC12 
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 12u; }
+      enum { EVENTOUT = 15ul,  SYS_TRACED2 = 0ul,  TIM11_CH1 = 3ul, }; 
+    };
+
+    struct PC13 
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 13u; }
+      enum { EVENTOUT = 15ul, }; 
+    };
+
+    struct PC14 
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 14u; }
+      enum { EVENTOUT = 15ul, }; 
+    };
+
+    struct PC15 
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 15u; }
+      enum { EVENTOUT = 15ul, }; 
+    };
+
+    struct PC2  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 2u; }
+      enum { EVENTOUT = 15ul,  LPTIM1_IN2 = 1ul,  SPI2_MISO = 5ul, }; 
+    };
+
+    struct PC3  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 3u; }
+      enum { EVENTOUT = 15ul,  I2S2_SD = 5ul,  LPTIM1_ETR = 1ul,  SPI2_MOSI = 5ul, }; 
+    };
+
+    struct PC4  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 4u; }
+      enum { EVENTOUT = 15ul,  TIM9_CH1 = 3ul, }; 
+    };
+
+    struct PC5  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 5u; }
+      enum { EVENTOUT = 15ul,  FMPI2C1_SMBA = 4ul,  TIM9_CH2 = 3ul, }; 
+    };
+
+    struct PC6  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 6u; }
+      enum { EVENTOUT = 15ul,  FMPI2C1_SCL = 4ul,  I2S2_MCK = 5ul,  SYS_TRACECLK = 0ul,  USART6_TX = 8ul, }; 
+    };
+
+    struct PC7  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 7u; }
+      enum { EVENTOUT = 15ul,  FMPI2C1_SDA = 4ul,  I2S1_MCK = 6ul,  I2S2_CK = 5ul,  SPI2_SCK = 5ul,  USART6_RX = 8ul, }; 
+    };
+
+    struct PC8  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 8u; }
+      enum { EVENTOUT = 15ul,  USART6_CK = 8ul, }; 
+    };
+
+    struct PC9  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 9u; }
+      enum { EVENTOUT = 15ul,  FMPI2C1_SDA = 4ul,  I2S_CKIN = 5ul,  RCC_MCO_2 = 0ul, }; 
+    };
+
+    struct PH0  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::H; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 0u; }
+      enum { EVENTOUT = 15ul, }; 
+    };
+
+    struct PH1  
+    {
+      constexpr inline static auto const Port() noexcept(true) { return Port::H; }
+	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 1u; }
+      enum { EVENTOUT = 15ul, }; 
+    };
+    
   } // inline namespace 
 } // namespace mpp::gpio 
  

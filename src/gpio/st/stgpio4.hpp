@@ -153,17 +153,18 @@ namespace mpp::gpio
       
       
 
-    template < Port port__, std::uint32_t pin__, typename Trait >
+    template < class IO, class Trait >
     class Gpio 
     {
       static_assert(::std::is_same_v< Trait, ::std::decay_t< decltype(Trait()) > >);
+      static_assert(::std::is_same_v< IO,    ::std::decay_t< decltype(IO()) > >);
       static_assert(IsValidTrait< Trait >(), "This trait is invalid");
-      static_assert(IsValidPinId(port, pin), "You try use invalid pin id");
+      static_assert(IsValidIo< IO >(), "You try use invalid pin id");
       
         
       public:
-        static constexpr const Port port              = port__;
-        static constexpr const auto pin               = pin__;
+        static constexpr const Port port              = IO::Port();
+        static constexpr const std::uint32_t pin      = IO::Pin();
         static constexpr const Type type              = Trait::Type();
         static constexpr const Trigger trigger        = Trait::Trigger();
         static constexpr const Driver driver          = Trait::Driver();

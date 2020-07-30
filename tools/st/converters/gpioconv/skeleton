@@ -9,7 +9,6 @@
 
 //____________________INCLUDE_____________________//
 #include <cstdint>
-#include <type_traits>
 #include "target.h"
 
 
@@ -20,16 +19,17 @@ namespace mpp::gpio
   {
     enum class Port { $portlist    };
 
-    constexpr bool IsValidPinId(Port port, std::uint32_t pin)
+    template< typename IO >
+    constexpr bool IsValidIo()
     {
-      switch(port)
+      switch(IO::Port())
       { $pincheck
         default: return false;
       }
     }
 
-    namespace Af 
-    { $pinlist    } // namespace Af
-  } // inline namespace gpio401
+
+    $pinlist    
+  } // inline namespace 
 } // namespace mpp::gpio 
  
