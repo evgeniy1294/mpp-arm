@@ -9,8 +9,19 @@
 
 //____________________INCLUDE_____________________//
 #include <cstdint>
-#include <type_traits>
-#include "target.h"
+
+
+#if defined (STM32F412cx)
+  #include "stm32f412cx.h"
+#elif defined (STM32F412rx)
+  #include "stm32f412rx.h"
+#elif defined (STM32F412vx)
+  #include "stm32f412vx.h"
+#elif defined (STM32F412zx)
+  #include "stm32f412zx.h"
+#else
+  #error "You must define supported target"
+#endif
 
 
 
@@ -163,6 +174,6 @@ namespace mpp::gpio
       namespace PH0  { enum { EVENTOUT = 15ul, }; }
       namespace PH1  { enum { EVENTOUT = 15ul, }; }
     } // namespace Af
-  } // inline namespace gpio401
+  } // inline namespace 
 } // namespace mpp::gpio 
  

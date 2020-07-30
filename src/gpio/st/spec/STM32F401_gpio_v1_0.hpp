@@ -9,9 +9,14 @@
 
 //____________________INCLUDE_____________________//
 #include <cstdint>
-#include <type_traits>
-#include "target.h"
 
+#if defined (STM32F401xc)
+  #include "stm32f401xc.h"
+#elif defined (STM32F401xe)
+  #include "stm32f401xe.h"
+#else
+  #error "You must define supported target"
+#endif
 
 
 namespace mpp::gpio
@@ -127,6 +132,6 @@ namespace mpp::gpio
       namespace PH0  { enum {}; }
       namespace PH1  { enum {}; }
     } // namespace Af
-  } // inline namespace gpio401
+  } // inline namespace
 } // namespace mpp::gpio 
  

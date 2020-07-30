@@ -9,8 +9,7 @@
 
 //____________________INCLUDE_____________________//
 #include <cstdint>
-#include <type_traits>
-#include "target.h"
+#include "stm32f446xx.h"
 
 
 
@@ -163,6 +162,6 @@ namespace mpp::gpio
       namespace PH0  { enum {}; }
       namespace PH1  { enum {}; }
     } // namespace Af
-  } // inline namespace gpio401
+  } // inline namespace 
 } // namespace mpp::gpio 
  

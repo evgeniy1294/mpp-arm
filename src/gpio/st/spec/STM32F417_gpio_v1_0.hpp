@@ -9,8 +9,14 @@
 
 //____________________INCLUDE_____________________//
 #include <cstdint>
-#include <type_traits>
-#include "target.h"
+
+#if defined (STM32F469xx)
+  #include "stm32f469xx.h"
+#elif defined (STM32F479xx)
+  #include "stm32f479xx.h"
+#else
+  #error "You must define supported target"
+#endif
 
 
 
@@ -191,6 +197,6 @@ namespace mpp::gpio
       namespace PI8  { enum { RTC_AF2 = 0ul, }; }
       namespace PI9  { enum { CAN1_RX = 9ul, }; }
     } // namespace Af
-  } // inline namespace gpio401
+  } // inline namespace 
 } // namespace mpp::gpio 
  

@@ -9,8 +9,18 @@
 
 //____________________INCLUDE_____________________//
 #include <cstdint>
-#include <type_traits>
-#include "target.h"
+
+#if defined (STM32F427xx)
+  #include "stm32f427xx.h"
+#elif defined (STM32F429xx)
+  #include "stm32f429xx.h"
+#elif defined (STM32F437xx)
+  #include "stm32f437xx.h"
+#elif defined (STM32F439xx)
+  #include "stm32f439xx.h"
+#else
+  #error "You must define supported target"
+#endif
 
 
 
@@ -223,6 +233,6 @@ namespace mpp::gpio
       namespace PK6  { enum { LTDC_B7 = 14ul, }; }
       namespace PK7  { enum { LTDC_DE = 14ul, }; }
     } // namespace Af
-  } // inline namespace gpio401
+  } // inline namespace 
 } // namespace mpp::gpio 
  
