@@ -59,47 +59,47 @@ namespace mpp::gpio
          static_assert((Trait::Af() == 0), "Use 'Af == 0' for non alternate function pin");
          static_assert((Trait::ResetState() == ResetState::None), "Use 'ResetState::None' for non output pin");
          
-		 return true;
+         return true;
       }
         
        
       if constexpr (Trait::Type() == Type::Output)
       {
-		 static_assert((Trait::Driver() != Driver::None), "Don't use 'Driver::None' for output pin");
+         static_assert((Trait::Driver() != Driver::None), "Don't use 'Driver::None' for output pin");
          static_assert((Trait::Trigger() == Trigger::None), "Use 'Trigger::None' for non input pin");
-		 static_assert((Trait::Speed() != Speed::None), "Don't use 'Speed::None' for output pin");
-		 static_assert((Trait::ResetState() != ResetState::None), "Don't use 'ResetState::None' for output pin");
-		 static_assert((Trait::Af() == 0), "Use 'Af == 0' for non alternate function pin");
-		 
-		 return true;
+         static_assert((Trait::Speed() != Speed::None), "Don't use 'Speed::None' for output pin");
+         static_assert((Trait::ResetState() != ResetState::None), "Don't use 'ResetState::None' for output pin");
+         static_assert((Trait::Af() == 0), "Use 'Af == 0' for non alternate function pin");
+         
+         return true;
       }
         
-		
+        
       if constexpr (Trait::Type() == Type::Analog)
-	  {
+      {
          static_assert((Trait::Driver() == Driver::None), "Use 'Driver::None' for analog pin"); 
-		 static_assert((Trait::Speed() == Speed::None), "Use 'Speed::None' for analog pin");
-		 static_assert((Trait::Pull() == Pull::Floating)), "Use 'Pull::Floating' for analog pin");
-		 static_assert((Trait::Trigger() == Trigger::None), "Use 'Trigger::None' for non input pin");
-		 static_assert((Trait::ResetState() == ResetState::None), "Use 'ResetState::None' for non output pin");
-		 static_assert((Trait::Inverted() == false), "Use 'Inverted == false' for analog pin");
-		 static_assert((Trait::Af() == 0), "Use 'Af == 0' for non alternate function pin");
-		  
-		 return true;
-	  }
-		  
-		  
+         static_assert((Trait::Speed() == Speed::None), "Use 'Speed::None' for analog pin");
+         static_assert((Trait::Pull() == Pull::Floating)), "Use 'Pull::Floating' for analog pin");
+         static_assert((Trait::Trigger() == Trigger::None), "Use 'Trigger::None' for non input pin");
+         static_assert((Trait::ResetState() == ResetState::None), "Use 'ResetState::None' for non output pin");
+         static_assert((Trait::Inverted() == false), "Use 'Inverted == false' for analog pin");
+         static_assert((Trait::Af() == 0), "Use 'Af == 0' for non alternate function pin");
+          
+         return true;
+      }
+          
+          
       if constexpr (Trait::Type() == Type::Alternate)
-	  {
-		 static_assert((Trait::Driver() != Driver::None), "Don't use 'Driver::None' for AF pin");
-		 static_assert((Trait::Speed() != Speed::None), "Don't use 'Speed::None' for AF pin"); 
-		 static_assert((Trait::Trigger() == Trigger::None), "Use 'Trigger::None' for non input pin");
-		 static_assert((Trait::ResetState() == ResetState::None), "Use 'ResetState::None' for non output pin");
-		 static_assert((Trait::Inverted() == false), "Use 'Inverted == false' for AF pin");
-		  
-		 return true;
-	  }
-		  
+      {
+         static_assert((Trait::Driver() != Driver::None), "Don't use 'Driver::None' for AF pin");
+         static_assert((Trait::Speed() != Speed::None), "Don't use 'Speed::None' for AF pin"); 
+         static_assert((Trait::Trigger() == Trigger::None), "Use 'Trigger::None' for non input pin");
+         static_assert((Trait::ResetState() == ResetState::None), "Use 'ResetState::None' for non output pin");
+         static_assert((Trait::Inverted() == false), "Use 'Inverted == false' for AF pin");
+          
+         return true;
+      }
+          
 
       return false; 
     }  
@@ -149,7 +149,7 @@ namespace mpp::gpio
     };
 
       
-	  
+      
       
       
 
