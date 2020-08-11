@@ -186,7 +186,7 @@ namespace mpp::gpio
           static constexpr std::uint32_t afr     = (kPin < 8u) ? static_cast<std::uint32_t>(kAf) << (kPin << 2ul) :
                                                                  static_cast<std::uint32_t>(kAf) << ((kPin-8u) << 2ul);
           static constexpr std::uint32_t afr_clr = (kPin < 8u) ? 0b1111 << (kPin << 2ul) :
-                                                                 0b1111 << ((kPin-8u) << 2ul);
+                                                                 0b1111 << ((kPin-8ul) << 2ul);
           static constexpr std::uint32_t level   = (kInvertion == Inversion::On) ? (kStateDefault == DefaultState::High) ? 0b0ul : 0b1ul :
                                                                                    (kStateDefault == DefaultState::High) ? 0b1ul : 0b0ul;
           static constexpr std::uint32_t bsrr    = (level == 1u) ? 0b1ul << pin : 0b1ul << (pin+16u);
