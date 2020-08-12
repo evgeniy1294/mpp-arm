@@ -147,8 +147,8 @@ namespace mpp::gpio
          return false; 
        }
         
-       static_assert(IsValidTrait< Trait >(), "This trait is invalid");
-       static_assert(IsValidIo< IO >(), "You try use invalid pin id");
+       static_assert(IsValidTrait< Trait >(), "This trait contains error");
+       static_assert(IsValidIo< IO >(), "You try use incorrect pin id");
       
         
       public:
