@@ -2,7 +2,7 @@
   ***********************************************************
   @author Evgenii Fedoseev
   @file   /src/gpio/ti/cc26x2_gpio.hpp
-  @brief  Сompatibility series: TI Simplelink
+  @brief  Compatible series: TI Simplelink
   ***********************************************************
 **/
 
