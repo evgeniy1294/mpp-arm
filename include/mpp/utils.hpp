@@ -10,13 +10,6 @@
 
 
 namespace mpp {
-  template < class d1, class d2 >
-  bool IsSameDevice()
-  {
-	  
-  }
-
-
   template < class... dev >
   class DeviceSet
   {
