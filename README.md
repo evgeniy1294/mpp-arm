@@ -1,4 +1,4 @@
-# mpp-arm (Metal Plus Plus)
+# mpp (Metal Plus Plus)
 Hardware library colllection for MCU
 
 
