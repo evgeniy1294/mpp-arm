@@ -8,16 +8,16 @@ int main() {
   board::ClockCounter::Init();
 
   RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
-  board::Leds::Init();	
+  board::Leds::Init();  
   board::Leds::Set();
 
   tim.Start(100);
-	
+    
   while(1){
     if (tim.IsTimeOut())
-	{
+    {
       tim.Reload();
       board::Leds::Toggle();
-	} 
-  }	
+    } 
+  } 
 }
