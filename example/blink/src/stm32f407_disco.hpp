@@ -13,7 +13,6 @@
 #include <cstdint>
 #include "mpp/stm32f407xx.hpp"
 
-std::uint32_t GetTick();
 namespace board
 {
   // Systick and DWT
