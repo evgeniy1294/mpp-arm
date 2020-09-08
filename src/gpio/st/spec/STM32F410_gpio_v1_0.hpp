@@ -22,6 +22,8 @@
 
 
 
+
+
 namespace mpp::gpio
 {
   inline namespace STM32F410_gpio_v1_0
@@ -36,12 +38,12 @@ namespace mpp::gpio
     template< typename IO >
     constexpr bool IsValidIo()
     {
-      switch(IO::Port())
+      switch(IO::kPort)
       { 
-        case Port::A: return IO::Pin() < 16u;
-        case Port::B: return IO::Pin() < 16u;
-        case Port::C: return IO::Pin() < 16u;
-        case Port::H: return IO::Pin() < 2u;
+        case Port::A: return IO::kPin < 16u;
+        case Port::B: return IO::kPin < 16u;
+        case Port::C: return IO::kPin < 16u;
+        case Port::H: return IO::kPin < 2u;
 
         default: return false;
       }
@@ -52,351 +54,351 @@ namespace mpp::gpio
 
     struct PA0  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 0u; }
+      constexpr static Port kPort = Port::A;
+	  constexpr static std::uint32_t kPin = 0u;
       enum { EVENTOUT = 15ul,  TIM5_CH1 = 2ul,  USART2_CTS = 7ul, }; 
     };
 
     struct PA1  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 1u; }
+      constexpr static Port kPort = Port::A;
+	  constexpr static std::uint32_t kPin = 1u;
       enum { EVENTOUT = 15ul,  TIM5_CH2 = 2ul,  USART2_RTS = 7ul, }; 
     };
 
     struct PA10 
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 10u; }
+      constexpr static Port kPort = Port::A;
+	  constexpr static std::uint32_t kPin = 10u;
       enum { EVENTOUT = 15ul,  I2S5_SD = 6ul,  SPI5_MOSI = 6ul,  TIM1_CH3 = 1ul,  USART1_RX = 7ul, }; 
     };
 
     struct PA11 
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 11u; }
+      constexpr static Port kPort = Port::A;
+	  constexpr static std::uint32_t kPin = 11u;
       enum { EVENTOUT = 15ul,  TIM1_CH4 = 1ul,  USART1_CTS = 7ul,  USART6_TX = 8ul, }; 
     };
 
     struct PA12 
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 12u; }
+      constexpr static Port kPort = Port::A;
+	  constexpr static std::uint32_t kPin = 12u;
       enum { EVENTOUT = 15ul,  SPI5_MISO = 6ul,  TIM1_ETR = 1ul,  USART1_RTS = 7ul,  USART6_RX = 8ul, }; 
     };
 
     struct PA13 
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 13u; }
+      constexpr static Port kPort = Port::A;
+	  constexpr static std::uint32_t kPin = 13u;
       enum { EVENTOUT = 15ul,  SYS_JTMS_SWDIO = 0ul, }; 
     };
 
     struct PA14 
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 14u; }
+      constexpr static Port kPort = Port::A;
+	  constexpr static std::uint32_t kPin = 14u;
       enum { EVENTOUT = 15ul,  SYS_JTCK_SWCLK = 0ul, }; 
     };
 
     struct PA15 
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 15u; }
+      constexpr static Port kPort = Port::A;
+	  constexpr static std::uint32_t kPin = 15u;
       enum { EVENTOUT = 15ul,  I2S1_WS = 5ul,  SPI1_NSS = 5ul,  SYS_JTDI = 0ul,  USART1_TX = 7ul, }; 
     };
 
     struct PA2  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 2u; }
+      constexpr static Port kPort = Port::A;
+	  constexpr static std::uint32_t kPin = 2u;
       enum { EVENTOUT = 15ul,  I2S_CKIN = 5ul,  TIM5_CH3 = 2ul,  TIM9_CH1 = 3ul,  USART2_TX = 7ul, }; 
     };
 
     struct PA3  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 3u; }
+      constexpr static Port kPort = Port::A;
+	  constexpr static std::uint32_t kPin = 3u;
       enum { EVENTOUT = 15ul,  I2S2_MCK = 5ul,  TIM5_CH4 = 2ul,  TIM9_CH2 = 3ul,  USART2_RX = 7ul, }; 
     };
 
     struct PA4  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 4u; }
+      constexpr static Port kPort = Port::A;
+	  constexpr static std::uint32_t kPin = 4u;
       enum { EVENTOUT = 15ul,  I2S1_WS = 5ul,  SPI1_NSS = 5ul,  USART2_CK = 7ul, }; 
     };
 
     struct PA5  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 5u; }
+      constexpr static Port kPort = Port::A;
+	  constexpr static std::uint32_t kPin = 5u;
       enum { EVENTOUT = 15ul,  I2S1_CK = 5ul,  SPI1_SCK = 5ul, }; 
     };
 
     struct PA6  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 6u; }
+      constexpr static Port kPort = Port::A;
+	  constexpr static std::uint32_t kPin = 6u;
       enum { EVENTOUT = 15ul,  I2S2_MCK = 6ul,  SPI1_MISO = 5ul,  TIM1_BKIN = 1ul, }; 
     };
 
     struct PA7  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 7u; }
+      constexpr static Port kPort = Port::A;
+	  constexpr static std::uint32_t kPin = 7u;
       enum { EVENTOUT = 15ul,  I2S1_SD = 5ul,  SPI1_MOSI = 5ul,  TIM1_CH1N = 1ul, }; 
     };
 
     struct PA8  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 8u; }
+      constexpr static Port kPort = Port::A;
+	  constexpr static std::uint32_t kPin = 8u;
       enum { EVENTOUT = 15ul,  FMPI2C1_SCL = 4ul,  RCC_MCO_1 = 0ul,  TIM1_CH1 = 1ul,  USART1_CK = 7ul, }; 
     };
 
     struct PA9  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::A; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 9u; }
+      constexpr static Port kPort = Port::A;
+	  constexpr static std::uint32_t kPin = 9u;
       enum { EVENTOUT = 15ul,  TIM1_CH2 = 1ul,  USART1_TX = 7ul, }; 
     };
 
     struct PB0  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 0u; }
+      constexpr static Port kPort = Port::B;
+	  constexpr static std::uint32_t kPin = 0u;
       enum { EVENTOUT = 15ul,  I2S5_CK = 6ul,  SPI5_SCK = 6ul,  TIM1_CH2N = 1ul, }; 
     };
 
     struct PB1  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 1u; }
+      constexpr static Port kPort = Port::B;
+	  constexpr static std::uint32_t kPin = 1u;
       enum { EVENTOUT = 15ul,  I2S5_WS = 6ul,  SPI5_NSS = 6ul,  TIM1_CH3N = 1ul, }; 
     };
 
     struct PB10 
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 10u; }
+      constexpr static Port kPort = Port::B;
+	  constexpr static std::uint32_t kPin = 10u;
       enum { EVENTOUT = 15ul,  FMPI2C1_SCL = 9ul,  I2C2_SCL = 4ul,  I2S1_MCK = 6ul,  I2S2_CK = 5ul,  SPI2_SCK = 5ul, }; 
     };
 
     struct PB11 
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 11u; }
+      constexpr static Port kPort = Port::B;
+	  constexpr static std::uint32_t kPin = 11u;
       enum { EVENTOUT = 15ul,  I2C2_SDA = 4ul,  I2S_CKIN = 5ul,  SYS_TRACED3 = 0ul,  TIM5_CH4 = 2ul, }; 
     };
 
     struct PB12 
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 12u; }
+      constexpr static Port kPort = Port::B;
+	  constexpr static std::uint32_t kPin = 12u;
       enum { EVENTOUT = 15ul,  I2C2_SMBA = 4ul,  I2S2_WS = 5ul,  SPI2_NSS = 5ul,  TIM1_BKIN = 1ul,  TIM5_CH1 = 2ul, }; 
     };
 
     struct PB13 
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 13u; }
+      constexpr static Port kPort = Port::B;
+	  constexpr static std::uint32_t kPin = 13u;
       enum { EVENTOUT = 15ul,  FMPI2C1_SMBA = 4ul,  I2S2_CK = 5ul,  SPI2_SCK = 5ul,  TIM1_CH1N = 1ul, }; 
     };
 
     struct PB14 
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 14u; }
+      constexpr static Port kPort = Port::B;
+	  constexpr static std::uint32_t kPin = 14u;
       enum { EVENTOUT = 15ul,  FMPI2C1_SDA = 4ul,  SPI2_MISO = 5ul,  TIM1_CH2N = 1ul, }; 
     };
 
     struct PB15 
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 15u; }
+      constexpr static Port kPort = Port::B;
+	  constexpr static std::uint32_t kPin = 15u;
       enum { EVENTOUT = 15ul,  FMPI2C1_SCL = 4ul,  I2S2_SD = 5ul,  RTC_REFIN = 0ul,  SPI2_MOSI = 5ul,  TIM1_CH3N = 1ul, }; 
     };
 
     struct PB2  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 2u; }
+      constexpr static Port kPort = Port::B;
+	  constexpr static std::uint32_t kPin = 2u;
       enum { EVENTOUT = 15ul,  LPTIM1_OUT = 1ul, }; 
     };
 
     struct PB3  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 3u; }
+      constexpr static Port kPort = Port::B;
+	  constexpr static std::uint32_t kPin = 3u;
       enum { EVENTOUT = 15ul,  FMPI2C1_SDA = 4ul,  I2C2_SDA = 9ul,  I2S1_CK = 5ul,  SPI1_SCK = 5ul,  SYS_JTDO_SWO = 0ul,  USART1_RX = 7ul, }; 
     };
 
     struct PB4  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 4u; }
+      constexpr static Port kPort = Port::B;
+	  constexpr static std::uint32_t kPin = 4u;
       enum { EVENTOUT = 15ul,  SPI1_MISO = 5ul,  SYS_JTRST = 0ul, }; 
     };
 
     struct PB5  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 5u; }
+      constexpr static Port kPort = Port::B;
+	  constexpr static std::uint32_t kPin = 5u;
       enum { EVENTOUT = 15ul,  I2C1_SMBA = 4ul,  I2S1_SD = 5ul,  LPTIM1_IN1 = 1ul,  SPI1_MOSI = 5ul, }; 
     };
 
     struct PB6  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 6u; }
+      constexpr static Port kPort = Port::B;
+	  constexpr static std::uint32_t kPin = 6u;
       enum { EVENTOUT = 15ul,  I2C1_SCL = 4ul,  LPTIM1_ETR = 1ul,  USART1_TX = 7ul, }; 
     };
 
     struct PB7  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 7u; }
+      constexpr static Port kPort = Port::B;
+	  constexpr static std::uint32_t kPin = 7u;
       enum { EVENTOUT = 15ul,  I2C1_SDA = 4ul,  LPTIM1_IN2 = 1ul,  USART1_RX = 7ul, }; 
     };
 
     struct PB8  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 8u; }
+      constexpr static Port kPort = Port::B;
+	  constexpr static std::uint32_t kPin = 8u;
       enum { EVENTOUT = 15ul,  I2C1_SCL = 4ul,  I2S5_SD = 6ul,  LPTIM1_OUT = 1ul,  SPI5_MOSI = 6ul, }; 
     };
 
     struct PB9  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::B; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 9u; }
+      constexpr static Port kPort = Port::B;
+	  constexpr static std::uint32_t kPin = 9u;
       enum { EVENTOUT = 15ul,  I2C1_SDA = 4ul,  I2C2_SDA = 9ul,  I2S2_WS = 5ul,  SPI2_NSS = 5ul,  TIM11_CH1 = 3ul, }; 
     };
 
     struct PC0  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 0u; }
+      constexpr static Port kPort = Port::C;
+	  constexpr static std::uint32_t kPin = 0u;
       enum { EVENTOUT = 15ul,  LPTIM1_IN1 = 1ul, }; 
     };
 
     struct PC1  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 1u; }
+      constexpr static Port kPort = Port::C;
+	  constexpr static std::uint32_t kPin = 1u;
       enum { EVENTOUT = 15ul,  LPTIM1_OUT = 1ul, }; 
     };
 
     struct PC10 
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 10u; }
+      constexpr static Port kPort = Port::C;
+	  constexpr static std::uint32_t kPin = 10u;
       enum { EVENTOUT = 15ul,  SYS_TRACED0 = 0ul,  TIM5_CH2 = 2ul, }; 
     };
 
     struct PC11 
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 11u; }
+      constexpr static Port kPort = Port::C;
+	  constexpr static std::uint32_t kPin = 11u;
       enum { EVENTOUT = 15ul,  SYS_TRACED1 = 0ul,  TIM5_CH3 = 2ul, }; 
     };
 
     struct PC12 
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 12u; }
+      constexpr static Port kPort = Port::C;
+	  constexpr static std::uint32_t kPin = 12u;
       enum { EVENTOUT = 15ul,  SYS_TRACED2 = 0ul,  TIM11_CH1 = 3ul, }; 
     };
 
     struct PC13 
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 13u; }
+      constexpr static Port kPort = Port::C;
+	  constexpr static std::uint32_t kPin = 13u;
       enum { EVENTOUT = 15ul, }; 
     };
 
     struct PC14 
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 14u; }
+      constexpr static Port kPort = Port::C;
+	  constexpr static std::uint32_t kPin = 14u;
       enum { EVENTOUT = 15ul, }; 
     };
 
     struct PC15 
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 15u; }
+      constexpr static Port kPort = Port::C;
+	  constexpr static std::uint32_t kPin = 15u;
       enum { EVENTOUT = 15ul, }; 
     };
 
     struct PC2  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 2u; }
+      constexpr static Port kPort = Port::C;
+	  constexpr static std::uint32_t kPin = 2u;
       enum { EVENTOUT = 15ul,  LPTIM1_IN2 = 1ul,  SPI2_MISO = 5ul, }; 
     };
 
     struct PC3  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 3u; }
+      constexpr static Port kPort = Port::C;
+	  constexpr static std::uint32_t kPin = 3u;
       enum { EVENTOUT = 15ul,  I2S2_SD = 5ul,  LPTIM1_ETR = 1ul,  SPI2_MOSI = 5ul, }; 
     };
 
     struct PC4  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 4u; }
+      constexpr static Port kPort = Port::C;
+	  constexpr static std::uint32_t kPin = 4u;
       enum { EVENTOUT = 15ul,  TIM9_CH1 = 3ul, }; 
     };
 
     struct PC5  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 5u; }
+      constexpr static Port kPort = Port::C;
+	  constexpr static std::uint32_t kPin = 5u;
       enum { EVENTOUT = 15ul,  FMPI2C1_SMBA = 4ul,  TIM9_CH2 = 3ul, }; 
     };
 
     struct PC6  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 6u; }
+      constexpr static Port kPort = Port::C;
+	  constexpr static std::uint32_t kPin = 6u;
       enum { EVENTOUT = 15ul,  FMPI2C1_SCL = 4ul,  I2S2_MCK = 5ul,  SYS_TRACECLK = 0ul,  USART6_TX = 8ul, }; 
     };
 
     struct PC7  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 7u; }
+      constexpr static Port kPort = Port::C;
+	  constexpr static std::uint32_t kPin = 7u;
       enum { EVENTOUT = 15ul,  FMPI2C1_SDA = 4ul,  I2S1_MCK = 6ul,  I2S2_CK = 5ul,  SPI2_SCK = 5ul,  USART6_RX = 8ul, }; 
     };
 
     struct PC8  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 8u; }
+      constexpr static Port kPort = Port::C;
+	  constexpr static std::uint32_t kPin = 8u;
       enum { EVENTOUT = 15ul,  USART6_CK = 8ul, }; 
     };
 
     struct PC9  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::C; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 9u; }
+      constexpr static Port kPort = Port::C;
+	  constexpr static std::uint32_t kPin = 9u;
       enum { EVENTOUT = 15ul,  FMPI2C1_SDA = 4ul,  I2S_CKIN = 5ul,  RCC_MCO_2 = 0ul, }; 
     };
 
     struct PH0  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::H; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 0u; }
+      constexpr static Port kPort = Port::H;
+	  constexpr static std::uint32_t kPin = 0u;
       enum { EVENTOUT = 15ul, }; 
     };
 
     struct PH1  
     {
-      constexpr inline static auto const Port() noexcept(true) { return Port::H; }
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) { return 1u; }
+      constexpr static Port kPort = Port::H;
+	  constexpr static std::uint32_t kPin = 1u;
       enum { EVENTOUT = 15ul, }; 
     };
     

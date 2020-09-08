@@ -1815,303 +1815,305 @@ namespace mpp::gpio
     };
 
       
-    template< class IO > constexpr bool IsValidIo()
+    template< class IO > constexpr bool IsValidIo() noexcept(true)
     {
+      static_assert(::std::is_same_v< IO, ::std::decay_t< decltype(IO()) > >);
+
       #ifdef (CC1352R)
-        return (IO::Pin() > 2)&&(IO::Pin() < 31);
+        return (IO::kPin > 2)&&(IO::kPin < 31);
       #elif  defined (CC1352P)
-        return (IO::Pin() > 4)&&(IO::Pin() < 31);
+        return (IO::kPin > 4)&&(IO::kPin < 31);
       #else
-        return IO::Pin() < 31;
+        return IO::kPin < 31;
       #endif
     }
     
     
     struct DIO30 final
     {
-      constexpr static std::uint32_t Pin()    { return 30u; }
-      constexpr static std::uint32_t AuxPin() { return 19u; }
-      constexpr static bool IsAnalogCapable() { return true; }  
-      constexpr static bool IsHighDriveCapable() { return false; }   
+      constexpr static std::uint32_t kPin     = 30u;
+      constexpr static std::uint32_t kAuxPin  = 19u;
+      constexpr static bool kAnalogCapable    = true;  
+      constexpr static bool kHighDriveCapable = false;    
     };
     
     
     struct DIO29 final
     {
-      constexpr static std::uint32_t Pin()    { return 29u; }
-      constexpr static std::uint32_t AuxPin() { return 20u; }
-      constexpr static bool IsAnalogCapable() { return true; }  
-      constexpr static bool IsHighDriveCapable() { return false; }   
+      constexpr static std::uint32_t kPin     = 29u;
+      constexpr static std::uint32_t kAuxPin  = 20u; 
+      constexpr static bool kAnalogCapable    = true;   
+      constexpr static bool kHighDriveCapable = false;   
     };
     
     
     struct DIO28 final
     {
-      constexpr static std::uint32_t Pin()    { return 28u; }
-      constexpr static std::uint32_t AuxPin() { return 21u; }
-      constexpr static bool IsAnalogCapable() { return true; }  
-      constexpr static bool IsHighDriveCapable() { return false; }   
+      constexpr static std::uint32_t kPin     = 28u;
+      constexpr static std::uint32_t kAuxPin  = 21u;
+      constexpr static bool kAnalogCapable    = true;  
+      constexpr static bool kHighDriveCapable = false;   
     };
     
     
     struct DIO28 final
     {
-      constexpr static std::uint32_t Pin()    { return 28u; }
-      constexpr static std::uint32_t AuxPin() { return 21u; }
-      constexpr static bool IsAnalogCapable() { return true; }  
-      constexpr static bool IsHighDriveCapable() { return false; }   
+      constexpr static std::uint32_t kPin     = 28u;
+      constexpr static std::uint32_t kAuxPin  = 21u;
+      constexpr static bool kAnalogCapable    = true;  
+      constexpr static bool kHighDriveCapable = false;   
     };
     
     
     struct DIO27 final
     {
-      constexpr static std::uint32_t Pin()    { return 27u; }
-      constexpr static std::uint32_t AuxPin() { return 22u; }
-      constexpr static bool IsAnalogCapable() { return true; }  
-      constexpr static bool IsHighDriveCapable() { return false; }   
+      constexpr static std::uint32_t kPin     = 27u;
+      constexpr static std::uint32_t kAuxPin  = 22u;
+      constexpr static bool kAnalogCapable    = true;  
+      constexpr static bool kHighDriveCapable = false;   
     };
     
     
     struct DIO26 final
     {
-      constexpr static std::uint32_t Pin()    { return 26u; }
-      constexpr static std::uint32_t AuxPin() { return 23u; }
-      constexpr static bool IsAnalogCapable() { return true; }  
-      constexpr static bool IsHighDriveCapable() { return false; }   
+      constexpr static std::uint32_t kPin     = 26u;
+      constexpr static std::uint32_t kAuxPin  = 23u;
+      constexpr static bool kAnalogCapable    = true;  
+      constexpr static bool kHighDriveCapable = false;   
     };
     
     
     struct DIO25 final
     {
-      constexpr static std::uint32_t Pin()    { return 25u; }
-      constexpr static std::uint32_t AuxPin() { return 24u; }
-      constexpr static bool IsAnalogCapable() { return true; }  
-      constexpr static bool IsHighDriveCapable() { return false; }   
+      constexpr static std::uint32_t kPin     = 25u;
+      constexpr static std::uint32_t kAuxPin  = 24u;
+      constexpr static bool kAnalogCapable    = true;  
+      constexpr static bool kHighDriveCapable = false;   
     };
     
     
     struct DIO24 final
     {
-      constexpr static std::uint32_t Pin()    { return 24u; }
-      constexpr static std::uint32_t AuxPin() { return 25u; }
-      constexpr static bool IsAnalogCapable() { return true; }  
-      constexpr static bool IsHighDriveCapable() { return false; }   
+      constexpr static std::uint32_t kPin     = 24u;
+      constexpr static std::uint32_t kAuxPin  = 25u;
+      constexpr static bool kAnalogCapable    = true;  
+      constexpr static bool kHighDriveCapable = false;   
     };
     
     
     struct DIO23 final
     {
-      constexpr static std::uint32_t Pin()    { return 23u; }
-      constexpr static std::uint32_t AuxPin() { return 26u; }
-      constexpr static bool IsAnalogCapable() { return true; }  
-      constexpr static bool IsHighDriveCapable() { return false; }   
+      constexpr static std::uint32_t kPin     = 23u;
+      constexpr static std::uint32_t kAuxPin  = 26u;
+      constexpr static bool kAnalogCapable    = true;  
+      constexpr static bool kHighDriveCapable = false;   
     };
     
     
     struct DIO22 final
     {
-      constexpr static std::uint32_t Pin()    { return 22u; }
-      constexpr static std::uint32_t AuxPin() { return 27u; }
-      constexpr static bool IsAnalogCapable() { return false; } 
-      constexpr static bool IsHighDriveCapable() { return false; }   
+      constexpr static std::uint32_t kPin     = 22u; 
+      constexpr static std::uint32_t kAuxPin  = 27u;
+      constexpr static bool kAnalogCapable    = false; 
+      constexpr static bool kHighDriveCapable = false;   
     };
     
     
     struct DIO21 final
     {
-      constexpr static std::uint32_t Pin()    { return 21u; }
-      constexpr static std::uint32_t AuxPin() { return 28u; }
-      constexpr static bool IsAnalogCapable() { return false; } 
-      constexpr static bool IsHighDriveCapable() { return false; }   
+      constexpr static std::uint32_t kPin     = 21u;
+      constexpr static std::uint32_t kAuxPin  = 28u;
+      constexpr static bool kAnalogCapable    = false; 
+      constexpr static bool kHighDriveCapable = false;   
     };
     
     
     struct DIO20 final
     {
-      constexpr static std::uint32_t Pin()    { return 20u; }
-      constexpr static std::uint32_t AuxPin() { return 29u; }
-      constexpr static bool IsAnalogCapable() { return false; } 
-      constexpr static bool IsHighDriveCapable() { return false; }   
+      constexpr static std::uint32_t kPin     = 20u;
+      constexpr static std::uint32_t kAuxPin  = 29u;
+      constexpr static bool kAnalogCapable    = false; 
+      constexpr static bool kHighDriveCapable = false;   
     };
     
     
     struct DIO19 final
     {
-      constexpr static std::uint32_t Pin()    { return 19u; }
-      constexpr static std::uint32_t AuxPin() { return 30u; }
-      constexpr static bool IsAnalogCapable() { return false; } 
-      constexpr static bool IsHighDriveCapable() { return false; }   
+      constexpr static std::uint32_t kPin     = 19u;
+      constexpr static std::uint32_t kAuxPin  = 30u;
+      constexpr static bool kAnalogCapable    = false; 
+      constexpr static bool kHighDriveCapable = false;   
     };
     
     
     struct DIO18 final
     {
-      constexpr static std::uint32_t Pin()    { return 18u; }
-      constexpr static std::uint32_t AuxPin() { return 31u; }
-      constexpr static bool IsAnalogCapable() { return false; } 
-      constexpr static bool IsHighDriveCapable() { return false; }   
+      constexpr static std::uint32_t kPin     = 18u;
+      constexpr static std::uint32_t kAuxPin  = 31u;
+      constexpr static bool kAnalogCapable    = false; 
+      constexpr static bool kHighDriveCapable = false;   
     };
     
     
     struct DIO17 final
     {
-      constexpr static std::uint32_t Pin()    { return 17u; }
-      constexpr static std::uint32_t AuxPin() { return 1u; }
-      constexpr static bool IsAnalogCapable() { return false; } 
-      constexpr static bool IsHighDriveCapable() { return true; }    
+      constexpr static std::uint32_t kPin     = 17u;
+      constexpr static std::uint32_t kAuxPin  = 1u;
+      constexpr static bool kAnalogCapable    = false;  
+      constexpr static bool kHighDriveCapable = true;     
     };
     
     
     struct DIO16 final
     {
-      constexpr static std::uint32_t Pin()    { return 16u; }
-      constexpr static std::uint32_t AuxPin() { return 2u; }
-      constexpr static bool IsAnalogCapable() { return false; } 
-      constexpr static bool IsHighDriveCapable() { return true; }    
+      constexpr static std::uint32_t kPin     = 16u;
+      constexpr static std::uint32_t kAuxPin  = 2u;
+      constexpr static bool kAnalogCapable    = false; 
+      constexpr static bool kHighDriveCapable = true;    
     };
     
     
     struct DIO15 final
     {
-      constexpr static std::uint32_t Pin()    { return 15u; }
-      constexpr static std::uint32_t AuxPin() { return 3u; }
-      constexpr static bool IsAnalogCapable() { return false; } 
-      constexpr static bool IsHighDriveCapable() { return false; }   
+      constexpr static std::uint32_t kPin     = 15u;
+      constexpr static std::uint32_t kAuxPin  = 3u;
+      constexpr static bool kAnalogCapable    = false; 
+      constexpr static bool kHighDriveCapable = false;   
     };
     
     
     struct DIO14 final
     {
-      constexpr static std::uint32_t Pin()    { return 14u; }
-      constexpr static std::uint32_t AuxPin() { return 4u; }
-      constexpr static bool IsAnalogCapable() { return false; } 
-      constexpr static bool IsHighDriveCapable() { return false; }   
+      constexpr static std::uint32_t kPin     = 14u;
+      constexpr static std::uint32_t kAuxPin  = 4u;
+      constexpr static bool kAnalogCapable    = false; 
+      constexpr static bool kHighDriveCapable = false;   
     };
     
     
     struct DIO13 final
     {
-      constexpr static std::uint32_t Pin()    { return 13u; }
-      constexpr static std::uint32_t AuxPin() { return 5u; }
-      constexpr static bool IsAnalogCapable() { return false; } 
-      constexpr static bool IsHighDriveCapable() { return false; }   
+      constexpr static std::uint32_t kPin     = 13u;
+      constexpr static std::uint32_t kAuxPin  = 5u;
+      constexpr static bool kAnalogCapable    = false; 
+      constexpr static bool kHighDriveCapable = false;   
     };
     
     
     struct DIO12 final
     {
-      constexpr static std::uint32_t Pin()    { return 12u; }
-      constexpr static std::uint32_t AuxPin() { return 6u; }
-      constexpr static bool IsAnalogCapable() { return false; } 
-      constexpr static bool IsHighDriveCapable() { return false; }   
+      constexpr static std::uint32_t kPin     = 12u;
+      constexpr static std::uint32_t kAuxPin  = 6u;
+      constexpr static bool kAnalogCapable    = false; 
+      constexpr static bool kHighDriveCapable = false;   
     };
     
     
     struct DIO11 final
     {
-      constexpr static std::uint32_t Pin()    { return 11u; }
-      constexpr static std::uint32_t AuxPin() { return 7u; }
-      constexpr static bool IsAnalogCapable() { return false; } 
-      constexpr static bool IsHighDriveCapable() { return false; }   
+      constexpr static std::uint32_t kPin     = 11u;
+      constexpr static std::uint32_t kAuxPin  = 7u;
+      constexpr static bool kAnalogCapable    = false; 
+      constexpr static bool kHighDriveCapable = false;   
     };
     
     
     struct DIO10 final
     {
-      constexpr static std::uint32_t Pin()    { return 10u; }
-      constexpr static std::uint32_t AuxPin() { return 8u; }
-      constexpr static bool IsAnalogCapable() { return false; } 
-      constexpr static bool IsHighDriveCapable() { return false; }   
+      constexpr static std::uint32_t kPin     = 10u;
+      constexpr static std::uint32_t kAuxPin  = 8u;
+      constexpr static bool kAnalogCapable    = false; 
+      constexpr static bool kHighDriveCapable = false;   
     };
     
     
     struct DIO9 final
     {
-      constexpr static std::uint32_t Pin()    { return 9u; }
-      constexpr static std::uint32_t AuxPin() { return 9u; }
-      constexpr static bool IsAnalogCapable() { return false; } 
-      constexpr static bool IsHighDriveCapable() { return false; }   
+      constexpr static std::uint32_t kPin     = 9u;
+      constexpr static std::uint32_t kAuxPin  = 9u; 
+      constexpr static bool kAnalogCapable    = false; 
+      constexpr static bool kHighDriveCapable = false;   
     };
     
     
     struct DIO8 final
     {
-      constexpr static std::uint32_t Pin()    { return 8u; }
-      constexpr static std::uint32_t AuxPin() { return 10u; }
-      constexpr static bool IsAnalogCapable() { return false; } 
-      constexpr static bool IsHighDriveCapable() { return false; }   
+      constexpr static std::uint32_t kPin     = 8u;
+      constexpr static std::uint32_t kAuxPin  = 10u;
+      constexpr static bool kAnalogCapable    = false; 
+      constexpr static bool kHighDriveCapable = false;   
     };
     
     
     struct DIO7 final
     {
-      constexpr static std::uint32_t Pin()    { return 7u; }
-      constexpr static std::uint32_t AuxPin() { return 11u; }
-      constexpr static bool IsAnalogCapable() { return false; } 
-      constexpr static bool IsHighDriveCapable() { return true; }    
+      constexpr static std::uint32_t kPin     = 7u;
+      constexpr static std::uint32_t kAuxPin  = 11u;
+      constexpr static bool kAnalogCapable    = false; 
+      constexpr static bool kHighDriveCapable = true;    
     };
     
     
     struct DIO6 final
     {
-      constexpr static std::uint32_t Pin()    { return 6u; }
-      constexpr static std::uint32_t AuxPin() { return 12u; }
-      constexpr static bool IsAnalogCapable() { return false; } 
-      constexpr static bool IsHighDriveCapable() { return true; }    
+      constexpr static std::uint32_t kPin     = 6u;
+      constexpr static std::uint32_t kAuxPin  = 12u;
+      constexpr static bool kAnalogCapable    = false; 
+      constexpr static bool kHighDriveCapable = true;    
     };
     
     
     struct DIO5 final
     {
-      constexpr static std::uint32_t Pin()    { return 5u; }
-      constexpr static std::uint32_t AuxPin() { return 13u; }
-      constexpr static bool IsAnalogCapable() { return false; } 
-      constexpr static bool IsHighDriveCapable() { return true; }    
+      constexpr static std::uint32_t kPin     = 5u;
+      constexpr static std::uint32_t kAuxPin  = 13u;
+      constexpr static bool kAnalogCapable    = false; 
+      constexpr static bool kHighDriveCapable = true;    
     };
     
     
     struct DIO4 final
     {
-      constexpr static std::uint32_t Pin()    { return 4u; }
-      constexpr static std::uint32_t AuxPin() { return 14u; }
-      constexpr static bool IsAnalogCapable() { return false; } 
-      constexpr static bool IsHighDriveCapable() { return false; }   
+      constexpr static std::uint32_t kPin     = 4u;
+      constexpr static std::uint32_t kAuxPin  = 14u;
+      constexpr static bool kAnalogCapable    = false; 
+      constexpr static bool kHighDriveCapable = false;   
     };
     
     
     struct DIO3 final
     {
-      constexpr static std::uint32_t Pin()    { return 3u; }
-      constexpr static std::uint32_t AuxPin() { return 15u; }
-      constexpr static bool IsAnalogCapable() { return false; } 
-      constexpr static bool IsHighDriveCapable() { return false; }   
+      constexpr static std::uint32_t kPin     = 3u;
+      constexpr static std::uint32_t kAuxPin  = 15u;
+      constexpr static bool kAnalogCapable    = false; 
+      constexpr static bool kHighDriveCapable = false;   
     };
     
     
     struct DIO2 final
     {
-      constexpr static std::uint32_t Pin()    { return 2u; }
-      constexpr static std::uint32_t AuxPin() { return 16u; }
-      constexpr static bool IsAnalogCapable() { return false; } 
-      constexpr static bool IsHighDriveCapable() { return false; }   
+      constexpr static std::uint32_t kPin     = 2u;
+      constexpr static std::uint32_t kAuxPin  = 16u;
+      constexpr static bool kAnalogCapable    = false; 
+      constexpr static bool kHighDriveCapable = false;   
     };
     
     
     struct DIO1 final
     {
-      constexpr static std::uint32_t Pin()    { return 1u; }
-      constexpr static std::uint32_t AuxPin() { return 17u; }
-      constexpr static bool IsAnalogCapable() { return false; } 
-      constexpr static bool IsHighDriveCapable() { return false; }   
+      constexpr static std::uint32_t kPin     = 1u;
+      constexpr static std::uint32_t kAuxPin  = 17u;
+      constexpr static bool kAnalogCapable    = false; 
+      constexpr static bool kHighDriveCapable = false;   
     };
     
     
     struct DIO0 final
     {
-      constexpr static std::uint32_t Pin()    { return 0u; }
-      constexpr static std::uint32_t AuxPin() { return 18u; }
-      constexpr static bool IsAnalogCapable() { return false; } 
-      constexpr static bool IsHighDriveCapable() { return false; }   
+      constexpr static std::uint32_t kPin     = 0u;
+      constexpr static std::uint32_t kAuxPin  = 18u;
+      constexpr static bool kAnalogCapable    = false; 
+      constexpr static bool kHighDriveCapable = false;   
     };
   } // inline namespace 
 } // namespace mpp::gpio

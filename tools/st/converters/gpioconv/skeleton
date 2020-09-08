@@ -22,7 +22,7 @@ namespace mpp::gpio
     template< typename IO >
     constexpr bool IsValidIo()
     {
-      switch(IO::Port())
+      switch(IO::kPort)
       { $pincheck
         default: return false;
       }

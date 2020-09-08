@@ -49,42 +49,55 @@ namespace mpp::gpio
     enum class Inversion    { Off = 0x0ul, On = 0x1ul, None };
       
       
+    /*! 
+	  Inherit your OutputTrait from this struct. 
+      Child must contain fields: kSpeed, kDriver, kPull, kInversion, kDefaultState.
+	*/
+    struct OutputTrait {
+      constexpr static Type kType        = Type::Output; 
+      constexpr static std::uint32_t kAf = 0u;
       
-    template < Pull pull, Driver driver, DefaultState reset_state, Inversion inv >
-    struct OutputTrait final {
-      constexpr inline static auto Type()         noexcept(true) { return Type::Output; } 
-      constexpr inline static auto Driver()       noexcept(true) { return driver; }
-      constexpr inline static auto Pull()         noexcept(true) { return pull; }
-      constexpr inline static auto Speed()        noexcept(true) { return Speed::Medium; }
-      constexpr inline static auto Af()           noexcept(true) { return 0; }
-      constexpr inline static auto Inversion()    noexcept(true) { return inv; }
-      constexpr inline static auto DefaultState() noexcept(true) { return reset_satate; }
+	  /*
+        constexpr static Speed kSpeed = Speed::Low, Medium, High, VeryHigh;
+        constexpr static Driver kDriver = Driver::PushPull, OpenDrain; 
+        constexpr static Pull kPull = Pull::Floating, Up, Down;
+        constexpr static Inversion kInversion = Inversion::Off, On;
+        constexpr static DefaultState kDefaultState = DefaultState::High, Low;
+      */ 
     };
       
       
-    
-    template < Inversion inv >
-    struct LedTrait final {
-      constexpr inline static auto Type()         noexcept(true) { return Type::Output; } 
-      constexpr inline static auto Driver()       noexcept(true) { return Driver::PushPull; }
-      constexpr inline static auto Pull()         noexcept(true) { return Pull::Floating; }
-      constexpr inline static auto Speed()        noexcept(true) { return Speed::Low; }
-      constexpr inline static auto Af()           noexcept(true) { return 0; }
-      constexpr inline static auto Inversion()    noexcept(true) { return inv; }
-      constexpr inline static auto DefaultState() noexcept(true) { return DefaultState::Low; }   
+    /*! 
+	  Inherit your LedTrait from this struct. 
+      Child must contain fields: kInversion.
+	*/
+    struct LedTrait: OutputTrait {
+      constexpr static Driver kDriver = Driver::PushPull;
+      constexpr static Pull kPull = Pull::Floating;
+      constexpr static Speed kSpeed = Speed::Low;
+      constexpr static DefaultState kDefaultState = DefaultState::Low;    
+		
+      /*
+        constexpr static Inversion kInversion = Inversion::Off, On;
+      */
     };
       
     
-      
-    template < Pull pull, Trigger trigger, Inversion inv >
-    struct InputTrait final {
-      constexpr inline static auto Type()         noexcept(true) { return Type::Input; } 
-      constexpr inline static auto Driver()       noexcept(true) { return Driver::None; }
-      constexpr inline static auto Pull()         noexcept(true) { return pull; }
-      constexpr inline static auto Speed()        noexcept(true) { return Speed::Low; }
-      constexpr inline static auto Af()           noexcept(true) { return 0; }
-      constexpr inline static auto Inversion()    noexcept(true) { return inv; }   
-      constexpr inline static auto DefaultState() noexcept(true) { return DefaultState::None; }   
+    /*! 
+	  Inherit your InputTrait from this struct. 
+      Child must contain fields: kPull, kInversion.
+	*/ 
+    struct InputTrait {
+      constexpr static Type kType = Type::Input; 
+      constexpr static Driver kDriver = Driver::None;
+      constexpr static DefaultState kDefaultState = DefaultState::None;   
+      constexpr static std::uint32_t kAf = 0ul;
+      constexpr static Speed kSpeed = Speed::None;
+		
+	  /*
+        constexpr static Pull kPull = Pull::Floating, Up, Down;
+        constexpr static Inversion kInversion = Inversion::Off, On;
+      */ 
     };
 
       
@@ -97,48 +110,47 @@ namespace mpp::gpio
       static_assert(::std::is_same_v< IO,    ::std::decay_t< decltype(IO()) > >);
 
       private:
-        template< class Trait >
-        constexpr bool IsValidTrait() noexcept(true) {
-          if constexpr (Trait::Type() == Type::Input) {
-            static_assert((Trait::Driver() == Driver::None), "Use 'Driver::None' for input pin");
-            static_assert((Trait::Speed() == Speed::None),   "Use 'Speed::None' for input pin");
-            static_assert((Trait::Af() == 0), "Use 'Af == 0' for non alternate function pin");
-            static_assert((Trait::DefaultState() == DefaultState::None), "Use 'DefaultState::None' for non output pin");
-            static_assert((Trait::Inversion() != Inversion::None), "Don't use 'Inversion::None' for output pin");
+        constexpr static bool IsValidTrait() noexcept(true) {
+          if constexpr (Trait::kType == Type::Input) {
+            static_assert((Trait::kDriver == Driver::None), "Use 'Driver::None' for input pin");
+            static_assert((Trait::kSpeed == Speed::None),   "Use 'Speed::None' for input pin");
+            static_assert((Trait::kAf == 0), "Use 'Af == 0' for non alternate function pin");
+            static_assert((Trait::kDefaultState == DefaultState::None), "Use 'DefaultState::None' for non output pin");
+            static_assert((Trait::kInversion != Inversion::None), "Don't use 'Inversion::None' for output pin");
          
            return true;
          }
         
        
-         if constexpr (Trait::Type() == Type::Output) {
-           static_assert((Trait::Driver() != Driver::None), "Don't use 'Driver::None' for output pin");
-           static_assert((Trait::Speed() != Speed::None), "Don't use 'Speed::None' for output pin");
-           static_assert((Trait::DefaultState() != DefaultState::None), "Don't use 'DefaultState::None' for output pin");
-           static_assert((Trait::Af() == 0), "Use 'Af == 0' for non alternate function pin");
-           static_assert((Trait::Inversion() != Inversion::None), "Don't use 'Inversion::None' for output pin");
+         if constexpr (Trait::kType == Type::Output) {
+           static_assert((Trait::kDriver != Driver::None), "Don't use 'Driver::None' for output pin");
+           static_assert((Trait::kSpeed != Speed::None), "Don't use 'Speed::None' for output pin");
+           static_assert((Trait::kDefaultState != DefaultState::None), "Don't use 'DefaultState::None' for output pin");
+           static_assert((Trait::kAf == 0), "Use 'Af == 0' for non alternate function pin");
+           static_assert((Trait::kInversion != Inversion::None), "Don't use 'Inversion::None' for output pin");
          
            return true;
          }
         
         
-         if constexpr (Trait::Type() == Type::Analog) {
-           static_assert((Trait::Driver() == Driver::None), "Use 'Driver::None' for analog pin"); 
-           static_assert((Trait::Speed() == Speed::None), "Use 'Speed::None' for analog pin");
-           static_assert((Trait::Pull() == Pull::None), "Use 'Pull::None' for analog pin");
-           static_assert((Trait::DefaultState() == DefaultState::None), "Use 'DefaultState::None' for non output pin");
-           static_assert((Trait::Inversion() == Inversion::None), "Use 'Inversion::None' for analog pin");
-           static_assert((Trait::Af() == 0), "Use 'Af == 0' for non alternate function pin");
+         if constexpr (Trait::kType == Type::Analog) {
+           static_assert((Trait::kDriver == Driver::None), "Use 'Driver::None' for analog pin"); 
+           static_assert((Trait::kSpeed == Speed::None), "Use 'Speed::None' for analog pin");
+           static_assert((Trait::kPull == Pull::None), "Use 'Pull::None' for analog pin");
+           static_assert((Trait::kDefaultState == DefaultState::None), "Use 'DefaultState::None' for non output pin");
+           static_assert((Trait::kInversion == Inversion::None), "Use 'Inversion::None' for analog pin");
+           static_assert((Trait::kAf == 0), "Use 'Af == 0' for non alternate function pin");
           
            return true;
          }
           
           
-         if constexpr (Trait::Type() == Type::Alternate) {
-           static_assert((Trait::Driver() != Driver::None), "Don't use 'Driver::None' for AF pin");
-           static_assert((Trait::Speed() != Speed::None), "Don't use 'Speed::None' for AF pin"); 
-           static_assert((Trait::DefaultState() == DefaultState::None), "Use 'DefaultState::None' for non output pin");
-           static_assert((Trait::Inversion() == Inversion::None), "Use 'Inversion::None' for AF pin");
-           static_assert((Trait::Inversion() == Inversion::None), "Use 'Inversion::None' for AF pin");
+         if constexpr (Trait::kType == Type::Alternate) {
+           static_assert((Trait::kDriver != Driver::None), "Don't use 'Driver::None' for AF pin");
+           static_assert((Trait::kSpeed != Speed::None), "Don't use 'Speed::None' for AF pin"); 
+           static_assert((Trait::kDefaultState == DefaultState::None), "Use 'DefaultState::None' for non output pin");
+           static_assert((Trait::kInversion == Inversion::None), "Use 'Inversion::None' for AF pin");
+           static_assert((Trait::kInversion == Inversion::None), "Use 'Inversion::None' for AF pin");
           
            return true;
          }
@@ -147,20 +159,20 @@ namespace mpp::gpio
          return false; 
        }
         
-       static_assert(IsValidTrait< Trait >(), "This trait contains error");
+       static_assert(IsValidTrait(), "This trait contains error");
        static_assert(IsValidIo< IO >(), "You try use incorrect pin id");
       
         
       public:
-        static constexpr Port kPort                 = IO::Port();
-        static constexpr std::uint32_t kPin         = IO::Pin();
-        static constexpr Type kType                 = Trait::Type();
-        static constexpr Driver kDriver             = Trait::Driver();
-        static constexpr Pull kPull                 = Trait::Pull();
-        static constexpr Speed kSpeed               = Trait::Speed();
-        static constexpr std::uint32_t kAf          = Trait::Af();
-        static constexpr Inversion kInversion       = Trait::Inversion();
-        static constexpr DefaultState kStateDefault = Trait::DefaultState();
+        static constexpr Port kPort                 = IO::kPort;
+        static constexpr std::uint32_t kPin         = IO::kPin;
+        static constexpr Type kType                 = Trait::kType;
+        static constexpr Driver kDriver             = Trait::kDriver;
+        static constexpr Pull kPull                 = Trait::kPull;
+        static constexpr Speed kSpeed               = Trait::kSpeed;
+        static constexpr std::uint32_t kAf          = Trait::kAf;
+        static constexpr Inversion kInversion       = Trait::kInversion;
+        static constexpr DefaultState kStateDefault = Trait::kDefaultState;
         
         static constexpr std::uint32_t kModerMask        = static_cast<std::uint32_t>(kType) << (kPin << 1ul);
         static constexpr std::uint32_t kModerClearMask   = ~(0b11 << (kPin << 1ul));
@@ -183,8 +195,8 @@ namespace mpp::gpio
         static constexpr std::uint32_t kOdrMask          = (kType != Type::Output) ? 0u : 1ul << static_cast<std::uint32_t>(kPin);
         static constexpr std::uint32_t kIdrMask          = (kType != Type::Input)  ? 0u : 1ul << static_cast<std::uint32_t>(kPin);
         
-        inline constexpr static auto Init() noexcept(true) {
-          static GPIO_TypeDef* regs { reinterpret_cast<GPIO_TypeDef*>(port) };
+        inline constexpr static void Init() noexcept(true) {
+          GPIO_TypeDef* regs { reinterpret_cast<GPIO_TypeDef*>(kPort) };
             
           // Set mode   
           regs->MODER &= kModerClearMask;
@@ -196,11 +208,11 @@ namespace mpp::gpio
             
           // Set out speed
           regs->OSPEEDR &= kOspeedrClearMask;     
-          if constexpr (kOspeedMask != 0ul) regs->OSPEEDR |= kOspeedrMask;
+          if constexpr (kOspeedrMask != 0ul) regs->OSPEEDR |= kOspeedrMask;
             
           // Set pull 
           regs->PUPDR &= kPupdrClearMask;  
-          if constexpr (pupdr != 0ul) regs->PUPDR |= pupdr;
+          if constexpr (kPupdrMask != 0ul) regs->PUPDR |= kPupdrMask;
             
           // Set AF
           if constexpr (kAfr0ClearMask != 0xFFFFFFFF)
@@ -241,7 +253,7 @@ namespace mpp::gpio
         }
 
         
-        inline static auto Set() noexcept(true) {
+        inline static void Set() noexcept(true) {
           static_assert((kType == Type::Output), "This gpio not output, check 'Type' field");
           GPIO_TypeDef* regs { reinterpret_cast<GPIO_TypeDef*>(kPort) };
             
@@ -249,7 +261,7 @@ namespace mpp::gpio
         }
         
         
-        inline static auto Reset() noexcept(true) {
+        inline static void Reset() noexcept(true) {
           static_assert((kType == Type::Output), "This gpio not output, check 'Type' field");
           GPIO_TypeDef* regs { reinterpret_cast<GPIO_TypeDef*>(kPort) };
             
@@ -257,7 +269,7 @@ namespace mpp::gpio
         }
         
         
-        inline static auto Toggle() noexcept(true) {
+        inline static void Toggle() noexcept(true) {
           static_assert((kType == Type::Output), "This gpio not output, check 'Type' field");
           GPIO_TypeDef* regs { reinterpret_cast<GPIO_TypeDef*>(kPort) };
             
@@ -265,11 +277,11 @@ namespace mpp::gpio
         }
         
         
-        inline static auto Read() noexcept(true) {
+        inline static bool Read() noexcept(true) {
           static_assert((kType == Type::Input), "This gpio not input, check 'Type' field");
           GPIO_TypeDef* regs { reinterpret_cast<GPIO_TypeDef*>(kPort) };
             
-          bool ret = static_cast<bool>(regs->IDR & kIdrMask));   
+          bool ret = static_cast<bool>(regs->IDR & kIdrMask);   
           return (kInversion == Inversion::On) ? !ret : ret; 
         }
     };
@@ -279,6 +291,9 @@ namespace mpp::gpio
     template< class... IO > class IoGroup final
     {
       private:
+		template < class T, class... Ts >
+        constexpr static Port ExtractPort() { return T::kPort; }
+			
         template < class T, class... Ts >
         constexpr static bool IsValidIo() { return ( ((static_cast<std::uint32_t>(T::kPort) == static_cast<std::uint32_t>(Ts::kPort)) && (T::kPin != Ts::kPin)) && ... ); }
 
@@ -294,6 +309,7 @@ namespace mpp::gpio
         static_assert(IsValidGroup<IO...>(), "All <kPort> fields must be equal, all <kPin> fields must be unique");
    
       public:
+		static constexpr Port kPort = ExtractPort< IO... >();
         constexpr static std::uint32_t kModerMask        = ( ... | IO::kModerMask );
         constexpr static std::uint32_t kModerClearMask   = ( ... & IO::kModerClearMask );
         constexpr static std::uint32_t kPupdrMask        = ( ... | IO::kPupdrMask );
@@ -315,7 +331,7 @@ namespace mpp::gpio
         constexpr static std::uint32_t kOutputInvMask    = ( ... | (((IO::kInversion == Inversion::On)&&(IO::kType == Type::Output)) ? 1u << IO::kPin : 0u) );
     
         inline constexpr static void Init() noexcept(true) {
-          GPIO_TypeDef* regs { reinterpret_cast<GPIO_TypeDef*>(port) };
+          GPIO_TypeDef* regs { reinterpret_cast<GPIO_TypeDef*>(kPort) };
 
           regs->MODER &= kModerClearMask;
           if constexpr (kModerMask != 0u) regs->MODER |= kModerMask;
@@ -343,7 +359,7 @@ namespace mpp::gpio
         
         inline static void Set() noexcept(true) {
           static_assert((kBsrrSetMask != 0u), "IoGroup haven't output pin");
-          GPIO_TypeDef* regs { reinterpret_cast<GPIO_TypeDef*>(port) };
+          GPIO_TypeDef* regs { reinterpret_cast<GPIO_TypeDef*>(kPort) };
 
           regs->BSRR = kBsrrSetMask;
         }

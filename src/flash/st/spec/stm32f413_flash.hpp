@@ -31,13 +31,13 @@ namespace mpp::flash
     {
       std::uint32_t ws = kFlashWaitStateMax;
         
-      if constexpr ( VoltageMin < 2.1f )
+      if ( VoltageMin < 2.1f )
         ws = ClockHz / 16'000'001ul;
       else 
-        if constexpr ( VoltageMin < 2.4f )
+        if ( VoltageMin < 2.4f )
           ws = ClockHz / 18'000'001ul;
         else
-          if constexpr ( VoltageMin < 2.7f )
+          if ( VoltageMin < 2.7f )
             ws = ClockHz / 20'000'001ul;
           else
               ws = ClockHz / 25'000'001ul;

@@ -38,8 +38,8 @@ for p in root.findall('mcu:GPIO_Port', ns):
 # Fill IO list
 pinlist = '\n'
 pinstr = '''\n    struct {name} \n    {{
-      constexpr inline static auto const Port() noexcept(true) {{ return Port::{portname}; }}
-	  constexpr inline static std::uint32_t const Pin()  noexcept(true) {{ return {pinnum}u; }}
+      constexpr static Port kPort = Port::{portname};
+	  constexpr static std::uint32_t kPin = {pinnum}u;
       enum {{{fields}}}; \n    }};\n'''
 afstr  = " {name} = {val}ul, "
 
@@ -76,7 +76,7 @@ for pin in root.findall('mcu:GPIO_Pin', ns):
 	
 #Fill 'pincheck' field
 pincheck = '\n'
-checkstr = '        case Port::{port}: return IO::Pin() < {val}u;\n'
+checkstr = '        case Port::{port}: return IO::kPin < {val}u;\n'
 for key in ports:
     if ports[key] != 0:
         pincheck = pincheck + checkstr.format(port = key, val = ports[key])

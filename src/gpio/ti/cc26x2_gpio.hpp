@@ -51,76 +51,76 @@ namespace mpp::gpio
     
     template< class IO, class Trait > constexpr bool IsValidTrait noexcept(true) ()
     {
-      if constexpr ( Trait::Type() == Type::Analog )
+      if constexpr ( Trait::kType == Type::Analog )
       {
-        static_assert( IO::IsAnalogCapable(), "This IO haven't analog capability" );
-        static_assert( Trait::PortId() == PortId::AUX_IO, "Port ID must be equal AUX IO (0x08) for analog Pin" );
-        static_assert( Trait::DefaultState() == DefaultState::None, "Use DefaultState::None for analog pin" );
-        static_assert( Trait::CurrentMode() == CurrentMode::None, "Use CurrentMode::None for analog pin" );
-        static_assert( Trait::SlewRate() == SlewRate::None, "Use SlewRate::None for analog pin" );
-        static_assert( Trait::Driver() == Driver::None, "Use Driver::None for analog pin" );
-        static_assert( Trait::Pull() == Pull::None, "Use Pull::None for analog pin" );
-        static_assert( Trait::EdgeDetection() == EdgeDetection::None, "Use EdgeDetection::None for analog pin" );
-        static_assert( Trait::EventAssertion() == EventAssertion::None, "Use EventAssertion::None for analog pin" );
-        static_assert( Trait::WakeUp() == WakeUp::None, "Use WakeUp::None for analog pin" );
-        static_assert( Trait::Inversion() == Inversion::None, "Use Inversion::None for analog pin" );
-        static_assert( Trait::Hysteresis() == Hysteresis::None, "Use Hysteresis::None for analog pin" );
-        static_assert( Trait::OutputBuffer() == OutputBuffer::None, "Use OutputBuffer::None for analog pin" );
-        static_assert( Trait::InputBuffer() == InputBuffer::None, "Use InputBuffer::None for analog pin" );
-        static_assert( Trait::EdgeDetIrq() == EdgeDetIrq::None, "Use EdgeDetIrq::None for analog pin" );
-        static_assert( Trait::DefaultState() == DefaultState::None, "Use DefaultState::None for analog pin" );
+        static_assert( IO::kAnalogCapable, "This IO haven't analog capability" );
+        static_assert( Trait::kPortId == PortId::AUX_IO, "Port ID must be equal AUX IO (0x08) for analog Pin" );
+        static_assert( Trait::kDefaultState == DefaultState::None, "Use DefaultState::None for analog pin" );
+        static_assert( Trait::kCurrentMode == CurrentMode::None, "Use CurrentMode::None for analog pin" );
+        static_assert( Trait::kSlewRate == SlewRate::None, "Use SlewRate::None for analog pin" );
+        static_assert( Trait::kDriver == Driver::None, "Use Driver::None for analog pin" );
+        static_assert( Trait::kPull == Pull::None, "Use Pull::None for analog pin" );
+        static_assert( Trait::kEdgeDetection == EdgeDetection::None, "Use EdgeDetection::None for analog pin" );
+        static_assert( Trait::kEventAssertion == EventAssertion::None, "Use EventAssertion::None for analog pin" );
+        static_assert( Trait::kWakeUp == WakeUp::None, "Use WakeUp::None for analog pin" );
+        static_assert( Trait::kInversion == Inversion::None, "Use Inversion::None for analog pin" );
+        static_assert( Trait::kHysteresis == Hysteresis::None, "Use Hysteresis::None for analog pin" );
+        static_assert( Trait::kOutputBuffer == OutputBuffer::None, "Use OutputBuffer::None for analog pin" );
+        static_assert( Trait::kInputBuffer == InputBuffer::None, "Use InputBuffer::None for analog pin" );
+        static_assert( Trait::kEdgeDetIrq == EdgeDetIrq::None, "Use EdgeDetIrq::None for analog pin" );
+        static_assert( Trait::kDefaultState == DefaultState::None, "Use DefaultState::None for analog pin" );
         
         return true;
       }
         
         
-      if constexpr ( Trait::Type() == Type::Input )
+      if constexpr ( Trait::kType == Type::Input )
       {
-        if constexpr ( Trait::PortId() == PortId::AUX_IO )
-          static_assert( Trait::InputBuffer() == InputBuffer::Off, "For AUX IO InputBuffer::On will be ignored" );
+        if constexpr ( Trait::kPortId == PortId::AUX_IO )
+          static_assert( Trait::kInputBuffer == InputBuffer::Off, "For AUX IO InputBuffer::On will be ignored" );
                       
-        if constexpr ( ( Trait::PortId() == PortId::AUX_IO ) || ( Trait::PortId() == PortId::AON_CLK32K ) )
-          static_assert( Trait::Inversion() == Inversion::None, "Use Inversion::None for AON/AUX IO" );
+        if constexpr ( ( Trait::kPortId == PortId::AUX_IO ) || ( Trait::kPortId == PortId::AON_CLK32K ) )
+          static_assert( Trait::kInversion == Inversion::None, "Use Inversion::None for AON/AUX IO" );
         
-        static_assert( Trait::DefaultState() == DefaultState::None, "Use DefaultState::None for input pin" );
-        static_assert( Trait::CurrentMode() == CurrentMode::None, "Use CurrentMode::None for input pin" );
-        static_assert( Trait::SlewRate() == SlewRate::None, "Use SlewRate::None for input pin" );
-        static_assert( Trait::Driver() == Driver::None, "Use Driver::None for input pin" );
-        static_assert( Trait::Inversion() != Inversion::None, "Don't use Inversion::None for input pin" );
-        static_assert( Trait::Hysteresis() != Hysteresis::None, "Don't use Hysteresis::None for input pin" );
-        static_assert( Trait::OutputBuffer() == OutputBuffer::Off, "Use OutputBuffer::Off for input pin" );
-        static_assert( Trait::InputBuffer() != InputBuffer::None, "Don't use InputBuffer::None for input pin" );
+        static_assert( Trait::kDefaultState == DefaultState::None, "Use DefaultState::None for input pin" );
+        static_assert( Trait::kCurrentMode  == CurrentMode::None, "Use CurrentMode::None for input pin" );
+        static_assert( Trait::kSlewRate == SlewRate::None, "Use SlewRate::None for input pin" );
+        static_assert( Trait::kDriver == Driver::None, "Use Driver::None for input pin" );
+        static_assert( Trait::kInversion != Inversion::None, "Don't use Inversion::None for input pin" );
+        static_assert( Trait::kHysteresis != Hysteresis::None, "Don't use Hysteresis::None for input pin" );
+        static_assert( Trait::kOutputBuffer == OutputBuffer::Off, "Use OutputBuffer::Off for input pin" );
+        static_assert( Trait::kInputBuffer != InputBuffer::None, "Don't use InputBuffer::None for input pin" );
         
         return true;
       }
       
       
-      if constexpr ( Trait::Type() == Type::Output )
+      if constexpr ( Trait::kType == Type::Output )
       {
-        if constexpr ( Trait::CurrentMode() == CurrentMode::EC )
-          static_assert( IO::IsHighDriveCapable(), "This pin haven't high drive capable" );
+        if constexpr ( Trait::kCurrentMode == CurrentMode::EC )
+          static_assert( IO::kHighDriveCapable, "This pin haven't high drive capable" );
         
-        if constexpr (( Trait::PortId() == PortId::AUX_IO ) || ( Trait::PortId() == PortId::AON_CLK32K ) )
+        if constexpr (( Trait::kPortId == PortId::AUX_IO ) || ( Trait::kPortId == PortId::AON_CLK32K ) )
         {
-          static_assert( Trait::Inversion() == Inversion::None, "Use Inversion::None for AON/AUX IO" );
-          static_assert( Trait::Driver() == Driver::None, "Use Driver::None for AON/AUX output pin" );
+          static_assert( Trait::kInversion == Inversion::None, "Use Inversion::None for AON/AUX IO" );
+          static_assert( Trait::kDriver == Driver::None, "Use Driver::None for AON/AUX output pin" );
         }
         else
         {
-          static_assert( Trait::Inversion() != Inversion::None, "Don't use Inversion::None for non AON/AUX output pin" );
-          static_assert( Trait::Driver() != Driver::None, "Don't use Driver::None for non AON/AUX output pin" );
+          static_assert( Trait::kInversion != Inversion::None, "Don't use Inversion::None for non AON/AUX output pin" );
+          static_assert( Trait::kDriver != Driver::None, "Don't use Driver::None for non AON/AUX output pin" );
         }
         
-        static_assert( Trait::CurrentMode() != CurrentMode::None, "Don't use CurrentMode::None for output pin" );
-        static_assert( Trait::SlewRate() != SlewRate::None, "Don't use SlewRate::None for output pin" );
-        static_assert( Trait::Pull() == Pull::None, "Use Pull::None for output pin" );
-        static_assert( Trait::EdgeDetection() == EdgeDetection::None, "Use EdgeDetection::None for output pin" );
-        static_assert( Trait::EventAssertion() == EventAssertion::None, "Use EventAssertion::None for output pin" );
-        static_assert( Trait::WakeUp() == WakeUp::None, "Use WakeUp::None for output pin" );
-        static_assert( Trait::Hysteresis() == Hysteresis::None, "Use Hysteresis::None for output pin" );
-        static_assert( Trait:::OutputBuffer() != OutputBuffer::None, "Don't use OutputBuffer::None for output pin" );
-        static_assert( Trait::InputBuffer() == InputBuffer::Off, "Use InputBuffer::Off for output pin" );
-        static_assert( Trait::DefaultState() == DefaultState::None, "Use DefaultState::None for output pin" );
+        static_assert( Trait::kCurrentMode != CurrentMode::None, "Don't use CurrentMode::None for output pin" );
+        static_assert( Trait::kSlewRate != SlewRate::None, "Don't use SlewRate::None for output pin" );
+        static_assert( Trait::kPull == Pull::None, "Use Pull::None for output pin" );
+        static_assert( Trait::kEdgeDetection == EdgeDetection::None, "Use EdgeDetection::None for output pin" );
+        static_assert( Trait::kEventAssertion == EventAssertion::None, "Use EventAssertion::None for output pin" );
+        static_assert( Trait::kWakeUp == WakeUp::None, "Use WakeUp::None for output pin" );
+        static_assert( Trait::kHysteresis == Hysteresis::None, "Use Hysteresis::None for output pin" );
+        static_assert( Trait::kOutputBuffer != OutputBuffer::None, "Don't use OutputBuffer::None for output pin" );
+        static_assert( Trait::kInputBuffer == InputBuffer::Off, "Use InputBuffer::Off for output pin" );
+        static_assert( Trait::kDefaultState == DefaultState::None, "Use DefaultState::None for output pin" );
         
         return true;
       }
@@ -130,24 +130,30 @@ namespace mpp::gpio
     
     
     
-    template < CurrentMode current_mode, Inversion inv >
+    /*! 
+	  Inherit your LedTrait from this struct. 
+      Child must contain fields: kInversion, kCurrentMode.
+	*/
     struct LedTrait final {
-      constexpr inline static auto Type()           noexcept(true) { return Type::Output; }
-      constexpr inline static auto PortId()         noexcept(true) { return PortId::GPIO; }
-      constexpr inline static auto CurrentMode()    noexcept(true) { return current_mode; }
-      constexpr inline static auto Pull()           noexcept(true) { return Pull::None; }
-      constexpr inline static auto SlewRate()       noexcept(true) { return SlewRate::Normal; }
-      constexpr inline static auto Driver()         noexcept(true) { return Driver::Normal; }
-      constexpr inline static auto EdgeDetection()  noexcept(true) { return EdgeDetection::None; }
-      constexpr inline static auto WakeUp()         noexcept(true) { return WakeUp::None; }
-      constexpr inline static auto EventAssertion() noexcept(true) { return EventAssertion::None; }
-      constexpr inline static auto DefaultState()   noexcept(true) { return DefaultState::Low; }
-      constexpr inline static auto Inversion()      noexcept(true) { return inv; }
-      constexpr inline static auto Hysteresis()     noexcept(true) { return Hysteresis::None; }
-      constexpr inline static auto InputBuffer()    noexcept(true) { return InputBuffer::Off; }
-      constexpr inline static auto OutputBuffer()   noexcept(true) { return OutputBuffer::On; }
-      constexpr inline static auto DefaultState()   noexcept(true) { return DefaultState::Off; }
-      constexpr inline static auto EdgeDetIrq()     noexcept(true) { return EdgeDetIrq::None; }
+      constexpr static Type kType = Type::Output;
+      constexpr static PortId kPortId = PortId::GPIO;
+      constexpr static Pull kPull = Pull::None;
+      constexpr static SlewRate kSlewRate = SlewRate::Normal;
+      constexpr static Driver kDriver = Driver::Normal;
+      constexpr static EdgeDetection kEdgeDetection = EdgeDetection::None;
+      constexpr static WakeUp kWakeUp = WakeUp::None;
+      constexpr static EventAssertion kEventAssertion = EventAssertion::None;
+      constexpr static DefaultState kDefaultState = DefaultState::Low;
+      constexpr static Hysteresis kHysteresis = Hysteresis::None;
+      constexpr static InputBuffer kInputBuffer = InputBuffer::Off;
+      constexpr static OutputBuffer kOutputBuffer = OutputBuffer::On;
+      constexpr static DefaultState kDefaultState = DefaultState::Off;
+      constexpr static EdgeDetIrq kEdgeDetIrq = EdgeDetIrq::None;
+		
+      /* 
+        constexpr static CurrentMode kCurrentMode = current_mode;
+        constexpr static Inversion kInversion = Inversion::Off, On;
+	  */ 
     };
     
     
@@ -165,25 +171,25 @@ namespace mpp::gpio
       
         
       public:
-        static constexpr std::uint32_t kPin                = IO::Pin();
-        static constexpr std::uint32_t kAuxPin             = IO::AuxPin();
-        static constexpr bool kAnalogCapable               = IO::IsAnalogCapable();
-        static constexpr bool kHighDriveCapable            = IO::IsHighDriveCapable();
-        static constexpr Type kType                        = Trait::Type();
-        static constexpr PortId kPortId                    = Trait::PortId();
-        static constexpr Pull kPull                        = Trait::Pull();
-        static constexpr CurrentMode kCurrentMode          = Trait::CurrentMode();
-        static constexpr SlewRate kSlewRate                = Trait::SlewRate();
-        static constexpr Driver kDriver                    = Trait::Driver();
-        static constexpr EdgeDetection kEdgeDetection      = Trait::EdgeDetection();
-        static constexpr WakeUp kWakeUp                    = Trait::WakeUp();
-        static constexpr EventAssertion kEventAssertion    = Trait::EventAssertion();
-        static constexpr EdgeDetIrq kEdgeDetIrq            = Trait::EdgeDetIrq();
-        static constexpr Inversion kInversion              = Trait::Inversion();
-        static constexpr Hysteresis kHysteresis            = Trait::Hysteresis();
-        static constexpr InputBuffer kInputBufferDefault   = Trait::InputBuffer();
-        static constexpr OutputBuffer kOutputBufferDefault = Trait::OutputBuffer();
-        static constexpr DefaultState kDefaultState        = Trait::DefaultState();
+        static constexpr std::uint32_t kPin                = IO::kPin;
+        static constexpr std::uint32_t kAuxPin             = IO::kAuxPin;
+        static constexpr bool kAnalogCapable               = IO::kAnalogCapable;
+        static constexpr bool kHighDriveCapable            = IO::kHighDriveCapable;
+        static constexpr Type kType                        = Trait::kType;
+        static constexpr PortId kPortId                    = Trait::kPortId;
+        static constexpr Pull kPull                        = Trait::kPull;
+        static constexpr CurrentMode kCurrentMode          = Trait::kCurrentMode;
+        static constexpr SlewRate kSlewRate                = Trait::kSlewRate;
+        static constexpr Driver kDriver                    = Trait::kDriver;
+        static constexpr EdgeDetection kEdgeDetection      = Trait::kEdgeDetection;
+        static constexpr WakeUp kWakeUp                    = Trait::kWakeUp;
+        static constexpr EventAssertion kEventAssertion    = Trait::kEventAssertion;
+        static constexpr EdgeDetIrq kEdgeDetIrq            = Trait::kEdgeDetIrq;
+        static constexpr Inversion kInversion              = Trait::kInversion;
+        static constexpr Hysteresis kHysteresis            = Trait::kHysteresis;
+        static constexpr InputBuffer kInputBufferDefault   = Trait::kInputBuffer;
+        static constexpr OutputBuffer kOutputBufferDefault = Trait::kOutputBuffer;
+        static constexpr DefaultState kDefaultState        = Trait::kDefaultState;
         
         inline constexpr static auto Init() noexcept(true) 
         {

@@ -86,7 +86,6 @@ namespace mpp::flash
     class Flash final
     {
       private:
-		template< class Trait, class PowerProfile >
         constexpr bool IsValidTrait() noexcept(true) {
 		  static_assert( ( (Trait::kBankNum == 1u) || (Trait::kBankNum == 2u) ), "Bank number must be equal 1 or 2" );
           static_assert( ( Trait::kSectorInBank <= kFlashMaxSectorInBank ), "kSectorInBank has incorrect value" );
@@ -97,10 +96,10 @@ namespace mpp::flash
           return true;
 		}
 		
-        static_assert( IsTraitValid < Trait, PowerProfile >(), "Incorrect trait" );
+        static_assert( IsValidTrait(), "Incorrect trait" );
 				
       public:
-        constexpr static std::uitn32_t kStartAddress = FLASH_BASE;
+        constexpr static std::uint32_t kStartAddress = FLASH_BASE;
         constexpr static std::uint32_t kEndAddress   = FLASH_END;
         constexpr static std::uint32_t kBankNum      = Trait::kBankNum;
         constexpr static std::uint32_t kSectorInBank = Trait::kSectorInBank;
@@ -109,17 +108,17 @@ namespace mpp::flash
         constexpr static bool kPrefetch = Trait::KPrefetch;
         constexpr static bool kICache   = Trait::kICache;
         constexpr static bool kDCache   = Trait::kDCache;
-        constexpr static std::uitn32_t kWaitState = GetWaitState( Trait::kClockFrequencyHz , PowerProfile::kVoltageMin );
+        constexpr static std::uint32_t kWaitState = GetWaitState( Trait::kClockFrequencyHz , PowerProfile::kVoltageMin );
                 
-        constexpr std::uint32_t kAcrMask = ( kWaitState << FLASH_ACR_LATENCY_Pos )   |
+        constexpr static std::uint32_t kAcrMask = ( kWaitState << FLASH_ACR_LATENCY_Pos )   |
                                            ( ( kPrefetch ) ? FLASH_ACR_PRFTEN : 0u ) |
                                            ( ( kICache ) ? FLASH_ACR_ICEN : 0u )     |
                                            ( ( kDCache ) ? FLASH_ACR_DCEN : 0u );
         
-        constexpr std::uint32_t kAcrClearMask = ~( FLASH_ACR_LATENCY_Msk | FLASH_ACR_ICEN_Msk | FLASH_ACR_DCEN_Msk | FLASH_ACR_DCEN_Msk );
+        constexpr static std::uint32_t kAcrClearMask = ~( FLASH_ACR_LATENCY_Msk | FLASH_ACR_ICEN_Msk | FLASH_ACR_DCEN_Msk | FLASH_ACR_DCEN_Msk );
         
-        constexpr std::uint32_t kCrMask  = ( static_cast< std::uitn32_t >(kParallelismSize) << FLASH_CR_PSIZE_Pos );
-        constexpr std::uint32_t kCrClearMask = ~FLASH_CR_PSIZE_Msk;
+        constexpr static std::uint32_t kCrMask  = ( static_cast< std::uint32_t >(kParallelismSize) << FLASH_CR_PSIZE_Pos );
+        constexpr static std::uint32_t kCrClearMask = ~FLASH_CR_PSIZE_Msk;
         
         
         inline static void Init() {
@@ -168,7 +167,7 @@ namespace mpp::flash
             static_assert( ( (Region::kSectorLast - kFlashMaxSectorInBank ) < kSectorInBank ), "Incorrect sectors number" );
             
           if constexpr ( Region::kSectorFirst >= kFlashMaxSectorInBank ) 
-            static_assert( ( Region::kSectorFirst - kFlashMaxSectorInBank ) < kSectorInBank ), "Incorrect sectors number" );
+            static_assert( ( ( Region::kSectorFirst - kFlashMaxSectorInBank ) < kSectorInBank ), "Incorrect sectors number" );
                     
           while( IsBusy() );
           Unlock();                
@@ -202,12 +201,12 @@ namespace mpp::flash
           while( IsBusy() );
           Unlock(); 
           
-          FLASH->CR |= FLASH_CR_EOPIE
+          FLASH->CR |= FLASH_CR_EOPIE;
 
           if constexpr (tBankId == 1)
             FLASH->CR |= FLASH_CR_MER;
           else
-            FLASH->CR |= FLASH_CR_MER1;
+            FLASH->CR |= 1ul << 15u;
           
           FLASH->CR |= FLASH_CR_STRT;   
             
@@ -226,7 +225,7 @@ namespace mpp::flash
           if (!IsReadProtected())
           {
             //FLASH->OPTCR = OPTCR | (0x00A5 << FLASH_OPTCR_RDP_Pos);
-            *(volatile std::uint8_t*) 0x40023C15U = OB_RDP_LEVEL_1;
+            *(volatile std::uint8_t*) 0x40023C15U = 0x55; // Read protection level 1
 
             //FLASH->OPTCR |= FLASH_OPTCR_OPTSTRT;
             *(volatile std::uint8_t *) 0x40023C14U |= FLASH_OPTCR_OPTSTRT;

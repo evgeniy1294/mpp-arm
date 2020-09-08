@@ -219,15 +219,15 @@ namespace mpp::clk
 		
         constexpr static std::uint32_t kAhbClkHz = kSysClkHz / kAhbPrescaler;
         constexpr static std::uint32_t kSysTickClkHz = kAhbClkHz / kSystickPrescaler;
-        static_assert( kAhbClk >= 14'200'000u, "AHB Clock must be greater 14.2MHz" );  
+        static_assert( kAhbClkHz >= 14'200'000u, "AHB Clock must be greater 14.2MHz" );  
         
         constexpr static std::uint32_t kApb1ClkHz = kAhbClkHz / kApb1Prescaler;
         constexpr static std::uint32_t kApb1TimClkHz = (kApb1Prescaler == 1u) ? kApb1ClkHz : kApb1ClkHz * 2u;  
-        static_assert( kApb1Clk <= 42'000'000u, "APB1 Clock must be less or equal 42MHz" );
+        static_assert( kApb1ClkHz <= 42'000'000u, "APB1 Clock must be less or equal 42MHz" );
         
         constexpr static std::uint32_t kApb2ClkHz = kAhbClkHz / kApb2Prescaler;
         constexpr static std::uint32_t kApb2TimClkHz = (kApb2Prescaler == 1u) ? kApb2ClkHz : kApb2ClkHz * 2u;  
-        static_assert( kApb2Clk <= 84'000'000u, "APB2 Clock must be less or equal 84MHz" );
+        static_assert( kApb2ClkHz <= 84'000'000u, "APB2 Clock must be less or equal 84MHz" );
         
         
         constexpr static std::uint32_t k48ClkHz = []() -> std::uint32_t {
@@ -284,7 +284,7 @@ namespace mpp::clk
         else
           return kLsiFrequencyHz;
       } ();
-      static_assert( kRtcClk <= 1'000'000u, "RTC clock must be less or equal 1MHz" );
+      static_assert( kRtcClkHz <= 1'000'000u, "RTC clock must be less or equal 1MHz" );
 
 		
 		
@@ -384,7 +384,7 @@ namespace mpp::clk
 		  
         RCC->PLLCFGR = kPllcfgrInit;
         if constexpr (kPlli2sInit != 0u)
-          RCC->PLLI2S = kPlli2sInit; 
+          RCC->PLLI2SCFGR = kPlli2sInit; 
 		  
         RCC->CR = kCrInit1;
 		  
