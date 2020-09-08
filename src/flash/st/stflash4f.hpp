@@ -87,17 +87,17 @@ namespace mpp::flash
     {
       private:
         constexpr bool IsValidTrait() noexcept(true) {
-		  static_assert( ( (Trait::kBankNum == 1u) || (Trait::kBankNum == 2u) ), "Bank number must be equal 1 or 2" );
+          static_assert( ( (Trait::kBankNum == 1u) || (Trait::kBankNum == 2u) ), "Bank number must be equal 1 or 2" );
           static_assert( ( Trait::kSectorInBank <= kFlashMaxSectorInBank ), "kSectorInBank has incorrect value" );
-			
+            
           if constexpr ( PowerProfile::kVoltageMin < 2.1f )
             static_assert( (!Trait::KPrefetch), "Turn off flash prefetch for low voltage ( < 2.1V )" );
-			
+            
           return true;
-		}
-		
+        }
+        
         static_assert( IsValidTrait(), "Incorrect trait" );
-				
+                
       public:
         constexpr static std::uint32_t kStartAddress = FLASH_BASE;
         constexpr static std::uint32_t kEndAddress   = FLASH_END;
