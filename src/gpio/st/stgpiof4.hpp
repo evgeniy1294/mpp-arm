@@ -50,14 +50,14 @@ namespace mpp::gpio
       
       
     /*! 
-	  Inherit your OutputTrait from this struct. 
+      Inherit your OutputTrait from this struct. 
       Child must contain fields: kSpeed, kDriver, kPull, kInversion, kDefaultState.
-	*/
+    */
     struct OutputTrait {
       constexpr static Type kType        = Type::Output; 
       constexpr static std::uint32_t kAf = 0u;
       
-	  /*
+      /*
         constexpr static Speed kSpeed = Speed::Low, Medium, High, VeryHigh;
         constexpr static Driver kDriver = Driver::PushPull, OpenDrain; 
         constexpr static Pull kPull = Pull::Floating, Up, Down;
@@ -68,15 +68,15 @@ namespace mpp::gpio
       
       
     /*! 
-	  Inherit your LedTrait from this struct. 
+      Inherit your LedTrait from this struct. 
       Child must contain fields: kInversion.
-	*/
+    */
     struct LedTrait: OutputTrait {
       constexpr static Driver kDriver = Driver::PushPull;
       constexpr static Pull kPull = Pull::Floating;
       constexpr static Speed kSpeed = Speed::Low;
       constexpr static DefaultState kDefaultState = DefaultState::Low;    
-		
+        
       /*
         constexpr static Inversion kInversion = Inversion::Off, On;
       */
@@ -84,17 +84,17 @@ namespace mpp::gpio
       
     
     /*! 
-	  Inherit your InputTrait from this struct. 
+      Inherit your InputTrait from this struct. 
       Child must contain fields: kPull, kInversion.
-	*/ 
+    */ 
     struct InputTrait {
       constexpr static Type kType = Type::Input; 
       constexpr static Driver kDriver = Driver::None;
       constexpr static DefaultState kDefaultState = DefaultState::None;   
       constexpr static std::uint32_t kAf = 0ul;
       constexpr static Speed kSpeed = Speed::None;
-		
-	  /*
+        
+      /*
         constexpr static Pull kPull = Pull::Floating, Up, Down;
         constexpr static Inversion kInversion = Inversion::Off, On;
       */ 
@@ -291,9 +291,9 @@ namespace mpp::gpio
     template< class... IO > class IoGroup final
     {
       private:
-		template < class T, class... Ts >
+        template < class T, class... Ts >
         constexpr static Port ExtractPort() { return T::kPort; }
-			
+            
         template < class T, class... Ts >
         constexpr static bool IsValidIo() { return ( ((static_cast<std::uint32_t>(T::kPort) == static_cast<std::uint32_t>(Ts::kPort)) && (T::kPin != Ts::kPin)) && ... ); }
 
@@ -309,7 +309,7 @@ namespace mpp::gpio
         static_assert(IsValidGroup<IO...>(), "All <kPort> fields must be equal, all <kPin> fields must be unique");
    
       public:
-		static constexpr Port kPort = ExtractPort< IO... >();
+        static constexpr Port kPort = ExtractPort< IO... >();
         constexpr static std::uint32_t kModerMask        = ( ... | IO::kModerMask );
         constexpr static std::uint32_t kModerClearMask   = ( ... & IO::kModerClearMask );
         constexpr static std::uint32_t kPupdrMask        = ( ... | IO::kPupdrMask );

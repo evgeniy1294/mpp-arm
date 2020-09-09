@@ -131,9 +131,9 @@ namespace mpp::gpio
     
     
     /*! 
-	  Inherit your LedTrait from this struct. 
+      Inherit your LedTrait from this struct. 
       Child must contain fields: kInversion, kCurrentMode.
-	*/
+    */
     struct LedTrait final {
       constexpr static Type kType = Type::Output;
       constexpr static PortId kPortId = PortId::GPIO;
@@ -149,11 +149,11 @@ namespace mpp::gpio
       constexpr static OutputBuffer kOutputBuffer = OutputBuffer::On;
       constexpr static DefaultState kDefaultState = DefaultState::Off;
       constexpr static EdgeDetIrq kEdgeDetIrq = EdgeDetIrq::None;
-		
+        
       /* 
         constexpr static CurrentMode kCurrentMode = current_mode;
         constexpr static Inversion kInversion = Inversion::Off, On;
-	  */ 
+      */ 
     };
     
     

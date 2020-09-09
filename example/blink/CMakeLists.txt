@@ -5,15 +5,7 @@ project(blink CXX C ASM)
 
 
 # Project targets {{{
-  add_executable("blink_stm32f407_disco.elf" ${CMAKE_CURRENT_LIST_DIR}/src/stm32f407_disco.cpp)
-# }}}
-
-
-
-
-
-# STM32F407-DISCO Compile Definitions {{{
-  target_compile_definitions("blink_stm32f407_disco.elf" PUBLIC "TARGET_HEADER_FILE=<stm32f407_disco.hpp>")
+  add_executable("blink_stm32f407_disco.elf")
 # }}}
 
 
@@ -34,8 +26,6 @@ project(blink CXX C ASM)
 
 
 
-
-
 # Target Compile Definitions {{{
   add_library("common_interface_lib" INTERFACE)
   target_compile_options    ("common_interface_lib"
@@ -48,10 +38,16 @@ project(blink CXX C ASM)
   target_compile_options("common_interface_lib" INTERFACE "$<$<COMPILE_LANGUAGE:CXX>:-specs=nano.specs>")
   target_compile_options("common_interface_lib" INTERFACE "$<$<COMPILE_LANGUAGE:CXX>:-Os>")
 
-  target_link_options("common_interface_lib" INTERFACE "-T${CMAKE_CURRENT_LIST_DIR}/memory.ld" "-Wl,-Map=blink.map" "-Wl,--cref")
-  target_link_options("common_interface_lib" INTERFACE "-mcpu=cortex-m4" "-specs=nosys.specs" "-specs=nano.specs" "-mfloat-abi=hard" "-mfpu=fpv4-sp-d16")
+  # stm32f407g-disco {{{
+    target_link_options  ("blink_stm32f407_disco.elf" PRIVATE "-T${CMAKE_CURRENT_LIST_DIR}/board/stm32f407g_disco/memory.ld" "-Wl,-Map=blink_stm32f407_disco.map" "-Wl,--cref")
+    target_link_options  ("blink_stm32f407_disco.elf" PRIVATE "-mcpu=cortex-m4" "-specs=nosys.specs" "-specs=nano.specs" "-mfloat-abi=hard" "-mfpu=fpv4-sp-d16")
+    target_link_libraries("blink_stm32f407_disco.elf" PRIVATE "common_interface_lib")
+  # }}}
   
-  target_link_libraries("blink_stm32f407_disco.elf"  PUBLIC "common_interface_lib")
+  # launchxl_cc1352p {{{
+
+  # }}} 
+  
 # }}}
 
 
@@ -64,9 +60,19 @@ project(blink CXX C ASM)
   target_sources("common_interface_lib" INTERFACE "${CMAKE_CURRENT_LIST_DIR}/src/main.cpp"
                                                   "${CMAKE_CURRENT_LIST_DIR}/../../src/core/cortex_m.cpp")
   
-  target_include_directories ("blink_stm32f407_disco.elf"
-                               PRIVATE "${CMAKE_CURRENT_LIST_DIR}/src")
-							   
+  # stm32f407g-disco {{{
+    target_include_directories ("blink_stm32f407_disco.elf"
+                                 PRIVATE "${CMAKE_CURRENT_LIST_DIR}/src"
+								         "${CMAKE_CURRENT_LIST_DIR}/board/stm32f407g_disco")
+								 
+    target_sources("blink_stm32f407_disco.elf"
+                    PRIVATE "${CMAKE_CURRENT_LIST_DIR}/board/stm32f407g_disco/startup_gcc.cpp")
+  # }}}	
+  
+  
+  # launchxl_cc1352p {{{
+
+  # }}} 
   
 # }}}
 
@@ -74,21 +80,26 @@ project(blink CXX C ASM)
 
 
 # Libraries {{{
-  if(DEFINED ENV{CMSIS_STM32F4_PATH})
-    target_include_directories ("blink_stm32f407_disco.elf"
-                                PRIVATE "$ENV{CMSIS_STM32F4_PATH}")
-  endif()
+
+  # stm32f407g-disco {{{
+  
+    if(DEFINED ENV{CMSIS_STM32F4_PATH})
+      target_include_directories ("blink_stm32f407_disco.elf"
+                                  PRIVATE "$ENV{CMSIS_STM32F4_PATH}")
+    endif()
   
   
-  if(DEFINED ENV{CMSIS_CORE_PATH})
-    target_include_directories ("blink_stm32f407_disco.elf"
-                                 PRIVATE "$ENV{CMSIS_CORE_PATH}")
-  endif()
+    if(DEFINED ENV{CMSIS_CORE_PATH})
+      target_include_directories ("blink_stm32f407_disco.elf"
+                                   PRIVATE "$ENV{CMSIS_CORE_PATH}")
+    endif()
   
-  if(DEFINED ENV{LIBMPP_PATH})
-    target_include_directories ("blink_stm32f407_disco.elf"
-                                 PRIVATE "$ENV{LIBMPP_PATH}/include")
-  endif()
+    if(DEFINED ENV{LIBMPP_PATH})
+      target_include_directories ("blink_stm32f407_disco.elf"
+                                   PRIVATE "$ENV{LIBMPP_PATH}/include")
+    endif()
+	
+  # }}} 
   
 # }}}
 
@@ -97,10 +108,14 @@ project(blink CXX C ASM)
 
 
 #Post build command {{{
- add_custom_command(TARGET blink_stm32f407_disco.elf
-                    POST_BUILD
-                      COMMAND ${CMAKE_OBJCOPY} -Oihex   blink_stm32f407_disco.elf blink_stm32f407_disco.hex
-                      COMMAND ${CMAKE_OBJCOPY} -Obinary blink_stm32f407_disco.elf blink_stm32f407_disco.bin)
+
+ # stm32f407g-disco {{{
+   add_custom_command(TARGET blink_stm32f407_disco.elf
+                        POST_BUILD
+                          COMMAND ${CMAKE_OBJCOPY} -Oihex   blink_stm32f407_disco.elf blink_stm32f407_disco.hex
+                          COMMAND ${CMAKE_OBJCOPY} -Obinary blink_stm32f407_disco.elf blink_stm32f407_disco.bin)
+  #}}}
+  
 #}}}
 
 
