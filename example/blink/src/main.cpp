@@ -4,13 +4,7 @@ mpp::utils::Timer< board::Systick > tim;
 mpp::utils::Timer< board::ClockCounter > dwt;
 
 int main() {
-  board::Systick::Init();
-  board::ClockCounter::Init();
-
-  RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
-  board::Leds::Init();  
-  board::Leds::Set();
-
+  board::Init();
   tim.Start(100);
     
   while(1){

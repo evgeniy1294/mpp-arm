@@ -10,11 +10,11 @@
 //____________________INCLUDE_____________________//
 #include <cstdint>
 
-
-#ifndef (CC1352R)||(CC1352P)||(CC2652R)||(CC2652P)||(CC2652RB)
+/* 
+#if !defined (CC1352R)||(CC1352P)||(CC2652R)||(CC2652P)||(CC2652RB)
   #error "You must define supported MCU"
 #endif
-
+*/
 
 //_____________________CMSIS______________________//
 struct GPIO_TypeDef
@@ -1763,7 +1763,8 @@ namespace mpp::gpio
   {
     enum class PortId
     {
-      GPIO          = 0u,        //!< Default GPIO usage
+      DIO          = 0u,        //!< Default GPIO usage
+		
       // 1-6 Reserved
       AON_CLK32K    = 7u,        //!< AON 32-kHz clock pin
       AUX_IO        = 8u,        //!< AUX Domain I/O pin
@@ -1819,7 +1820,7 @@ namespace mpp::gpio
     {
       static_assert(::std::is_same_v< IO, ::std::decay_t< decltype(IO()) > >);
 
-      #ifdef (CC1352R)
+      #if defined (CC1352R)
         return (IO::kPin > 2)&&(IO::kPin < 31);
       #elif  defined (CC1352P)
         return (IO::kPin > 4)&&(IO::kPin < 31);
@@ -1846,14 +1847,6 @@ namespace mpp::gpio
       constexpr static bool kHighDriveCapable = false;   
     };
     
-    
-    struct DIO28 final
-    {
-      constexpr static std::uint32_t kPin     = 28u;
-      constexpr static std::uint32_t kAuxPin  = 21u;
-      constexpr static bool kAnalogCapable    = true;  
-      constexpr static bool kHighDriveCapable = false;   
-    };
     
     
     struct DIO28 final

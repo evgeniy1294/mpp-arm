@@ -12,7 +12,7 @@
 #include <cstdint>
 #include <type_traits>
 
-#ifdef (CC1352R)||(CC1352P)||(CC2652R)||(CC2652P)||(CC2652RB)
+#if defined (CC1352R)||(CC1352P)||(CC2652R)||(CC2652P)||(CC2652RB)
   #include "spec/cc26x2.hpp"
 #else
   #error "You must define supported MCU"
@@ -23,7 +23,6 @@ namespace mpp::gpio
   inline namespace cc26x2
   {
     enum class Type          { Input, Output, Analog };
-    enum class DefaultState  { None, High, Low };
     enum class CurrentMode   { LC_AUTO = 0x0ul, LC_MIN = 0x1ul, LC_MED = 0x2ul, LC_MAX = 0x3ul, HC = 0x4ul, EC = 0x8ul, None };
     enum class Pull          { Down = 0x1ul, Up = 0x2ul, None = 0x3ul };
     enum class SlewRate      { Normal = 0x0ul, Reduced = 0x1ul, None };
@@ -35,10 +34,10 @@ namespace mpp::gpio
     enum class InputBuffer   { Off = 0x0ul, On = 0x1ul, None };
     enum class OutputBuffer  { Off = 0x0ul, On = 0x1ul, None };
     enum class EdgeDetIrq    { Off = 0x0ul, On = 0x1ul, None };
-    enum class DefaultState  { High = 0x01ul, Low = 0x00, None };
+    enum class DefaultState  { None, High, Low };
     enum class EventAssertion
     { 
-      None       = 0x0ul;
+      None       = 0x0ul,
       MCU_WakeUp = IOC_IOCFG_IOEV_MCU_WU_EN, 
       RTC        = IOC_IOCFG_IOEV_RTC_EN, 
       AON_PROG0  = IOC_IOCFG_IOEV_AON_PROG0_EN,
@@ -49,7 +48,7 @@ namespace mpp::gpio
     inline constexpr EventAssertion operator| (EventAssertion a, EventAssertion b) { return static_cast<EventAssertion>( static_cast<uint32_t>(a) | static_cast<uint32_t>(b) ); }
     
     
-    template< class IO, class Trait > constexpr bool IsValidTrait noexcept(true) ()
+    template< class IO, class Trait > constexpr bool IsValidTrait() noexcept(true) 
     {
       if constexpr ( Trait::kType == Type::Analog )
       {
@@ -75,21 +74,24 @@ namespace mpp::gpio
         
         
       if constexpr ( Trait::kType == Type::Input )
-      {
-        if constexpr ( Trait::kPortId == PortId::AUX_IO )
-          static_assert( Trait::kInputBuffer == InputBuffer::Off, "For AUX IO InputBuffer::On will be ignored" );
-                      
+      {               
         if constexpr ( ( Trait::kPortId == PortId::AUX_IO ) || ( Trait::kPortId == PortId::AON_CLK32K ) )
-          static_assert( Trait::kInversion == Inversion::None, "Use Inversion::None for AON/AUX IO" );
+		{
+          static_assert( Trait::kInputBuffer == InputBuffer::Off, "For AUX IO InputBuffer::On will be ignored, use InputBuffer::Off" );
+          static_assert( Trait::kInversion == Inversion::Off, "Use Inversion::None for AON/AUX IO" );
+		}
+		else
+		{
+          static_assert( Trait::kInversion != Inversion::None, "Don't use Inversion::None for input pin" );
+          static_assert( Trait::kInputBuffer != InputBuffer::None, "Don't use InputBuffer::None for input pin" );
+		} 
         
         static_assert( Trait::kDefaultState == DefaultState::None, "Use DefaultState::None for input pin" );
         static_assert( Trait::kCurrentMode  == CurrentMode::None, "Use CurrentMode::None for input pin" );
         static_assert( Trait::kSlewRate == SlewRate::None, "Use SlewRate::None for input pin" );
         static_assert( Trait::kDriver == Driver::None, "Use Driver::None for input pin" );
-        static_assert( Trait::kInversion != Inversion::None, "Don't use Inversion::None for input pin" );
         static_assert( Trait::kHysteresis != Hysteresis::None, "Don't use Hysteresis::None for input pin" );
         static_assert( Trait::kOutputBuffer == OutputBuffer::Off, "Use OutputBuffer::Off for input pin" );
-        static_assert( Trait::kInputBuffer != InputBuffer::None, "Don't use InputBuffer::None for input pin" );
         
         return true;
       }
@@ -120,7 +122,7 @@ namespace mpp::gpio
         static_assert( Trait::kHysteresis == Hysteresis::None, "Use Hysteresis::None for output pin" );
         static_assert( Trait::kOutputBuffer != OutputBuffer::None, "Don't use OutputBuffer::None for output pin" );
         static_assert( Trait::kInputBuffer == InputBuffer::Off, "Use InputBuffer::Off for output pin" );
-        static_assert( Trait::kDefaultState == DefaultState::None, "Use DefaultState::None for output pin" );
+        static_assert( Trait::kDefaultState != DefaultState::None, "Don't use DefaultState::None for output pin" );
         
         return true;
       }
@@ -134,9 +136,9 @@ namespace mpp::gpio
       Inherit your LedTrait from this struct. 
       Child must contain fields: kInversion, kCurrentMode.
     */
-    struct LedTrait final {
+    struct LedTrait {
       constexpr static Type kType = Type::Output;
-      constexpr static PortId kPortId = PortId::GPIO;
+      constexpr static PortId kPortId = PortId::DIO;
       constexpr static Pull kPull = Pull::None;
       constexpr static SlewRate kSlewRate = SlewRate::Normal;
       constexpr static Driver kDriver = Driver::Normal;
@@ -147,7 +149,6 @@ namespace mpp::gpio
       constexpr static Hysteresis kHysteresis = Hysteresis::None;
       constexpr static InputBuffer kInputBuffer = InputBuffer::Off;
       constexpr static OutputBuffer kOutputBuffer = OutputBuffer::On;
-      constexpr static DefaultState kDefaultState = DefaultState::Off;
       constexpr static EdgeDetIrq kEdgeDetIrq = EdgeDetIrq::None;
         
       /* 
@@ -198,7 +199,7 @@ namespace mpp::gpio
           constexpr std::uint32_t EDGE_DET = ( kEdgeDetIrq != EdgeDetIrq::None ) ?  (static_cast< std::uint32_t >(kEdgeDetIrq) << IOC_IOCFG_EDGE_IRQ_EN_BITN) : 0ul;
           constexpr std::uint32_t INV      = ( kInversion != Inversion::None ) ? (static_cast< std::uint32_t >(kInversion) << 24ul) : 0ul;
           constexpr std::uint32_t DRV      = ( kDriver != Driver::None ) ? (static_cast< std::uint32_t >(kDriver) << 25ul) : 0ul;
-          constexpr std::uint32_t IE       = ( kInputBufferDefault != InputBuffer::None ) ? (static_cast< std::uint32_t >(kInputDefault) << IOC_IOCFG_IE_BITN) : 0ul;
+          constexpr std::uint32_t IE       = ( kInputBufferDefault != InputBuffer::None ) ? (static_cast< std::uint32_t >(kInputBufferDefault) << IOC_IOCFG_IE_BITN) : 0ul;
           constexpr std::uint32_t HYST     = ( kHysteresis != Hysteresis::None ) ? (static_cast< std::uint32_t >(kHysteresis) << IOC_IOCFG_HYST_EN_BITN) : 0ul;
           
           constexpr std::uint32_t iocfg = static_cast< std::uint32_t >(kPortId) |
@@ -210,7 +211,7 @@ namespace mpp::gpio
             
           IOC->IOCFG[kPin] = iocfg;
           
-          if constexpr (kOutputBufferDefault == OutputBufferDefault::On)
+          if constexpr (kOutputBufferDefault == OutputBuffer::On)
             GPIO->DOE  |= 1 << kPin;
           
           if constexpr (kDefaultState != DefaultState::None)
@@ -228,25 +229,25 @@ namespace mpp::gpio
         inline static auto Set() noexcept(true) 
         { 
           static_assert((kType == Type::Output), "This gpio not output, check 'Type' field");
-          GPIO->DOUTSET = 1 << pin;
+          GPIO->DOUTSET = 1 << kPin;
         }
         
         inline static auto Reset() noexcept(true)
         {
           static_assert((kType == Type::Output), "This gpio not output, check 'Type' field");
-          GPIO->DOUTCLR = 1 << pin;
+          GPIO->DOUTCLR = 1 << kPin;
         }
       
         inline static auto Toggle() noexcept(true)
         {
           static_assert((kType == Type::Output), "This gpio not output, check 'Type' field");
-          GPIO->DOUTTGL = 1 << pin;
+          GPIO->DOUTTGL = 1 << kPin;
         }
       
         inline static auto Read() noexcept(true)
         {
           static_assert((kType == Type::Input), "This gpio not input, check 'Type' field");
-          return static_cast<bool>(GPIO->DIN & (1 << pin));
+          return static_cast<bool>(GPIO->DIN & (1 << kPin));
         }
     };
   } // inline namespace 

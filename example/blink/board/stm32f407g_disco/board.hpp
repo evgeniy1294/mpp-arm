@@ -1,7 +1,7 @@
 /**
   ***********************************************************
   @author Evgenii Fedoseev
-  @file   /src/stm32f407_disco.hpp
+  @file   /board/stm32f407g_disco/board.hpp
   @brief  Compatible board stm32f407-discovery 
   ***********************************************************
 **/
@@ -41,5 +41,9 @@ namespace board
   using LedGreen  = mpp::gpio::Gpio < mpp::gpio::PD12, LedTrait >;  
 
   using Leds = mpp::gpio::IoGroup < LedBlue, LedRed, LedOrange, LedGreen >;
+	
+	
+  // Specific function 
+  void Init();
     
 } // namespace board
