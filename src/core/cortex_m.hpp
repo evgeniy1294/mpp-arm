@@ -10,7 +10,7 @@
 
 //____________________INCLUDE_____________________//
 #include <cstdint>
-#include VENDOR_HEADER_FILE
+
 
 namespace mpp::utils
 {
