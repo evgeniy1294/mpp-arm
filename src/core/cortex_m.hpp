@@ -40,9 +40,9 @@ namespace mpp::utils
 
 
 namespace mpp::core {
-	
+    
   namespace __private { std::uint32_t GetTick(); void IncTick(); } // namespace __private
-	
+    
   inline namespace cortex_m {
     
     template< class ClockSystem >
@@ -58,21 +58,21 @@ namespace mpp::core {
     template< class ClockSystem >
     class ClockCounter {
       public:
-		constexpr static std::uint32_t TickPerSec = ClockSystem::kSysClkHz;
-		
-		inline static void Init() { 
+        constexpr static std::uint32_t TickPerSec = ClockSystem::kSysClkHz;
+        
+        inline static void Init() { 
           CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
           DWT->CTRL |=  DWT_CTRL_CYCCNTENA_Msk;
-		}
-		
+        }
+        
         inline static std::uint32_t GetTick() { 
           DWT->CTRL &= ~DWT_CTRL_CYCCNTENA_Msk;
           std::uint32_t tmp = DWT->CYCCNT; 
           DWT->CTRL |=  DWT_CTRL_CYCCNTENA_Msk;
 
           return tmp;
-		}
-	};
-		
+        }
+    };
+        
   } // inline namespace
 }

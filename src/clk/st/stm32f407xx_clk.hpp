@@ -61,8 +61,8 @@ namespace mpp::clk
     template < class Trait, class Flash, class PowerProfile >
     class ClockSystem final {
       private:
-		
-		
+        
+        
         constexpr static bool IsTraitValid() {                  
           // Check HSE value
           if constexpr ( (Trait::kPllClkSource == PllClkSource::hse)||(Trait::kSystemClkSource == SystemClkSource::hse)||
@@ -88,7 +88,7 @@ namespace mpp::clk
                            "RTC HSE prescaler must be from 2 to 31" );
           else
             static_assert( kRtcHsePrescaler == 0u, "RTC HSE prescaler must be 0 if unused");
-			
+            
           
           // Check main pll
           if constexpr ( (Trait::kSystemClkSource == SystemClkSource::pll) ||  
@@ -154,10 +154,10 @@ namespace mpp::clk
         }
         
         static_assert( IsTraitValid(), "Trait is incorrect" );
-		
-		
-		
-		
+        
+        
+        
+        
         
       public:
         constexpr static std::uint32_t kHseFrequencyHz = Trait::kHseFrequencyHz;
@@ -176,15 +176,15 @@ namespace mpp::clk
         constexpr static std::uint32_t kApb1Prescaler = Trait::kApb1Prescaler;
         constexpr static std::uint32_t kApb2Prescaler = Trait::kApb2Prescaler;
         constexpr static std::uint32_t kSystickPrescaler = Trait::kSystickPrescaler;
-		constexpr static std::uint32_t kRtcHsePrescaler = Trait::kRtcHsePrescaler;
+        constexpr static std::uint32_t kRtcHsePrescaler = Trait::kRtcHsePrescaler;
         constexpr static bool kClockSecuritySystem = Trait::kClockSecuritySystem;
         constexpr static Mco2Source kMco2Source = Trait::kMco2Source;
         constexpr static Mco1Source kMco1Source = Trait::kMco1Source;
         constexpr static std::uint32_t kMco2Prescaler = Trait::kMco2Prescaler;
         constexpr static std::uint32_t kMco1Prescaler = Trait::kMco1Prescaler;
         
-		
-		
+        
+        
         constexpr static std::uint32_t kSysClkHz = []() -> std::uint32_t {
           switch(kSystemClkSource)
           {
@@ -213,10 +213,10 @@ namespace mpp::clk
             return kHsiFrequencyHz; 
         } } ();
     
-		
-		
-		
-		
+        
+        
+        
+        
         constexpr static std::uint32_t kAhbClkHz = kSysClkHz / kAhbPrescaler;
         constexpr static std::uint32_t kSysTickClkHz = kAhbClkHz / kSystickPrescaler;
         static_assert( kAhbClkHz >= 14'200'000u, "AHB Clock must be greater 14.2MHz" );  
@@ -249,8 +249,8 @@ namespace mpp::clk
             return 0u;
       } ();
         
-		
-		
+        
+        
         
       constexpr static std::uint32_t kI2SClkHz = []() -> std::uint32_t {
         if constexpr (kI2SClkSource == I2SClkSource::plli2s) {
@@ -273,9 +273,9 @@ namespace mpp::clk
       } ();
         
         
-		
-		
-		
+        
+        
+        
       constexpr static std::uint32_t kRtcClkHz = []() -> std::uint32_t {
         if constexpr (kRtcClkSource == RtcClkSource::hse)
           return kHseFrequencyHz / kRtcHsePrescaler;
@@ -286,9 +286,9 @@ namespace mpp::clk
       } ();
       static_assert( kRtcClkHz <= 1'000'000u, "RTC clock must be less or equal 1MHz" );
 
-		
-		
-		
+        
+        
+        
 
       constexpr static std::uint32_t kCrInit0 = RCC_CR_HSION | RCC_CR_HSITRIM_0;
       constexpr static std::uint32_t kCrInit1 =  ((kHseFrequencyHz != 0u) ? RCC_CR_HSEON : 0u) |
@@ -296,9 +296,9 @@ namespace mpp::clk
                                                  ((kSystemClkSource == SystemClkSource::pll) ? RCC_CR_PLLON : 0u) |
                                                  ((kI2SClkSource == I2SClkSource::plli2s) ? RCC_CR_PLLI2SON : 0u) | kCrInit0;                        
 
-		
-		
-		
+        
+        
+        
       constexpr static std::uint32_t kPllcfgrInit = []() -> std::uint32_t {
         std::uint32_t ret = ( kPllQ << RCC_PLLCFGR_PLLQ_Pos ) |
                             ( ((kPllP-1)>>1) << RCC_PLLCFGR_PLLP_Pos ) |
@@ -312,85 +312,85 @@ namespace mpp::clk
         return ret;
       } ();
 
-		
-		
+        
+        
       constexpr static std::uint32_t kCfgrInit = []() -> std::uint32_t {
         std::uint32_t ret = ( static_cast< std::uint32_t >(kSystemClkSource) << RCC_CFGR_SW_Pos ) |
                             ( kRtcHsePrescaler << RCC_CFGR_RTCPRE_Pos );
-		  
-		if constexpr (kMco1Prescaler != 1u)
+          
+        if constexpr (kMco1Prescaler != 1u)
           ret |= (kMco1Prescaler + 2u) << RCC_CFGR_MCO1PRE_Pos;
 
         if constexpr (kMco2Prescaler != 1u)
           ret |= (kMco2Prescaler + 2u) << RCC_CFGR_MCO2PRE_Pos;
-		  
+          
         if constexpr (kMco1Source != Mco1Source::none)
-		  ret |= static_cast< std::uint32_t >(kMco1Source) << RCC_CFGR_MCO1_Pos;
-		  
-		if constexpr (kMco2Source != Mco2Source::none)
-		  ret |= static_cast< std::uint32_t >(kMco2Source) << RCC_CFGR_MCO2_Pos;
+          ret |= static_cast< std::uint32_t >(kMco1Source) << RCC_CFGR_MCO1_Pos;
+          
+        if constexpr (kMco2Source != Mco2Source::none)
+          ret |= static_cast< std::uint32_t >(kMco2Source) << RCC_CFGR_MCO2_Pos;
 
         if constexpr (kI2SClkSource == I2SClkSource::external)
           ret |= RCC_CFGR_I2SSRC;
-		  
-			
+          
+            
         ret |= []() -> std::uint32_t {
           switch(kAhbPrescaler)
-		  {
-			case 2u:   return RCC_CFGR_HPRE_DIV2;
+          {
+            case 2u:   return RCC_CFGR_HPRE_DIV2;
             case 4u:   return RCC_CFGR_HPRE_DIV4;
             case 8u:   return RCC_CFGR_HPRE_DIV8;
-			case 16u:  return RCC_CFGR_HPRE_DIV16;
+            case 16u:  return RCC_CFGR_HPRE_DIV16;
             case 64u:  return RCC_CFGR_HPRE_DIV64;
             case 128u: return RCC_CFGR_HPRE_DIV128;
             case 256u: return RCC_CFGR_HPRE_DIV256;
-			case 512u: return RCC_CFGR_HPRE_DIV512;
-			default:   return RCC_CFGR_HPRE_DIV1;
-		  }
-		} ();
-		  
+            case 512u: return RCC_CFGR_HPRE_DIV512;
+            default:   return RCC_CFGR_HPRE_DIV1;
+          }
+        } ();
+          
         ret |= []() -> std::uint32_t {
           switch(kApb1Prescaler)
-		  {
-			case 2u:  return RCC_CFGR_PPRE1_DIV2;
-			case 4u:  return RCC_CFGR_PPRE1_DIV4;
-			case 8u:  return RCC_CFGR_PPRE1_DIV8;
+          {
+            case 2u:  return RCC_CFGR_PPRE1_DIV2;
+            case 4u:  return RCC_CFGR_PPRE1_DIV4;
+            case 8u:  return RCC_CFGR_PPRE1_DIV8;
             case 16u: return RCC_CFGR_PPRE1_DIV16;
-			default:  return RCC_CFGR_PPRE1_DIV1;	  
-		  }
-		} ();
+            default:  return RCC_CFGR_PPRE1_DIV1;     
+          }
+        } ();
 
-		  
+          
         ret |= []() -> std::uint32_t {
           switch(kApb2Prescaler)
-		  {
-			case 2u:  return RCC_CFGR_PPRE2_DIV2;
-			case 4u:  return RCC_CFGR_PPRE2_DIV4;
-			case 8u:  return RCC_CFGR_PPRE2_DIV8;
+          {
+            case 2u:  return RCC_CFGR_PPRE2_DIV2;
+            case 4u:  return RCC_CFGR_PPRE2_DIV4;
+            case 8u:  return RCC_CFGR_PPRE2_DIV8;
             case 16u: return RCC_CFGR_PPRE2_DIV16;
-			default:  return RCC_CFGR_PPRE2_DIV1;
-		  }
-		} ();
-		  
-		return ret;  
+            default:  return RCC_CFGR_PPRE2_DIV1;
+          }
+        } ();
+          
+        return ret;  
       } ();
 
-		  
+          
       constexpr static std::uint32_t kPlli2sInit = (kI2SPllN << RCC_PLLI2SCFGR_PLLI2SN_Pos) |
                                                    (kI2SPllR << RCC_PLLI2SCFGR_PLLI2SR_Pos);  
-		  
+          
       inline static void Init() {
         RCC->CR = kCrInit0;
-		  
+          
         RCC->PLLCFGR = kPllcfgrInit;
         if constexpr (kPlli2sInit != 0u)
           RCC->PLLI2SCFGR = kPlli2sInit; 
-		  
+          
         RCC->CR = kCrInit1;
-		  
+          
         Flash::Init();
         RCC->CFGR = kCfgrInit;
-		  
+          
         return;
       }
         

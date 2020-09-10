@@ -76,15 +76,15 @@ namespace mpp::gpio
       if constexpr ( Trait::kType == Type::Input )
       {               
         if constexpr ( ( Trait::kPortId == PortId::AUX_IO ) || ( Trait::kPortId == PortId::AON_CLK32K ) )
-		{
+        {
           static_assert( Trait::kInputBuffer == InputBuffer::Off, "For AUX IO InputBuffer::On will be ignored, use InputBuffer::Off" );
           static_assert( Trait::kInversion == Inversion::Off, "Use Inversion::None for AON/AUX IO" );
-		}
-		else
-		{
+        }
+        else
+        {
           static_assert( Trait::kInversion != Inversion::None, "Don't use Inversion::None for input pin" );
           static_assert( Trait::kInputBuffer != InputBuffer::None, "Don't use InputBuffer::None for input pin" );
-		} 
+        } 
         
         static_assert( Trait::kDefaultState == DefaultState::None, "Use DefaultState::None for input pin" );
         static_assert( Trait::kCurrentMode  == CurrentMode::None, "Use CurrentMode::None for input pin" );
