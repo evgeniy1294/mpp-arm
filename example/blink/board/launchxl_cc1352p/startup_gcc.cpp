@@ -2,26 +2,69 @@
 #include "setup.h"
 
 extern "C" {
- /* The following are constructs created by the linker, indicating where the
-    the "data" and "bss" segments reside in memory */
-  extern uint32_t _ldata;
-  extern uint32_t _data;
-  extern uint32_t _edata;
-  extern uint32_t _bss;
-  extern uint32_t _ebss;
-  extern uint32_t _estack;
-  
-  extern int main();
+	
+  extern void __libc_init_array();
     
-  void ResetHandler();
-  void DefaultHandler();
+  /* The following are constructs created by the linker, indicating where the
+    the "data"  and "bss" segments reside in memory */
+  extern std::uint32_t __data_start__, __data_end__, __data_load__;
+  extern std::uint32_t __bss_start__, __bss_end__;
+  extern std::uint32_t __initial_sp__; 
+
+    
+    
+  [[noreturn]] void DefaultHandler() {
+    while(1) __NOP();
+  }
+	
 	
   
+  [[noreturn]] void ResetHandler()
+  {
+    __set_MSP(reinterpret_cast<std::uint32_t>(&__initial_sp__));
+    SetupTrimDevice();
+
+    //  Relocate the .data section 
+    std::uint32_t*  dl = & __data_load__;
+    std::uint32_t*  ds = & __data_start__;
+    std::uint32_t*  de = & __data_end__;
+    if (dl != ds) {
+      while(ds < de) {
+        *ds = *dl;
+        dl++;
+        ds++;
+      }
+    }
+
+
+    //  Initiailize .bss to zero
+    std::uint32_t*  bs = & __bss_start__;
+    std::uint32_t*  be = & __bss_end__;
+    while (bs < be) {
+      *bs =   0;
+      bs++;
+    }       
+
+    board::Init();
+    
+    //  Call static constructors
+    __libc_init_array();
+    
+    main();
+
+    while(1) __NOP();
+  }
+	
+	
+	
+	
+	
+	
   __attribute__ ((section(".flash_vectors"), used)) 
   void (* const InterruptTable[])(void) =
   {
     /* 0 The initial stack pointer */
-    (void (*)(void))((std::uint32_t)&_estack),     
+    reinterpret_cast< void(*)() >(&__initial_sp__),         
      
     /******  Cortex Interrupt  ************/ 
     ResetHandler,                              //  1 The reset handler
@@ -80,43 +123,7 @@ extern "C" {
     DefaultHandler,                            // 52 UART1 combined interrupt
     DefaultHandler                             // 53 Combined event from battery monitor  
   };
-	
-	
-	
-  void ResetHandler()
-  {
-    SetupTrimDevice();
-
-    // Copy the data segment initializers from FLASH to SRAM.
-    std::uint32_t* pSrc = &_ldata;
-    for(std::uint32_t* pDest = &_data; pDest < &_edata; ) {
-      *pDest++ = *pSrc++;
-    }
-
-
-    // Zero fill the bss segment.
-    __asm("    ldr     r0, =_bss\n"
-          "    ldr     r1, =_ebss\n"
-          "    mov     r2, #0\n"
-          "    .thumb_func\n"
-          "zero_loop:\n"
-          "        cmp     r0, r1\n"
-          "        it      lt\n"
-          "        strlt   r2, [r0], #4\n"
-          "        blt     zero_loop");
-
-
-    // Enable the FPU
-    //SCB->CPACR |= 0b1111 << 20;
-	  
-    main(); 
-  }
-    
-    
-    
-  void DefaultHandler() { while(1) { asm("nop"); } }
-    
-    
+  
 } // extern "C"
 
 

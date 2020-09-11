@@ -11,7 +11,10 @@
 
 //____________________INCLUDE_____________________//
 #include <cstdint>
-#include "mpp/cc26x2.hpp"
+#include "mpp/cc1352p.hpp"
+
+
+int main();
 
 
 namespace board {

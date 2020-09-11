@@ -30,7 +30,7 @@
 */
 
 /* Entry Point */
-ENTRY(Reset_Handler)
+ENTRY(ResetHandler)
 
 /* Highest address of the user mode stack */
 
@@ -44,7 +44,7 @@ MEMORY
   ISR    (xrw): ORIGIN = 0x2001FE00, LENGTH = 0x200
   CCMRAM (xrw): ORIGIN = 0x10000000, LENGTH = 0x10000
 }
-_estack = ORIGIN(RAM) + LENGTH(RAM); /*end of SRAM .*/
+__initial_sp__ = ORIGIN(RAM) + LENGTH(RAM); /*end of SRAM .*/
 
 
 /* Generate a link error if heap and stack don't fit into RAM */
@@ -102,6 +102,8 @@ SECTIONS
     KEEP (*(.preinit_array*))
     PROVIDE_HIDDEN (__preinit_array_end = .);
   } >FLASH
+  
+  
   .init_array :
   {
     PROVIDE_HIDDEN (__init_array_start = .);
@@ -109,6 +111,8 @@ SECTIONS
     KEEP (*(.init_array*))
     PROVIDE_HIDDEN (__init_array_end = .);
   } >FLASH
+  
+  
   .fini_array :
   {
     PROVIDE_HIDDEN (__fini_array_start = .);
@@ -118,18 +122,20 @@ SECTIONS
   } >FLASH
 
   /* used by the startup to initialize data */
-  _sidata = LOADADDR(.data);
+  __data_load__ = LOADADDR(.data);
 
   /* Initialized data sections goes into RAM, load LMA copy after code */
   .data : 
   {
     . = ALIGN(4);
     _sdata = .;        /* create a global symbol at data start */
+	__data_start__ = _sdata;
     *(.data)           /* .data sections */
     *(.data*)          /* .data* sections */
 
     . = ALIGN(4);
     _edata = .;        /* define a global symbol at data end */
+	__data_end__ = _edata;
   } >RAM AT> FLASH
 
   _siccmram = LOADADDR(.ccmram);

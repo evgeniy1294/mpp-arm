@@ -60,7 +60,7 @@ MEMORY
 }
 
 /*. Highest address of the stack. Used in startup file .*/
-_estack = ORIGIN(SRAM) + LENGTH(SRAM); /*end of SRAM .*/
+__initial_sp__ = ORIGIN(SRAM) + LENGTH(SRAM); /*end of SRAM .*/
 
 /*. Generate a link error if heap and stack does not fit into RAM .*/
 _Min_Heap_Size = 0x2400;
@@ -107,11 +107,15 @@ SECTIONS
     .data :
     {
         _data = .;
+		__data_start__ = _data;
+		
         *(vtable)
         *(.data*)
+		
         _edata = .;
+		__data_end__ = _edata;
     } > SRAM AT > FLASH
-    _ldata = LOADADDR(.data);
+    __data_load__ = LOADADDR(.data);
 
     .bss :
     {

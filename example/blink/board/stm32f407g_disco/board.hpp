@@ -13,6 +13,10 @@
 #include <cstdint>
 #include "mpp/stm32f407xx.hpp"
 
+
+int main();
+
+
 namespace board
 {
   // Systick and DWT
