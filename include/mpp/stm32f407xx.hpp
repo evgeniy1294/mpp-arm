@@ -18,3 +18,4 @@
 #include "../../src/clk/st/stm32f407xx_clk.hpp"
 #include "../../src/flash/st/stflash4f.hpp"
 #include "../../src/gpio/st/stgpiof4.hpp"
+#include "../../src/crypto/st/stcrcf4.hpp"

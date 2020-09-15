@@ -70,13 +70,13 @@ extern "C" {
     DefaultHandler,               // 4 Memory Management (MemManage) Fault
     DefaultHandler,               // 5 The bus fault handler
     DefaultHandler,               // 6 The usage fault handler
-    0,                            // 7 Reserved
-    0,                            // 8 Reserved
-    0,                            // 9 Reserved
-    0,                            // 10 Reserved
+    nullptr,                      // 7 Reserved
+    nullptr,                      // 8 Reserved
+    nullptr,                      // 9 Reserved
+    nullptr,                      // 10 Reserved
     DefaultHandler,               // 11 Supervisor Call (SVCall)
     DefaultHandler,               // 12 Debug monitor handler
-    0,                            // 13 Reserved
+    nullptr,                      // 13 Reserved
     DefaultHandler,               // 14 The PendSV handler
     board::Systick::Interrupt,    // 15 The SysTick handler
 
@@ -160,7 +160,7 @@ extern "C" {
     DefaultHandler,               // 92  USB OTG HS Wakeup through EXTI interrupt                             
     DefaultHandler,               // 93  USB OTG HS global interrupt                                      
     DefaultHandler,               // 94  DCMI    global interrupt
-    DefaultHandler,               // 95  You can use this    vector for software interrupt
+    nullptr,                      // 95  You can use this vector for software interrupt
     DefaultHandler,               // 96  RNG global Interrupt                                                 
     DefaultHandler,               // 97  FPU global interrupt    
   };

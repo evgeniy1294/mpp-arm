@@ -1,7 +1,7 @@
 /**
   ***********************************************************
   @author Evgenii Fedoseev
-  @file   /src/gpio/st/stgpio4.hpp
+  @file   /src/gpio/st/stgpiof4.hpp
   @brief  Compatible series: STM32F4 
   ***********************************************************
 **/
