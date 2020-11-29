@@ -9,17 +9,15 @@
 #pragma once
 
 //___________________DEFINITION___________________//
-#define STM32F407xx          (1ul)
+#define STM32G071xx          (1ul)
 
 //____________________INCLUDE_____________________//
-#include "stm32f407xx.h"
+#include "stm32g071xx.h"
 #include "../../src/utils/ioutils.hpp"
 #include "../../src/utils/timutils.hpp"
 #include "../../src/utils/binutils.hpp"
 #include "../../src/core/cortex_m.hpp"
-#include "../../src/clk/st/stm32f407xx_clk.hpp"
-#include "../../src/flash/st/stflash4f.hpp"
 #include "../../src/gpio/st/stgpiof4.hpp"
-#include "../../src/crypto/st/stcrc_v1.hpp"
+#include "../../src/crypto/st/stcrc_v2_2.hpp"
 #include "../../src/crypto/crc_logic.hpp"
 #include "../../src/crypto/crc_models.hpp"

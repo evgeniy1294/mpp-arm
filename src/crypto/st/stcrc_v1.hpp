@@ -14,26 +14,32 @@
 
 
 
-namespace mpp::crypto
+namespace mpp::crc
 {
-  inline  namespace f4 
+  inline namespace stcrc_v1 
   {
-    class Crc32
+	  
+	  
+    class HardwareLogic
     {
       public:
-        constexpr static std::uint32_t kPolynominal = 0x04C1'1DB7u;
+
+        inline static std::uint32_t Finalize(CRC_TypeDef* crc) noexcept(true)
+        {
+          std::uint32_t ret = crc->DR; 
+          crc->CR = CRC_CR_RESET; 
         
-        inline static void Reset() noexcept(true) { CRC->CR = CRC_CR_RESET; } 
-        
+          return ret;
+        }
+		
+		
+		
         template< typename T >
-        static std::uint32_t Calculate(const T* first, const T* last, bool reset) noexcept(true)
+        static void Calculate( CRC_TypeDef* crc, const T* first, const T* last ) noexcept(true)
         {
           std::size_t SzInByte = (last - first) * sizeof(T);
           const std::uint32_t* fu32 = reinterpret_cast< const std::uint32_t* >(first);
           const std::uint32_t* lu32 = fu32 + ( SzInByte >> 2u );
-          
-          if (reset)
-            Reset();
           
           while ( fu32 != lu32 )
             CRC->DR = *fu32++;
@@ -43,13 +49,23 @@ namespace mpp::crypto
             std::uint32_t TailByte = SzInByte & 0b11u;
             
             if ( TailByte != 0u ) {
-              std::uint32_t tmp = *lu32 & (~(0xFFFF'FFFFu << (TailByte << 3u))); 
-              CRC->DR = tmp; 
+              const std::uint8_t* pu8 = reinterpret_cast< const std::uint8_t* >(lu32);
+           
+              while ( TailByte-- )  
+                crc->DR = *pu8++ << 24;
+            
             }
           }
-          
-          return CRC->DR;
+        
+        return;
       }
+		
+		
+		
     }; 
+		
+		
+		
+		
   } //  inline namespace 
 } // namespace mpp::crypto

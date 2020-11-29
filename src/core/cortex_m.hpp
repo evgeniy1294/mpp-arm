@@ -55,6 +55,7 @@ namespace mpp::core {
         static void Interrupt() { __private::IncTick(); }         
     };
     
+#if ((__CORTEX_M == 3u)||(__CORTEX_M == 4u)||(__CORTEX_M == 7u))
     template< class ClockSystem >
     class ClockCounter {
       public:
@@ -73,6 +74,7 @@ namespace mpp::core {
           return tmp;
         }
     };
+#endif
         
   } // inline namespace
 }

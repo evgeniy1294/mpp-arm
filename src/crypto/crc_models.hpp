@@ -17,34 +17,34 @@ namespace mpp::crc {
 
   struct BaseCrc8 {
     using result_type = std::uint8_t;
-    static constexpr std::size_t Width = 8u;
+    static constexpr std::size_t kWidth = 8u;
   };
 
   
   
   struct BaseCrc16 {
     using result_type = std::uint16_t;
-    static constexpr std::size_t Width = 16u;
+    static constexpr std::size_t kWidth = 16u;
   };
 
 
 
   struct BaseCrc24 {
     using result_type = std::uint32_t;
-    static constexpr std::size_t Width = 24u;
+    static constexpr std::size_t kWidth = 24u;
   };
 
 
 
   struct BaseCrc32 {
     using result_type = std::uint32_t;
-    static constexpr std::size_t Width = 32u;
+    static constexpr std::size_t kWidth = 32u;
   };
 
   
   struct BaseCrc64 {
     using result_type = std::uint64_t;
-    static constexpr std::size_t Width = 64u;
+    static constexpr std::size_t kWidth = 64u;
   };
 
 
@@ -52,7 +52,7 @@ namespace mpp::crc {
 
   struct ITU_4 {
 	using result_type = std::uint8_t;
-    static constexpr std::size_t Width = 4u;
+    static constexpr std::size_t kWidth = 4u;
     
     static constexpr result_type kPoly   = 0x03;
     static constexpr result_type kSeed   = 0x00;
@@ -68,7 +68,7 @@ namespace mpp::crc {
 	
   struct EPC_5 {
 	using result_type = std::uint8_t;
-    static constexpr std::size_t Width = 5u;
+    static constexpr std::size_t kWidth = 5u;
     
     static constexpr result_type kPoly   = 0x09;
     static constexpr result_type kSeed   = 0x09;
@@ -84,7 +84,7 @@ namespace mpp::crc {
 	
   struct ITU_5 {
 	using result_type = std::uint8_t;
-    static constexpr std::size_t Width = 5u;
+    static constexpr std::size_t kWidth = 5u;
     
     static constexpr result_type kPoly   = 0x15;
     static constexpr result_type kSeed   = 0x0;
@@ -99,7 +99,7 @@ namespace mpp::crc {
 
   struct USB_5 {
 	using result_type = std::uint8_t;
-    static constexpr std::size_t Width = 5u;
+    static constexpr std::size_t kWidth = 5u;
     
     static constexpr result_type kPoly   = 0x05;
     static constexpr result_type kSeed   = 0x1f;
@@ -113,9 +113,9 @@ namespace mpp::crc {
 	
 	
 	
-  struct CDMA2000B_6 {
+  struct CDMA2000A_6 {
 	using result_type = std::uint8_t;
-    static constexpr std::size_t Width = 6u;
+    static constexpr std::size_t kWidth = 6u;
     
     static constexpr result_type kPoly   = 0x27;
     static constexpr result_type kSeed   = 0x3f;
@@ -132,7 +132,7 @@ namespace mpp::crc {
 
   struct CDMA2000B_6 {
 	using result_type = std::uint8_t;
-    static constexpr std::size_t Width = 6u;
+    static constexpr std::size_t kWidth = 6u;
     
     static constexpr result_type kPoly   = 0x07;
     static constexpr result_type kSeed   = 0x3f;
@@ -148,7 +148,7 @@ namespace mpp::crc {
   struct DARC_6
   {
     using result_type = std::uint8_t;
-    static constexpr std::size_t Width = 6u;
+    static constexpr std::size_t kWidth = 6u;
     
     static constexpr result_type kPoly   = 0x19;
     static constexpr result_type kSeed   = 0x00;
@@ -164,7 +164,7 @@ namespace mpp::crc {
   struct ITU_6
   {
     using result_type = std::uint8_t;
-    static constexpr std::size_t Width = 6u;
+    static constexpr std::size_t kWidth = 6u;
     
     static constexpr result_type kPoly   = 0x03;
     static constexpr result_type kSeed   = 0x00;
@@ -179,7 +179,7 @@ namespace mpp::crc {
 	
   struct CRC_7 {
 	using result_type = std::uint8_t;
-    static constexpr std::size_t Width = 7u;
+    static constexpr std::size_t kWidth = 7u;
     
     static constexpr result_type kPoly   = 0x09;
     static constexpr result_type kSeed   = 0x00;
@@ -194,7 +194,7 @@ namespace mpp::crc {
 	
   struct ROHC_7 {
 	using result_type = std::uint8_t;
-    static constexpr std::size_t Width = 7u;
+    static constexpr std::size_t kWidth = 7u;
     
     static constexpr result_type kPoly   = 0x4f;
     static constexpr result_type kSeed   = 0x7f;
@@ -340,7 +340,7 @@ namespace mpp::crc {
   struct CRC_10
   {
     using result_type = std::uint16_t;
-    static constexpr std::size_t Width = 10u;
+    static constexpr std::size_t kWidth = 10u;
     
     static constexpr result_type kPoly   = 0x233;
     static constexpr result_type kSeed   = 0x00;
@@ -355,7 +355,7 @@ namespace mpp::crc {
   struct CDMA2000_10
   {
     using result_type = std::uint16_t;
-    static constexpr std::size_t Width = 10u;
+    static constexpr std::size_t kWidth = 10u;
     
     static constexpr result_type kPoly   = 0x3D9;
     static constexpr result_type kSeed   = 0x3FF;
@@ -372,7 +372,7 @@ namespace mpp::crc {
   struct CRC_11
   {
     using result_type = std::uint16_t;
-    static constexpr std::size_t Width = 11u;
+    static constexpr std::size_t kWidth = 11u;
     
     static constexpr result_type kPoly   = 0x385;
     static constexpr result_type kSeed   = 0x1A;
@@ -388,7 +388,7 @@ namespace mpp::crc {
   struct _3GPP_12
   {
     using result_type = std::uint16_t;
-    static constexpr std::size_t Width = 12u;
+    static constexpr std::size_t kWidth = 12u;
     
     static constexpr result_type kPoly   = 0x80F;
     static constexpr result_type kSeed   = 0x00;
@@ -404,7 +404,7 @@ namespace mpp::crc {
   struct CDMA2000_12
   {
     using result_type = std::uint16_t;
-    static constexpr std::size_t Width = 12u;
+    static constexpr std::size_t kWidth = 12u;
     
     static constexpr result_type kPoly   = 0xF13;
     static constexpr result_type kSeed   = 0xFFF;
@@ -421,7 +421,7 @@ namespace mpp::crc {
   struct DECT_12
   {
     using result_type = std::uint16_t;
-    static constexpr std::size_t Width = 12u;
+    static constexpr std::size_t kWidth = 12u;
     
     static constexpr result_type kPoly   = 0x80F;
     static constexpr result_type kSeed   = 0x00;
@@ -438,7 +438,7 @@ namespace mpp::crc {
   struct BBC_13
   {
     using result_type = std::uint16_t;
-    static constexpr std::size_t Width = 13u;
+    static constexpr std::size_t kWidth = 13u;
     
     static constexpr result_type kPoly   = 0x1CF5;
     static constexpr result_type kSeed   = 0x00;
@@ -455,7 +455,7 @@ namespace mpp::crc {
   struct DARC_14
   {
     using result_type = std::uint16_t;
-    static constexpr std::size_t Width = 14u;
+    static constexpr std::size_t kWidth = 14u;
     
     static constexpr result_type kPoly   = 0x805;
     static constexpr result_type kSeed   = 0x00;
@@ -473,7 +473,7 @@ namespace mpp::crc {
   struct CRC_15
   {
     using result_type = std::uint16_t;
-    static constexpr std::size_t Width = 15u;
+    static constexpr std::size_t kWidth = 15u;
     
     static constexpr result_type kPoly   = 0x4599;
     static constexpr result_type kSeed   = 0x00;
@@ -490,7 +490,7 @@ namespace mpp::crc {
   struct MPT1327_15
   {
     using result_type = std::uint16_t;
-    static constexpr std::size_t Width = 15u;
+    static constexpr std::size_t kWidth = 15u;
     
     static constexpr result_type kPoly   = 0x6815;
     static constexpr result_type kSeed   = 0x00;
@@ -875,7 +875,7 @@ namespace mpp::crc {
   struct PHILIPS_31
   {
     using result_type = std::uint32_t;
-    static constexpr std::size_t Width = 31u;
+    static constexpr std::size_t kWidth = 31u;
     
     static constexpr result_type kPoly   = 0x4C11DB7;
     static constexpr result_type kSeed   = 0x7FFFFFFF;
@@ -1021,7 +1021,7 @@ namespace mpp::crc {
   struct GSM_40
   {
     using result_type = std::uint64_t;
-    static constexpr std::size_t Width = 40u;
+    static constexpr std::size_t kWidth = 40u;
     
     static constexpr result_type kPoly   = 0x4820009;
     static constexpr result_type kSeed   = 0x00;

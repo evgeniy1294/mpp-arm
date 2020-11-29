@@ -215,7 +215,7 @@ namespace mpp::flash
 
           FLASH->CR &= ~FLASH_CR_EOPIE;           
           Lock();
-        };
+        }
         
         
             

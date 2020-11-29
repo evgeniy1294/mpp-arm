@@ -234,7 +234,6 @@ namespace mpp::gpio
     {
       constexpr static Port kPort = Port::B;
 	  constexpr static std::uint32_t kPin = 2u;
-      enum {}; 
     };
 
     struct PB3  

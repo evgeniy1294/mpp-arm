@@ -1,7 +1,7 @@
 /**
   ***********************************************************
   @author Evgenii Fedoseev
-  @file   include/mpp/utils.hpp
+  @file   include/mpp/utils/timutils.hpp
   @brief  Compatible series: all
   ***********************************************************
 **/
@@ -10,23 +10,8 @@
 
 
 namespace mpp::utils {
-  template < class... dev >
-  class DeviceSet
-  {
-    public:
-      inline constexpr static void Init()  { ( dev::Init(), ... ); };   
-  };
 
-  template < class... IO >
-  class IoSet final: public DeviceSet< IO... >
-  {
-    public:
-      inline constexpr static void Set()   { ( IO::Set(), ... ); };
-      inline constexpr static void Reset() { ( IO::Reset(), ... ); };
-      inline constexpr static void Toggle(){ ( IO::Toggle(), ... ); };
-  };
-    
-  
+
   template < class Source >
   class Timer
   {
@@ -59,5 +44,5 @@ namespace mpp::utils {
       std::uint32_t interval  = 0u;
       std::uint32_t timestamp = 0u;
   };
-      
+
 }  // namespace mpp

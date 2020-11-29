@@ -26,7 +26,6 @@ namespace board
   };
 
   using Systick = mpp::core::Systick < FakeClk >;
-
     
   // Leds
   struct LedTrait final: mpp::gpio::LedTrait
@@ -34,22 +33,15 @@ namespace board
     constexpr static mpp::gpio::Inversion kInversion = mpp::gpio::Inversion::Off;
   };
     
-  struct LedInvTrait final: mpp::gpio::LedTrait
-  {
-    constexpr static mpp::gpio::Inversion kInversion = mpp::gpio::Inversion::On;
-  };
+  using LedGreen  = mpp::gpio::Gpio < mpp::gpio::PA5, LedTrait >;  
 
-  using LedBlue   = mpp::gpio::Gpio < mpp::gpio::PD15, LedTrait >;
-  using LedRed    = mpp::gpio::Gpio < mpp::gpio::PD14, LedInvTrait >;    
-  using LedOrange = mpp::gpio::Gpio < mpp::gpio::PD13, LedInvTrait >;   
-  using LedGreen  = mpp::gpio::Gpio < mpp::gpio::PD12, LedTrait >;  
-
-  using Leds = mpp::gpio::IoGroup < LedBlue, LedRed, LedOrange, LedGreen >;
+  using Leds = mpp::gpio::IoGroup < LedGreen >;
+	
+  // Checksum models
+  using ExampleCrcModel = mpp::crc::POSIX_32
 	
 	
   // Specific function 
   void Init();
     
 } // namespace board
-
-

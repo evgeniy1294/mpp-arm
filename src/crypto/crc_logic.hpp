@@ -1,7 +1,7 @@
 /**
   ***********************************************************
   @author Evgenii Fedoseev
-  @file   include/mpp/utils.hpp
+  @file   src/crypto/crc_logic.hpp
   @brief  Compatible series: all
   ***********************************************************
 **/
@@ -12,39 +12,44 @@
 
 
 //____________________INCLUDE_____________________//
+#include <cstdint>
+#include <array>
 #include <type_traits>
 #include <limits>
 
 
+
+
 namespace mpp::crc {
   
-  template< class Trait >
-  class CrcLogic {
-    static_assert(::std::is_same_v< Trait, ::std::decay_t< decltype(Trait()) > >);
-    static_assert((Trait::Width <= sizeof(typename Trait::result_type) * 8), "Fields 'result_type' and 'Width' is incorrect");
-    static_assert((Trait::Width >= 4), "Fields 'Width' must be greater or equal 4");
+  template< class Model >
+  class Logic {
+    static_assert(::std::is_same_v< Model, ::std::decay_t< decltype(Model()) > >);
+    static_assert((Model::kWidth <= sizeof(typename Model::result_type) * 8), "Fields 'result_type' and 'kWidth' is incorrect");
+    static_assert((Model::kWidth >= 4), "Fields 'kWidth' must be greater or equal 4");
     
     public:
-      using result_type = typename Trait::result_type;
+      using result_type = typename Model::result_type;
     
-      static constexpr std::size_t Width = Trait::Width;
-      static constexpr result_type kPoly     = Trait::kPoly;
-      static constexpr result_type kSeed     = Trait::kSeed;
-      static constexpr result_type kXorOut   = Trait::kXorOut;
-      static constexpr bool kRefIn  = Trait::kRefIn;
-      static constexpr bool kRefOut = Trait::kRefOut;
-      static constexpr result_type kResultMask = std::numeric_limits< result_type >::max() >> ( sizeof( result_type )*8u - Width);
+      static constexpr std::size_t kWidth  = Model::kWidth;
+      static constexpr result_type kPoly   = Model::kPoly;
+      static constexpr result_type kSeed   = Model::kSeed;
+      static constexpr result_type kXorOut = Model::kXorOut;
+      static constexpr bool kRefIn  = Model::kRefIn;
+      static constexpr bool kRefOut = Model::kRefOut;
+      static constexpr result_type kResultMask = std::numeric_limits< result_type >::max() >> ( sizeof( result_type )*8u - kWidth);
         
     private:
       std::array< result_type, 16 > Table;
+	  result_type crc = Model::kSeed;
     
     
     public:
-      constexpr CrcLogic() noexcept(true)
+      constexpr Logic() noexcept(true)
       {
-        constexpr result_type kRefPoly = Reflect<result_type, Width>(Trait::kPoly);
+        constexpr result_type kRefPoly = mpp::utils::Reflect<result_type, kWidth>(Model::kPoly);
         constexpr result_type mask = (kRefIn) ? static_cast<result_type>(1u) : 
-                                                static_cast<result_type>(1u) << ( Width - 1u );
+                                                static_cast<result_type>(1u) << ( kWidth - 1u );
         
         for (std::size_t i = 0u; i < Table.size(); i++) {
           result_type x = 0;
@@ -74,27 +79,30 @@ namespace mpp::crc {
       
       
       
-      inline result_type Finalize( result_type crc ) noexcept(true)
+      inline result_type Finalize( ) noexcept(true)
       {
         if constexpr (kRefIn)
         {  
           if constexpr (!kRefOut)
-            crc = Reflect<result_type, Width>(crc);
+            crc = mpp::utils::Reflect<result_type, kWidth>(crc);
         }
         else
         {
           if constexpr (kRefOut)
-            crc = Reflect<result_type, Width>(crc);   
+            crc = mpp::utils::Reflect<result_type, kWidth>(crc);   
         }
         
-        return (crc ^ kXorOut) & kResultMask;
+		result_type tmp = crc;
+		crc = kSeed;
+		  
+        return (tmp ^ kXorOut) & kResultMask;
       }
       
       
       
     
-      template< typename T, bool finalize = true >
-      result_type Calculate( const T* first, const T* last, result_type  crc = kSeed ) noexcept(true)
+      template< typename T >
+      void Calculate( const T* first, const T* last ) noexcept(true)
       { 
         const std::uint8_t* ptr = reinterpret_cast< const std::uint8_t* >( first );
 
@@ -109,10 +117,10 @@ namespace mpp::crc {
         }
         else
         {
-          constexpr std::size_t shift_data = (Width < 8) ? Width - 4 : Width - 8u;
+          constexpr std::size_t shift_data = (kWidth < 8) ? kWidth - 4 : kWidth - 8u;
             
           while ( ptr < reinterpret_cast< const std::uint8_t* >( last ) ) {
-            if constexpr ( Width  < 8 ) {
+            if constexpr ( kWidth  < 8 ) {
               std::size_t tbl_idx = (crc >> shift_data) ^ (*ptr >> 4);
               crc = (crc << 4u) ^ Table[ tbl_idx & 0b1111 ];
              
@@ -121,7 +129,7 @@ namespace mpp::crc {
             }
             else
             {
-              constexpr std::size_t shift_idx = Width - 4;
+              constexpr std::size_t shift_idx = kWidth - 4;
                             
               crc = crc ^ ( static_cast < result_type >(*ptr++) << shift_data );
   
@@ -131,10 +139,7 @@ namespace mpp::crc {
           }
         }
           
-        if constexpr (finalize)
-          crc = Finalize(crc);
-          
-        return crc;
+        return;
       }
     
       

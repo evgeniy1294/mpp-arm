@@ -31,6 +31,8 @@
   #include "spec/STM32F446_gpio_v1_0.hpp"
 #elif defined (STM32F469xx)||(STM32F479xx)
   #include "spec/STM32F469_gpio_v1_0.hpp"
+#elif defined (STM32G071xx)
+  #include "spec/STM32G07x_gpio_v1_0.hpp"
 #else
   #error "You must define supported MCU"
 #endif
@@ -57,12 +59,13 @@ namespace mpp::gpio
       constexpr static Type kType        = Type::Output; 
       constexpr static std::uint32_t kAf = 0u;
       
-      /*
-        constexpr static Speed kSpeed = Speed::Low, Medium, High, VeryHigh;
-        constexpr static Driver kDriver = Driver::PushPull, OpenDrain; 
-        constexpr static Pull kPull = Pull::Floating, Up, Down;
-        constexpr static Inversion kInversion = Inversion::Off, On;
-        constexpr static DefaultState kDefaultState = DefaultState::High, Low;
+      /* 
+	    Your trait must contain this field:
+          constexpr static Speed kSpeed = Speed::Low, Medium, High, VeryHigh;
+          constexpr static Driver kDriver = Driver::PushPull, OpenDrain; 
+          constexpr static Pull kPull = Pull::Floating, Up, Down;
+          constexpr static Inversion kInversion = Inversion::Off, On;
+          constexpr static DefaultState kDefaultState = DefaultState::High, Low;
       */ 
     };
       
@@ -78,7 +81,8 @@ namespace mpp::gpio
       constexpr static DefaultState kDefaultState = DefaultState::Low;    
         
       /*
-        constexpr static Inversion kInversion = Inversion::Off, On;
+	    Your trait must contain this field:
+          constexpr static Inversion kInversion = Inversion::Off, On;
       */
     };
       
@@ -95,8 +99,9 @@ namespace mpp::gpio
       constexpr static Speed kSpeed = Speed::None;
         
       /*
-        constexpr static Pull kPull = Pull::Floating, Up, Down;
-        constexpr static Inversion kInversion = Inversion::Off, On;
+	    Your trait must contain this field:
+          constexpr static Pull kPull = Pull::Floating, Up, Down;
+          constexpr static Inversion kInversion = Inversion::Off, On;
       */ 
     };
 
@@ -195,7 +200,7 @@ namespace mpp::gpio
         static constexpr std::uint32_t kOdrMask          = (kType != Type::Output) ? 0u : 1ul << static_cast<std::uint32_t>(kPin);
         static constexpr std::uint32_t kIdrMask          = (kType != Type::Input)  ? 0u : 1ul << static_cast<std::uint32_t>(kPin);
         
-        inline constexpr static void Init() noexcept(true) {
+        inline static void Init() noexcept(true) {
           GPIO_TypeDef* regs { reinterpret_cast<GPIO_TypeDef*>(kPort) };
             
           // Set mode   
@@ -330,7 +335,7 @@ namespace mpp::gpio
         constexpr static std::uint32_t kInputInvMask     = ( ... | (((IO::kInversion == Inversion::On)&&(IO::kType == Type::Input))  ? 1u << IO::kPin : 0u) );
         constexpr static std::uint32_t kOutputInvMask    = ( ... | (((IO::kInversion == Inversion::On)&&(IO::kType == Type::Output)) ? 1u << IO::kPin : 0u) );
     
-        inline constexpr static void Init() noexcept(true) {
+        inline static void Init() noexcept(true) {
           GPIO_TypeDef* regs { reinterpret_cast<GPIO_TypeDef*>(kPort) };
 
           regs->MODER &= kModerClearMask;

@@ -3,7 +3,8 @@
 
 void board::Init()
 {
-  RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN | RCC_AHB1ENR_CRCEN;
+  RCC->IOPENR   |= RCC_IOPENR_GPIOAEN;
+  RCC->IOPSMENR |= RCC_IOPSMENR_GPIOASMEN;
   
   board::Systick::Init();
   board::Leds::Init();

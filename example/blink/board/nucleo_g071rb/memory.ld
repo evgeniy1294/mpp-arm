@@ -1,9 +1,8 @@
 
 MEMORY
 {
-  FLASH  (rx) : ORIGIN = 0x08000000, LENGTH = 0x100000
-  RAM    (xrw): ORIGIN = 0x20000000, LENGTH = 0x20000
-  CCMRAM (xrw): ORIGIN = 0x10000000, LENGTH = 0x10000
+  FLASH  (rx) : ORIGIN = 0x08000000, LENGTH = 0x20000
+  RAM    (xrw): ORIGIN = 0x20000000, LENGTH = 0x9000
 }
 
 ENTRY(ResetHandler)
@@ -11,7 +10,7 @@ ENTRY(ResetHandler)
 __initial_sp__   = ORIGIN(RAM) + LENGTH(RAM); 
 __firmware_end__ = ORIGIN(FLASH) + SIZEOF(.isr_flash) + SIZEOF(.text) + SIZEOF(.rodata) + 16; /* arm + init_array + fini_array = 16 bytes */
 __data_load__    = LOADADDR(.data);
-__siccmram       = LOADADDR(.ccmram);
+
 
 __MinHeapSize  = 0x200;  /* required amount of heap  */
 __MinStackSize = 0x400;  /* required amount of stack */
@@ -120,21 +119,6 @@ SECTIONS
 
   
 
-
-
-  .ccmram :
-  {
-    . = ALIGN(4);
-    _sccmram = .;      
-    *(.ccmram)
-    *(.ccmram*)
-    
-    . = ALIGN(4);
-    _eccmram = .;     
-  } >CCMRAM AT> FLASH
-
-  
-  
   
 
   

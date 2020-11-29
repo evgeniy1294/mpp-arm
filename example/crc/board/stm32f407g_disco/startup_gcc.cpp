@@ -45,7 +45,7 @@ extern "C" {
     board::Init();
     
     //  Call static constructors
-    //__libc_init_array();
+    __libc_init_array();
     
     main();
 

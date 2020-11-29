@@ -86,7 +86,9 @@ typedef enum IRQn
 //____________________INCLUDE_____________________//
 #include "cmsis_gcc.h"
 #include "core_cm4.h"
-#include "../../src/utils.hpp"
+#include "../../src/utils/ioutils.hpp"
+#include "../../src/utils/timutils.hpp"
+#include "../../src/utils/binutils.hpp"
 #include "../../src/core/cortex_m.hpp"
 #include "../../src/gpio/ti/cc26x2_gpio.hpp"
 
