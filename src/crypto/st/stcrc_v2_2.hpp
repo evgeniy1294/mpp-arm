@@ -28,10 +28,10 @@ namespace mpp::crc {
 		
 		template < class Model >
         constexpr static bool IsValidModel() noexcept(true) {
-          static_assert( ((Model::Width == 7 )||
-                          (Model::Width == 8 )||
-                          (Model::Width == 16)||
-                          (Model::Width == 32)), "Field 'Width' is incorrect, must be 7, 8, 16, 32");
+          static_assert( ((Model::kWidth == 7 )||
+                          (Model::kWidth == 8 )||
+                          (Model::kWidth == 16)||
+                          (Model::kWidth == 32)), "Field 'Width' is incorrect, must be 7, 8, 16, 32");
          
           return true;
         }
@@ -59,11 +59,11 @@ namespace mpp::crc {
               
           
           
-          constexpr std::uint32_t CR_REV_OUT = Model::kRevOut ? CRC_CR_REV_OUT : 0 ;
+          constexpr std::uint32_t CR_REV_OUT = Model::kRefOut ? CRC_CR_REV_OUT : 0 ;
           constexpr std::uint32_t CR_REV_IN  = []() -> std::uint32_t {            
-            if (!Model::kRevIn)
+            if (!Model::kRefIn)
               return RevIn::None;
-            else switch(Model::Width) {
+            else switch(Model::kWidth) {
               case 32u:
                 return RevIn::Word;
               case 16u:
@@ -75,7 +75,7 @@ namespace mpp::crc {
           
           
           constexpr std::uint32_t CR_POLYSIZE = []() -> std::uint32_t {
-            switch (Model::Width)
+            switch (Model::kWidth)
             {
               case 32u:
                 return Width::_32b;
@@ -90,14 +90,14 @@ namespace mpp::crc {
           
           
           constexpr std::uint32_t CR  = CR_REV_OUT | CR_REV_IN | CR_POLYSIZE;
-          constexpr std::uint32_t IDR = (Model::kRevIn ? RevIn::Byte : 0) | 
+          constexpr std::uint32_t IDR = (Model::kRefIn ? RevIn::Byte : RevIn::None) | 
                                         CR_REV_OUT | CR_POLYSIZE;
           
-          crc->CR   = CRC_CR_RESET; 
           crc->CR   = CR;
-          crc-IDR   = IDR;
+          crc->IDR  = IDR;
           crc->INIT = static_cast < std::uint32_t >(Model::kSeed);
           crc->POL  = static_cast < std::uint32_t >(Model::kPoly);
+		  crc->CR   = CRC_CR_RESET; 
         }
           
       
@@ -113,7 +113,7 @@ namespace mpp::crc {
           
         
         while ( pu32 < lu32 )
-          crc->DR = *pu32++;
+          crc->DR = __REV(*pu32++);
         
         
         if constexpr ( (sizeof(T) % 4u) != 0u )
@@ -127,7 +127,7 @@ namespace mpp::crc {
             crc->CR = crc->IDR;
            
             while ( TailByte-- )  
-              crc->DR = *pu8++;
+              *reinterpret_cast< volatile std::uint8_t* >(&crc->DR) = *pu8++;
             
             crc->CR = tmp;
           }
@@ -136,8 +136,43 @@ namespace mpp::crc {
         return;
       }
       
+		
+		
+		
+		
      
-      
+		
+      template< typename T >
+      static void CalculateByByte( CRC_TypeDef* crc, const T* first, const T* last ) noexcept(true)
+      { 
+        const std::uint8_t* pu8 = reinterpret_cast< const std::uint8_t* >(first);
+		  
+        while ( pu8 < reinterpret_cast<const std::uint8_t*>(last) )
+          *reinterpret_cast< volatile std::uint8_t* >(&crc->DR) = *pu8++;
+        
+        
+        return;
+      }
+		
+		
+		
+		
+		
+		
+	  template< typename T >
+      static void CalculateFast( CRC_TypeDef* crc, const T* first, const T* last ) noexcept(true)
+      { 
+        const std::uint32_t* pu32 = reinterpret_cast< const std::uint32_t* >(first);
+		  
+        while ( pu32 < reinterpret_cast<const std::uint32_t*>(last) )
+          crc->DR = *pu32++;
+        
+        
+        return;
+      }
+		
+		
+		
       
       template < class Model >
       inline static std::uint32_t Finalize(CRC_TypeDef* crc) noexcept(true)

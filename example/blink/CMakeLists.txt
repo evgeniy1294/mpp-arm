@@ -266,7 +266,7 @@ set(TARGET_LAUNCHXL_CC1352P OFF CACHE BOOL "Build for launchxl_cc1352p")
     #}}}
 	
 	
-  endif() # TARGET_STM32f407G_DISCO
+  endif() # TARGET_STM32G071_NUCLEO
 # }}}
 
 

@@ -2,7 +2,7 @@
   ***********************************************************
   @author Evgenii Fedoseev
   @file   /board/stm32f407g_disco/board.hpp
-  @brief  Compatible board stm32f407-discovery 
+  @brief  Compatible board stm32g071-nucleo 
   ***********************************************************
 **/
 
@@ -11,7 +11,7 @@
 
 //____________________INCLUDE_____________________//
 #include <cstdint>
-#include "mpp/stm32f407xx.hpp"
+#include "mpp/stm32g071xx.hpp"
 
 
 int main();
@@ -19,7 +19,7 @@ int main();
 
 namespace board
 {
-  // Systick and DWT
+  // Systick
   struct FakeClk {
     constexpr static std::uint32_t kSysClkHz     = 16'000'000u;
     constexpr static std::uint32_t kSysTickClkHz = 16'000'000u; 
@@ -27,6 +27,9 @@ namespace board
 
   using Systick = mpp::core::Systick < FakeClk >;
     
+	
+	
+	
   // Leds
   struct LedTrait final: mpp::gpio::LedTrait
   {
@@ -37,11 +40,21 @@ namespace board
 
   using Leds = mpp::gpio::IoGroup < LedGreen >;
 	
-  // Checksum models
-  using ExampleCrcModel = mpp::crc::POSIX_32
+	
 	
 	
   // Specific function 
   void Init();
+  bool TestSequenceCheck();
+  bool TestSequencePartCheck();
+  void ErrorSignal();
+  void OkSignal();
+	
+	
+	
     
 } // namespace board
+
+
+
+

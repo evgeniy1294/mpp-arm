@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.11.0 FATAL_ERROR)
-project(blink CXX C ASM)
+project(crc CXX C ASM)
 
 
 set(TARGET_STM32f407G_DISCO ON  CACHE BOOL "Build for stm32f407g-disco")
+set(TARGET_STM32G071_NUCLEO ON  CACHE BOOL "Build for stm32g071-nucleo")
 set(TARGET_LAUNCHXL_CC1352P OFF CACHE BOOL "Build for launchxl_cc1352p")
 
 
@@ -53,21 +54,21 @@ set(TARGET_LAUNCHXL_CC1352P OFF CACHE BOOL "Build for launchxl_cc1352p")
 # stm32f407g_disco {{{
   if(TARGET_STM32f407G_DISCO)
     
-    add_executable("blink_stm32f407_disco.elf")
+    add_executable("${CMAKE_PROJECT_NAME}_stm32f407_disco.elf")
     
     
     # Compile Definitions {{{
-      target_compile_options("blink_stm32f407_disco.elf" PRIVATE "-mcpu=cortex-m4" "-mthumb" "-mfloat-abi=hard" "-mfpu=fpv4-sp-d16" "-ggdb3")#"--pedantic")
-      target_link_options   ("blink_stm32f407_disco.elf" PRIVATE "-T${CMAKE_CURRENT_LIST_DIR}/board/stm32f407g_disco/memory.ld" "-Wl,-Map=blink_stm32f407_disco.map" "-Wl,--cref")
-      target_link_options   ("blink_stm32f407_disco.elf" PRIVATE "-mcpu=cortex-m4" "-specs=nosys.specs" "-specs=nano.specs" "-mfloat-abi=hard" "-mfpu=fpv4-sp-d16" )
-      target_link_libraries ("blink_stm32f407_disco.elf" PRIVATE "common_interface_lib")
+      target_compile_options("${CMAKE_PROJECT_NAME}_stm32f407_disco.elf" PRIVATE "-mcpu=cortex-m4" "-mthumb" "-mfloat-abi=hard" "-mfpu=fpv4-sp-d16" "-ggdb3")#"--pedantic")
+      target_link_options   ("${CMAKE_PROJECT_NAME}_stm32f407_disco.elf" PRIVATE "-T${CMAKE_CURRENT_LIST_DIR}/board/stm32f407g_disco/memory.ld" "-Wl,-Map=${CMAKE_PROJECT_NAME}_stm32f407_disco.map" "-Wl,--cref")
+      target_link_options   ("${CMAKE_PROJECT_NAME}_stm32f407_disco.elf" PRIVATE "-mcpu=cortex-m4" "-specs=nosys.specs" "-specs=nano.specs" "-mfloat-abi=hard" "-mfpu=fpv4-sp-d16" )
+      target_link_libraries ("${CMAKE_PROJECT_NAME}_stm32f407_disco.elf" PRIVATE "common_interface_lib")
     # }}}
     
 
 
 
     # Language standart {{{
-    set_target_properties("blink_stm32f407_disco.elf"
+    set_target_properties("${CMAKE_PROJECT_NAME}_stm32f407_disco.elf"
                           PROPERTIES
                             C_STANDARD 11
                             CXX_STANDARD 17
@@ -78,11 +79,11 @@ set(TARGET_LAUNCHXL_CC1352P OFF CACHE BOOL "Build for launchxl_cc1352p")
 
 
     # Target Source {{{
-      target_include_directories ("blink_stm32f407_disco.elf"
+      target_include_directories ("${CMAKE_PROJECT_NAME}_stm32f407_disco.elf"
                                    PRIVATE "${CMAKE_CURRENT_LIST_DIR}/src"
 	    							       "${CMAKE_CURRENT_LIST_DIR}/board/stm32f407g_disco")
 								 
-      target_sources("blink_stm32f407_disco.elf"
+      target_sources("${CMAKE_PROJECT_NAME}_stm32f407_disco.elf"
                       PRIVATE "${CMAKE_CURRENT_LIST_DIR}/src/main.cpp"
 	  				          "${CMAKE_CURRENT_LIST_DIR}/../../src/core/cortex_m.cpp"
                               "${CMAKE_CURRENT_LIST_DIR}/board/stm32f407g_disco/startup_gcc.cpp"
@@ -95,35 +96,20 @@ set(TARGET_LAUNCHXL_CC1352P OFF CACHE BOOL "Build for launchxl_cc1352p")
     # Libraries {{{
    
       if(DEFINED ENV{CMSIS_STM32F4_PATH})
-        target_include_directories ("blink_stm32f407_disco.elf"
+        target_include_directories ("${CMAKE_PROJECT_NAME}_stm32f407_disco.elf"
                                     PRIVATE "$ENV{CMSIS_STM32F4_PATH}")
       endif()
 	
     # }}} 
-  
-    string(ASCII 27 ESC)
-	
 
-						   
-	# PreLink command {{{
-	  add_custom_command(TARGET blink_stm32f407_disco.elf
-                           PRE_LINK
-	                         COMMAND ${CMAKE_COMMAND} -E cmake_link_script CMakeFiles/blink_stm32f407_disco.elf.dir/link.txt --verbose=$(VERBOSE)
-							 COMMAND ${CMAKE_OBJCOPY} -Obinary blink_stm32f407_disco.elf blink_stm32f407_disco.bin
-							 COMMAND jacksum -f -a crc:32,04c11db7,ffffffff,false,false,0 -x -F "${ESC}#CHECKSUM" ${CMAKE_CURRENT_BINARY_DIR}/blink_stm32f407_disco.bin
-							 #rebuild checksum.cpp with crc32
-							 COMMAND rm ${CMAKE_CURRENT_BINARY_DIR}/blink_stm32f407_disco.elf ${CMAKE_CURRENT_BINARY_DIR}/blink_stm32f407_disco.bin 
-					     )
-    #}}}
-	
 	
 	
     # Post build command {{{
-      add_custom_command(TARGET blink_stm32f407_disco.elf
+      add_custom_command(TARGET ${CMAKE_PROJECT_NAME}_stm32f407_disco.elf
                            POST_BUILD
-                             COMMAND ${CMAKE_OBJCOPY} -Obinary blink_stm32f407_disco.elf blink_stm32f407_disco.bin
-                             COMMAND ${CMAKE_OBJCOPY} -Oihex   blink_stm32f407_disco.elf blink_stm32f407_disco.hex
-                             COMMAND ${CMAKE_SIZE_UTIL} blink_stm32f407_disco.elf 
+                             COMMAND ${CMAKE_OBJCOPY} -Obinary ${CMAKE_PROJECT_NAME}_stm32f407_disco.elf ${CMAKE_PROJECT_NAME}_stm32f407_disco.bin
+                             COMMAND ${CMAKE_OBJCOPY} -Oihex   ${CMAKE_PROJECT_NAME}_stm32f407_disco.elf ${CMAKE_PROJECT_NAME}_stm32f407_disco.hex
+                             COMMAND ${CMAKE_SIZE_UTIL} ${CMAKE_PROJECT_NAME}_stm32f407_disco.elf 
 							 COMMAND echo)
     #}}}
 	
@@ -207,6 +193,80 @@ set(TARGET_LAUNCHXL_CC1352P OFF CACHE BOOL "Build for launchxl_cc1352p")
     #}}} 
   
   endif() #TARGET_LAUNCHXL_CC1352P
+# }}}
+
+
+
+
+
+
+
+
+# stm32g071_nucleo {{{
+  if(TARGET_STM32G071_NUCLEO)
+    
+    add_executable("${CMAKE_PROJECT_NAME}_stm32g071_nucleo.elf")
+    
+    
+    # Compile Definitions {{{
+      target_compile_options("${CMAKE_PROJECT_NAME}_stm32g071_nucleo.elf" PRIVATE "-mcpu=cortex-m0plus"   "-mthumb"   "-mfloat-abi=soft"  "-ggdb3" )
+      target_link_options   ("${CMAKE_PROJECT_NAME}_stm32g071_nucleo.elf" PRIVATE "-T${CMAKE_CURRENT_LIST_DIR}/board/nucleo_g071rb/memory.ld" "-Wl,-Map=${CMAKE_PROJECT_NAME}_stm32g071_nucleo.map" "-Wl,--cref")
+      target_link_options   ("${CMAKE_PROJECT_NAME}_stm32g071_nucleo.elf" PRIVATE "-mcpu=cortex-m0plus"   "-specs=nosys.specs"   "-specs=nano.specs"   "-mfloat-abi=soft"  )
+      target_link_libraries ("${CMAKE_PROJECT_NAME}_stm32g071_nucleo.elf" PRIVATE "common_interface_lib")
+    # }}}
+    
+
+
+
+    # Language standart {{{
+    set_target_properties("${CMAKE_PROJECT_NAME}_stm32g071_nucleo.elf"
+                          PROPERTIES
+                            C_STANDARD 11
+                            CXX_STANDARD 17
+                            CXX_STANDARD_REQUIRED YES)
+    # }}}
+
+
+
+
+    # Target Source {{{
+      target_include_directories ("${CMAKE_PROJECT_NAME}_stm32g071_nucleo.elf"
+                                   PRIVATE "${CMAKE_CURRENT_LIST_DIR}/src"
+	    							       "${CMAKE_CURRENT_LIST_DIR}/board/nucleo_g071rb")
+								 
+      target_sources("${CMAKE_PROJECT_NAME}_stm32g071_nucleo.elf"
+                      PRIVATE "${CMAKE_CURRENT_LIST_DIR}/src/main.cpp"
+	  				          "${CMAKE_CURRENT_LIST_DIR}/../../src/core/cortex_m.cpp"
+                              "${CMAKE_CURRENT_LIST_DIR}/board/nucleo_g071rb/startup_gcc.cpp"
+	  				          "${CMAKE_CURRENT_LIST_DIR}/board/nucleo_g071rb/board.cpp")
+    # }}}	
+  
+  
+  
+  
+    # Libraries {{{
+   
+      if(DEFINED ENV{CMSIS_STM32G0_PATH})
+        target_include_directories ("${CMAKE_PROJECT_NAME}_stm32g071_nucleo.elf"
+                                    PRIVATE "$ENV{CMSIS_STM32G0_PATH}")
+      endif()
+	
+    # }}} 
+  
+ 
+	
+	
+    # Post build command {{{
+      add_custom_command(TARGET ${CMAKE_PROJECT_NAME}_stm32g071_nucleo.elf
+                           POST_BUILD
+                             COMMAND ${CMAKE_OBJCOPY} -Obinary ${CMAKE_PROJECT_NAME}_stm32g071_nucleo.elf ${CMAKE_PROJECT_NAME}_stm32g071_nucleo.bin
+                             COMMAND ${CMAKE_OBJCOPY} -Oihex   ${CMAKE_PROJECT_NAME}_stm32g071_nucleo.elf ${CMAKE_PROJECT_NAME}_stm32g071_nucleo.hex
+                             COMMAND ${CMAKE_SIZE_UTIL} ${CMAKE_PROJECT_NAME}_stm32g071_nucleo.elf 
+							 COMMAND echo)
+    #}}}
+	
+	
+  endif() # TARGET_STM32G071_NUCLEO
 # }}}
 
 

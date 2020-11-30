@@ -26,7 +26,6 @@ namespace board
   };
 
   using Systick = mpp::core::Systick < FakeClk >;
-  using ClockCounter = mpp::core::ClockCounter < FakeClk >;
     
   // Leds
   struct LedTrait final: mpp::gpio::LedTrait
@@ -49,5 +48,10 @@ namespace board
 	
   // Specific function 
   void Init();
+  bool TestSequenceCheck();
+  bool TestSequencePartCheck();
+  void ErrorSignal();
+  void OkSignal();
+	
     
 } // namespace board
