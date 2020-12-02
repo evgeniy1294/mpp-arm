@@ -23,7 +23,7 @@
 namespace mpp::crc {
   
   template< class Model >
-  class Logic {
+  class Logic final {
     static_assert(::std::is_same_v< Model, ::std::decay_t< decltype(Model()) > >);
     static_assert((Model::kWidth <= sizeof(typename Model::result_type) * 8), "Fields 'result_type' and 'kWidth' is incorrect");
     static_assert((Model::kWidth >= 4), "Fields 'kWidth' must be greater or equal 4");

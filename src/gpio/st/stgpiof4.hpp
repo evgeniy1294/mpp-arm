@@ -2,7 +2,7 @@
   ***********************************************************
   @author Evgenii Fedoseev
   @file   /src/gpio/st/stgpiof4.hpp
-  @brief  Compatible series: STM32F4 
+  @brief  Compatible series: STM32F4, STM32G0 
   ***********************************************************
 **/
 
@@ -44,7 +44,7 @@ namespace mpp::gpio
   inline namespace f4
   {      
     enum class Type         { Input = 0b00, Output = 0b01, Alternate = 0b10, Analog = 0b11 };
-    enum class Pull         { Floating = 0b00, Up = 0b01, Down = 0b10, None};  
+    enum class Pull         { Floating = 0b00, Up = 0b01, Down = 0b10, None };  
     enum class Speed        { Low = 0b00, Medium = 0b01, High = 0b10, VeryHigh = 0b11, None };
     enum class Driver       { PushPull = 0b0, OpenDrain = 0b1, None };
     enum class DefaultState { High, Low, None };
@@ -119,6 +119,7 @@ namespace mpp::gpio
           if constexpr (Trait::kType == Type::Input) {
             static_assert((Trait::kDriver == Driver::None), "Use 'Driver::None' for input pin");
             static_assert((Trait::kSpeed == Speed::None),   "Use 'Speed::None' for input pin");
+			static_assert((Trait::kPull != Pull::None),   "Don't use 'Pull::None' for input pin");  
             static_assert((Trait::kAf == 0), "Use 'Af == 0' for non alternate function pin");
             static_assert((Trait::kDefaultState == DefaultState::None), "Use 'DefaultState::None' for non output pin");
             static_assert((Trait::kInversion != Inversion::None), "Don't use 'Inversion::None' for output pin");
@@ -130,6 +131,7 @@ namespace mpp::gpio
          if constexpr (Trait::kType == Type::Output) {
            static_assert((Trait::kDriver != Driver::None), "Don't use 'Driver::None' for output pin");
            static_assert((Trait::kSpeed != Speed::None), "Don't use 'Speed::None' for output pin");
+		   static_assert((Trait::kPull != Pull::None),   "Don't use 'Pull::None' for output pin");
            static_assert((Trait::kDefaultState != DefaultState::None), "Don't use 'DefaultState::None' for output pin");
            static_assert((Trait::kAf == 0), "Use 'Af == 0' for non alternate function pin");
            static_assert((Trait::kInversion != Inversion::None), "Don't use 'Inversion::None' for output pin");
@@ -155,7 +157,8 @@ namespace mpp::gpio
            static_assert((Trait::kSpeed != Speed::None), "Don't use 'Speed::None' for AF pin"); 
            static_assert((Trait::kDefaultState == DefaultState::None), "Use 'DefaultState::None' for non output pin");
            static_assert((Trait::kInversion == Inversion::None), "Use 'Inversion::None' for AF pin");
-           static_assert((Trait::kInversion == Inversion::None), "Use 'Inversion::None' for AF pin");
+		   static_assert((Trait::kPull != Pull::None),   "Don't use 'Pull::None' for AF pin");
+           static_assert(((Trait::kAf != 0)&&(Trait::kAf < 16)), "Use 'Af != 0' for AF pin");
           
            return true;
          }
@@ -197,8 +200,8 @@ namespace mpp::gpio
                                                                (kStateDefault == DefaultState::High) ? 0b1u << kPin : 0b1u << (kPin+16u);
         static constexpr std::uint32_t kBsrrSetMask      = (kType != Type::Output) ? 0u : (kInversion == Inversion::On) ? 0b1ul << (kPin+16u) : 0b1ul << kPin;
         static constexpr std::uint32_t kBsrrResetMask    = (kType != Type::Output) ? 0u : (kInversion == Inversion::On) ? 0b1ul << kPin : 0b1ul << (kPin+16u);
-        static constexpr std::uint32_t kOdrMask          = (kType != Type::Output) ? 0u : 1ul << static_cast<std::uint32_t>(kPin);
-        static constexpr std::uint32_t kIdrMask          = (kType != Type::Input)  ? 0u : 1ul << static_cast<std::uint32_t>(kPin);
+        static constexpr std::uint32_t kOdrMask          = (kType != Type::Output) ? 0u : 1ul << kPin;
+        static constexpr std::uint32_t kIdrMask          = (kType != Type::Input)  ? 0u : 1ul << kPin;
         
         inline static void Init() noexcept(true) {
           GPIO_TypeDef* regs { reinterpret_cast<GPIO_TypeDef*>(kPort) };
@@ -303,7 +306,7 @@ namespace mpp::gpio
         constexpr static bool IsValidIo() { return ( ((static_cast<std::uint32_t>(T::kPort) == static_cast<std::uint32_t>(Ts::kPort)) && (T::kPin != Ts::kPin)) && ... ); }
 
         template < class T, class... Ts >
-        constexpr static bool IsValidGroup()
+        constexpr static bool IsValidGroup() // !!! Result Incorrect
         {
           if constexpr (sizeof...(Ts) == 0u)
             return true;
@@ -392,7 +395,7 @@ namespace mpp::gpio
            
           return ret;
         }
-  };
+    };
       
     
         /* Saved for EXTI module                                       

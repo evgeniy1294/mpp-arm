@@ -23,7 +23,7 @@ namespace mpp::crc {
   inline namespace stcrc_v2_2 {
     
     
-    class HardwareLogic {
+    class HardwareLogic final{
 	  private:
 		
 		template < class Model >

@@ -3,7 +3,7 @@ project(blink CXX C ASM)
 
 
 set(TARGET_STM32f407G_DISCO ON  CACHE BOOL "Build for stm32f407g-disco")
-set(TARGET_STM32G071_NUCLEO ON  CACHE BOOL "Build for stm32g071-nucleo")
+set(TARGET_STM32G071_NUCLEO OFF CACHE BOOL "Build for stm32g071-nucleo")
 set(TARGET_LAUNCHXL_CC1352P OFF CACHE BOOL "Build for launchxl_cc1352p")
 
 

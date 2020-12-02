@@ -20,8 +20,7 @@ namespace mpp::crc
   {
 	  
 	  
-    class HardwareLogic
-    {
+    class HardwareLogic final {
       public:
 
         inline static std::uint32_t Finalize(CRC_TypeDef* crc) noexcept(true)
