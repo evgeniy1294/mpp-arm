@@ -306,12 +306,12 @@ namespace mpp::gpio
         constexpr static bool IsValidIo() { return ( ((static_cast<std::uint32_t>(T::kPort) == static_cast<std::uint32_t>(Ts::kPort)) && (T::kPin != Ts::kPin)) && ... ); }
 
         template < class T, class... Ts >
-        constexpr static bool IsValidGroup() // !!! Result Incorrect
+        constexpr static bool IsValidGroup() 
         {
           if constexpr (sizeof...(Ts) == 0u)
             return true;
           else
-            return IsValidIo<Ts...>() && IsValidGroup<Ts...>();
+            return IsValidIo<T, Ts...>() && IsValidGroup<Ts...>();
         }
       
         static_assert(IsValidGroup<IO...>(), "All <kPort> fields must be equal, all <kPin> fields must be unique");

@@ -12,6 +12,51 @@
 #include <cstdint>
 #include <type_traits>
 
+/* #define STM32F100xB  */   /*!< STM32F100C4, STM32F100R4, STM32F100C6, STM32F100R6, STM32F100C8, STM32F100R8, STM32F100V8, STM32F100CB, STM32F100RB and STM32F100VB */
+/* #define STM32F100xE */    /*!< STM32F100RC, STM32F100VC, STM32F100ZC, STM32F100RD, STM32F100VD, STM32F100ZD, STM32F100RE, STM32F100VE and STM32F100ZE */
+/* #define STM32F101x6  */   /*!< STM32F101C4, STM32F101R4, STM32F101T4, STM32F101C6, STM32F101R6 and STM32F101T6 Devices */
+/* #define STM32F101xB  */   /*!< STM32F101C8, STM32F101R8, STM32F101T8, STM32F101V8, STM32F101CB, STM32F101RB, STM32F101TB and STM32F101VB */
+/* #define STM32F101xE */    /*!< STM32F101RC, STM32F101VC, STM32F101ZC, STM32F101RD, STM32F101VD, STM32F101ZD, STM32F101RE, STM32F101VE and STM32F101ZE */ 
+/* #define STM32F101xG  */   /*!< STM32F101RF, STM32F101VF, STM32F101ZF, STM32F101RG, STM32F101VG and STM32F101ZG */
+/* #define STM32F102x6 */    /*!< STM32F102C4, STM32F102R4, STM32F102C6 and STM32F102R6 */
+/* #define STM32F102xB  */   /*!< STM32F102C8, STM32F102R8, STM32F102CB and STM32F102RB */
+/* #define STM32F103x6  */   /*!< STM32F103C4, STM32F103R4, STM32F103T4, STM32F103C6, STM32F103R6 and STM32F103T6 */
+/* #define STM32F103xB  */   /*!< STM32F103C8, STM32F103R8, STM32F103T8, STM32F103V8, STM32F103CB, STM32F103RB, STM32F103TB and STM32F103VB */
+/* #define STM32F103xE */    /*!< STM32F103RC, STM32F103VC, STM32F103ZC, STM32F103RD, STM32F103VD, STM32F103ZD, STM32F103RE, STM32F103VE and STM32F103ZE */
+/* #define STM32F103xG  */   /*!< STM32F103RF, STM32F103VF, STM32F103ZF, STM32F103RG, STM32F103VG and STM32F103ZG */
+/* #define STM32F105xC */    /*!< STM32F105R8, STM32F105V8, STM32F105RB, STM32F105VB, STM32F105RC and STM32F105VC */
+/* #define STM32F107xC  */   /*!< STM32F107RB, STM32F107VB, STM32F107RC and STM32F107VC */  
+
+
+
+/* 
+  STM32F100xB    // GPIO: A, B, C, D, E
+  STM32F100xE    // GPIO: A, B, C, D, E, F, G
+  STM32F101x6    // GPIO: A, B, C, D
+  STM32F101xB    // GPIO: A, B, C, D, E
+  STM32F101xE    // GPIO: A, B, C, D, E, F, G
+  STM32F101xG    // GPIO: A, B, C, D, E, F, G
+  STM32F102x6    // GPIO: A, B, C, D 
+  STM32F102xB    // GPIO: A, B, C, D 
+  STM32F103x6    // GPIO: A, B, C, D 
+  STM32F103xB    // GPIO: A, B, C, D, E
+  STM32F103xE    // GPIO: A, B, C, D, E, F, G
+  STM32F103xG    // GPIO: A, B, C, D, E, F, G
+  STM32F105xC    // GPIO: A, B, C, D, E
+  STM32F107xC    // GPIO: A, B, C, D, E
+*/
+
+#if defined (STM32F100C4)||(STM32F100R4)||(STM32F100C6)||(STM32F100R6)|| \
+            (STM32F100C8)||(STM32F100R8)||(STM32F100V8)||(STM32F100CB)|| \
+            (STM32F100RB)||(STM32F100VB) 
+  #include "spec/STM32F100xB_gpio.hpp"
+#elif defined (STM32F100RC)||(STM32F100VC)||(STM32F100ZC)|| \
+              (STM32F100RD)||(STM32F100VD)||(STM32F100ZD)|| \
+		        	(STM32F100RE)||(STM32F100VE)||(STM32F100ZE)
+  #include "spec/STM32F100xE_gpio.hpp"
+#elif defined (STM32F101C4)||(STM32F101R4)||(STM32F101T4)|| \
+              (STM32F101C6)||(STM32F101R6)||(STM32F101T6)
+  #include "spec/STM32F101x6_gpio.hpp"
 
 
 namespace mpp::gpio
@@ -27,6 +72,175 @@ namespace mpp::gpio
     enum class Inversion    { Off, On, None };
     
     
+    /*! 
+      Inherit your OutputTrait from this struct. 
+      Child must contain fields: kSpeed, kDriver, kInversion, kDefaultState.
+    */
+    struct OutputTrait {
+      constexpr static Type kType = Type::Output; 
+      constexpr static Pull kPull = Pull::None;
+      
+      /* 
+        Your trait must contain this field:
+          constexpr static Speed kSpeed = Speed::Low, Medium, High;
+          constexpr static Driver kDriver = Driver::PushPull, OpenDrain; 
+          constexpr static Inversion kInversion = Inversion::Off, On;
+          constexpr static DefaultState kDefaultState = DefaultState::High, Low;
+      */ 
+    };
+      
+
+      
+    /*! 
+      Inherit your LedTrait from this struct. 
+      Child must contain fields: kInversion.
+    */
+    struct LedTrait: OutputTrait {
+      constexpr static Driver kDriver = Driver::PushPull;
+      constexpr static Speed kSpeed = Speed::Low;
+      constexpr static DefaultState kDefaultState = DefaultState::Low;    
+        
+      /*
+        Your trait must contain this field:
+          constexpr static Inversion kInversion = Inversion::Off, On;
+      */
+    };
+      
+      
+      
+      
+    /*! 
+      Inherit your InputTrait from this struct. 
+      Child must contain fields: kPull, kInversion.
+    */ 
+    struct InputTrait {
+      constexpr static Type kType = Type::Input; 
+      constexpr static Driver kDriver = Driver::None;
+      constexpr static DefaultState kDefaultState = DefaultState::None;   
+      constexpr static Speed kSpeed = Speed::None;
+        
+      /*
+        Your trait must contain this field:
+          constexpr static Pull kPull = Pull::Floating, Up, Down;
+          constexpr static Inversion kInversion = Inversion::Off, On;
+      */ 
+    };
+
+    
+    
+    /*! 
+      Output trait for alternate function IO
+    */
+    template< Driver driver, Speed speed >
+    struct AlternateOutputTrait final : AlternateTrait {
+      constexpr static Type kType = Type::Alternate; 
+      constexpr static Pull kPull = Pull::None;
+      constexpr static DefaultState kDefaultState = DefaultState::None; 
+      constexpr static Inversion kInversion = Inversion::None;
+      constexpr static Speed kSpeed   = speed;
+      constexpr static Driver kDriver = driver; 
+    };
+    
+    
+  
+    
+    /*! 
+      Input IO trait for alternate function IO
+    */
+    template< Pull pull >
+    struct AlternateInputTrait final: InputTrait {
+      constexpr static Pull kPull = pull;
+      constexpr static Inversion kInversion = Inversion::Off;
+    };
+    
+
+    
+    
+    using TimOutputChannel        = AlternateOutputTrait< Driver::PushPull, Speed::High >;     
+    using TimInputChannel         = AlternateInputTrait < Pull::Floating >;
+    using TimBreakInput           = AlternateInputTrait < Pull::Floating >;   
+    using TimExternalTriggerInput = AlternateInputTrait < Pull::Floating >;
+      
+    
+    using UsartTx          = AlternateOutputTrait< Driver::PushPull, Speed::High >;     
+    using UsartRts         = AlternateOutputTrait< Driver::PushPull, Speed::Low >;     
+    using UsartCk          = AlternateOutputTrait< Driver::PushPull, Speed::High >;     
+    using UsartRxFloating  = AlternateInputTrait < Pull::Floating >;  
+    using UsartRxPullUp    = AlternateInputTrait < Pull::Up >;
+    using UsartCtsFloating = AlternateInputTrait < Pull::Floating >;  
+    using UsartCtsPullUp   = AlternateInputTrait < Pull::Up >;
+        
+    
+    using SpiMasterSck          = AlternateOutputTrait< Driver::PushPull,  Speed::High >;
+    using SpiMasterMosi         = AlternateOutputTrait< Driver::PushPull,  Speed::High >;
+    using SpiMasterNss          = AlternateOutputTrait< Driver::PushPull,  Speed::High >;
+    using SpiSlaveMisoPtP       = AlternateOutputTrait< Driver::PushPull,  Speed::High >;
+    using SpiSlaveMisoMS        = AlternateOutputTrait< Driver::OpenDrain, Speed::High >;
+    using SpiSlaveSck           = AlternateInputTrait < Pull::Floating >;  
+    using SpiSlaveMosiFloating  = AlternateInputTrait < Pull::Floating >;  
+    using SpiSlaveMosiPullUp    = AlternateInputTrait < Pull::Up >;
+    using SpiMasterMisoFloating = AlternateInputTrait < Pull::Floating >; 
+    using SpiMasterMisoPullUp   = AlternateInputTrait < Pull::Up >;
+    using SpiSlaveNssFloating   = AlternateInputTrait < Pull::Floating >; 
+    using SpiSlaveNssPullUp     = AlternateInputTrait < Pull::Up >; 
+    using SpiSlaveNssPullDown   = AlternateInputTrait < Pull::Down >; 
+    
+  
+    using I2SMasterWs           = AlternateOutputTrait< Driver::PushPull, Speed::High >;
+    using I2SMasterCk           = AlternateOutputTrait< Driver::PushPull, Speed::High >;
+    using I2STransmitterSd      = AlternateOutputTrait< Driver::PushPull, Speed::High >;
+    using I2SMasterMck          = AlternateOutputTrait< Driver::PushPull, Speed::High >;
+    using I2SSlaveWs            = AlternateInputTrait < Pull::Floating >; 
+    using I2SSlaveCk            = AlternateInputTrait < Pull::Floating >;     
+    using I2SReceiverSdFloating = AlternateInputTrait < Pull::Floating >;
+    using I2SReceiverSdPullUp   = AlternateInputTrait < Pull::Up >;
+    using I2SReceiverSdPullDown = AlternateInputTrait < Pull::Down >;
+
+
+    using I2CScl = AlternateOutputTrait< Driver::OpenDrain, Speed::Medium >;
+    using I2CSda = AlternateOutputTrait< Driver::OpenDrain, Speed::Medium >;
+    
+    
+    using CanTx         = AlternateOutputTrait< Driver::PushPull, Speed::High >;
+    using CanRxFloating = AlternateInputTrait < Pull::Floating >;
+    using CanRxPullUp   = AlternateInputTrait < Pull::Up >;
+         
+     
+    using OtgFsSof        = AlternateOutputTrait< Driver::PushPull, Speed::High >;
+    using OtgFsVbus       = AlternateInputTrait < Pull::Floating >;
+    using OtgFsIdFloating = AlternateInputTrait < Pull::Floating >;     
+    using OtgFsIdPullUp   = AlternateInputTrait < Pull::Up >; 
+    
+
+    using SdioCk   = AlternateOutputTrait< Driver::PushPull, Speed::High >;
+    using SdioCmd  = AlternateOutputTrait< Driver::PushPull, Speed::High >;
+    using SdioData = AlternateOutputTrait< Driver::PushPull, Speed::High >;
+    
+    
+    using FsmcAddr          = AlternateOutputTrait< Driver::PushPull, Speed::High >;
+    using FsmcData          = AlternateOutputTrait< Driver::PushPull, Speed::High >;
+    using FsmcCk            = AlternateOutputTrait< Driver::PushPull, Speed::High >;
+    using FsmcNoe           = AlternateOutputTrait< Driver::PushPull, Speed::High >;
+    using FsmcNwe           = AlternateOutputTrait< Driver::PushPull, Speed::High >;
+    using FsmcNe            = AlternateOutputTrait< Driver::PushPull, Speed::High >;
+    using FsmcNce           = AlternateOutputTrait< Driver::PushPull, Speed::High >;
+    using FsmcNl            = AlternateOutputTrait< Driver::PushPull, Speed::High >;
+    using FsmcNbl           = AlternateOutputTrait< Driver::PushPull, Speed::High >;
+    using FsmcNiord         = AlternateOutputTrait< Driver::PushPull, Speed::High >;
+    using FsmcNiowr         = AlternateOutputTrait< Driver::PushPull, Speed::High >;
+    using FsmcNreg          = AlternateOutputTrait< Driver::PushPull, Speed::High >;
+    using FsmcNios16        = AlternateInputTrait < Pull::Floating >;
+    using FsmcIntr          = AlternateInputTrait < Pull::Floating >;
+    using FsmcInt           = AlternateInputTrait < Pull::Floating >;
+    using FsmcNwaitFloating = AlternateInputTrait < Pull::Floating >;
+    using FsmcNwaitPullUp   = AlternateInputTrait < Pull::Up >;
+    using FsmcCdFloating    = AlternateInputTrait < Pull::Floating >;
+    using FsmcCdPullUp      = AlternateInputTrait < Pull::Up >;
+    
+    
+    
+    
+      
     template < class IO, class Trait > class Gpio final {
       static_assert(::std::is_same_v< Trait, ::std::decay_t< decltype(Trait()) > >);
       static_assert(::std::is_same_v< IO,    ::std::decay_t< decltype(IO()) > >);
@@ -84,14 +298,11 @@ namespace mpp::gpio
        static_assert(IsValidTrait(), "This trait contains error");
        static_assert(IsValidIo< IO >(), "You try use incorrect pin id");
       
-      
-      
-      
       public:
         static constexpr Port kPort                 = IO::kPort;
         static constexpr std::uint32_t kPin         = IO::kPin;
         static constexpr Type kType                 = Trait::kType;
-        static constexpr Driver kDriver             = Trait::Driver;
+        static constexpr Driver kDriver             = Trait::kDriver;
         static constexpr Pull kPull                 = Trait::kPull;
         static constexpr Speed kSpeed               = Trait::kSpeed;
         static constexpr Inversion kInversion       = Trait::kInversion;
@@ -187,7 +398,7 @@ namespace mpp::gpio
           if constexpr (sizeof...(Ts) == 0u)
             return true;
           else
-            return IsValidIo<Ts...>() && IsValidGroup<Ts...>();
+            return IsValidIo<T, Ts...>() && IsValidGroup<Ts...>();
         }
       
         static_assert(IsValidGroup<IO...>(), "All <kPort> fields must be equal, all <kPin> fields must be unique");
