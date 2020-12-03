@@ -1,9 +1,9 @@
 /**
   ***********************************************************
   @file   /src/gpio/st/spec/STM32F100xE_gpio.hpp
-  @brief  For STM32F100RC, STM32F100VC, STM32F100ZC, 
-              STM32F100RD, STM32F100VD, STM32F100ZD,
-			  STM32F100RE, STM32F100VE and STM32F100ZE  
+  @brief  Support: STM32F100RC, STM32F100VC, STM32F100ZC, 
+          STM32F100RD, STM32F100VD, STM32F100ZD,
+		  STM32F100RE, STM32F100VE and STM32F100ZE  
   ***********************************************************
 **/
 
@@ -12,9 +12,7 @@
 //____________________INCLUDE_____________________//
 #include <cstdint>
 
-#if defined (STM32F100RC)||(STM32F100VC)||(STM32F100ZC)|| \
-            (STM32F100RD)||(STM32F100VD)||(STM32F100ZD)|| \
-			(STM32F100RE)||(STM32F100VE)||(STM32F100ZE)
+#if defined (STM32F100xE)
   #include "stm32f100xe.h"
 #else
   #error "You must define supported target"

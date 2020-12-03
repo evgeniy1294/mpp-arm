@@ -1,9 +1,9 @@
 /**
   ***********************************************************
   @file   /src/gpio/st/spec/STM32F100xB_gpio.hpp
-  @brief  For STM32F100C4, STM32F100R4, STM32F100C6, 
-              STM32F100R6, STM32F100C8, STM32F100R8,
-			  STM32F100V8, STM32F100CB, STM32F100RB and STM32F100VB       
+  @brief  Support: STM32F100C4, STM32F100R4, STM32F100C6, 
+          STM32F100R6, STM32F100C8, STM32F100R8,
+		  STM32F100V8, STM32F100CB, STM32F100RB and STM32F100VB       
   ***********************************************************
 **/
 
@@ -12,9 +12,7 @@
 //____________________INCLUDE_____________________//
 #include <cstdint>
 
-#if defined (STM32F100C4)||(STM32F100R4)||(STM32F100C6)||(STM32F100R6)|| \
-            (STM32F100C8)||(STM32F100R8)||(STM32F100V8)||(STM32F100CB)|| \
-            (STM32F100RB)||(STM32F100VB) 
+#if defined (STM32F100xB)
   #include "stm32f100xb.h"
 #else
   #error "You must define supported target"

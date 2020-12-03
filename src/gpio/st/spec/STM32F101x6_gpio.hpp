@@ -1,8 +1,8 @@
 /**
   ***********************************************************
   @file   /src/gpio/st/spec/STM32F101x6_gpio.hpp
-  @brief  For STM32F101C4, STM32F101R4, STM32F101T4, 
-              STM32F101C6, STM32F101R6 and STM32F101T6     
+  @brief  Support: STM32F101C4, STM32F101R4, STM32F101T4, 
+          STM32F101C6, STM32F101R6 and STM32F101T6     
   ***********************************************************
 **/
 
@@ -11,8 +11,7 @@
 //____________________INCLUDE_____________________//
 #include <cstdint>
 
-#if defined (STM32F101C4)||(STM32F101R4)||(STM32F101T4)|| \
-            (STM32F101C6)||(STM32F101R6)||(STM32F101T6)
+#if defined (STM32F101x6)
   #include "stm32f101x6.h"
 #else
   #error "You must define supported target"

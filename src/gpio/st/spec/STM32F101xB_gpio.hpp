@@ -1,9 +1,9 @@
 /**
   ***********************************************************
-  @file   /src/gpio/st/spec/STM32F100xB_gpio.hpp
-  @brief  For STM32F100C4, STM32F100R4, STM32F100C6, 
-              STM32F100R6, STM32F100C8, STM32F100R8,
-			  STM32F100V8, STM32F100CB, STM32F100RB and STM32F100VB       
+  @file   /src/gpio/st/spec/STM32F101xB_gpio.hpp
+  @brief  Support: STM32F101C8, STM32F101R8, STM32F101T8, 
+          STM32F101V8, STM32F101CB, STM32F101RB,
+		  STM32F101TB, STM32F101VB      
   ***********************************************************
 **/
 
@@ -12,10 +12,8 @@
 //____________________INCLUDE_____________________//
 #include <cstdint>
 
-#if defined (STM32F100C4)||(STM32F100R4)||(STM32F100C6)||(STM32F100R6)|| \
-            (STM32F100C8)||(STM32F100R8)||(STM32F100V8)||(STM32F100CB)|| \
-            (STM32F100RB)||(STM32F100VB) 
-  #include "stm32f100xb.h"
+#if defined (STM32F101xB)
+  #include "stm32f101xb.h"
 #else
   #error "You must define supported target"
 #endif
@@ -24,7 +22,7 @@
 
 namespace mpp::gpio
 {
-  inline namespace STM32F100xB_gpio
+  inline namespace STM32F101xB_gpio
   {
     enum class Port { 
       A = GPIOA_BASE,
