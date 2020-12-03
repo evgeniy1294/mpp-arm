@@ -81,6 +81,15 @@ namespace mpp::gpio
     enum class Inversion    { Off, On, None };
     
     
+	  
+	template< Port port, std::uint32_t pin>
+	struct IO
+	{
+	  constexpr static Port kPort = port;
+      constexpr static std::uint32_t kPin = pin;
+	};
+	  
+	  
     /*! 
       Inherit your OutputTrait from this struct. 
       Child must contain fields: kSpeed, kDriver, kInversion, kDefaultState.
@@ -141,7 +150,7 @@ namespace mpp::gpio
       Output trait for alternate function IO
     */
     template< Driver driver, Speed speed >
-    struct AlternateOutputTrait final : AlternateTrait {
+    struct AlternateOutputTrait final {
       constexpr static Type kType = Type::Alternate; 
       constexpr static Pull kPull = Pull::None;
       constexpr static DefaultState kDefaultState = DefaultState::None; 
@@ -157,7 +166,7 @@ namespace mpp::gpio
       Input IO trait for alternate function IO
     */
     template< Pull pull >
-    struct AlternateInputTrait final: InputTrait {
+    struct AlternateInputTrait final : InputTrait {
       constexpr static Pull kPull = pull;
       constexpr static Inversion kInversion = Inversion::Off;
     };

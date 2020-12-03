@@ -2,8 +2,9 @@ cmake_minimum_required(VERSION 3.11.0 FATAL_ERROR)
 project(blink CXX C ASM)
 
 
-set(TARGET_STM32f407G_DISCO ON  CACHE BOOL "Build for stm32f407g-disco")
+set(TARGET_STM32f407G_DISCO OFF CACHE BOOL "Build for stm32f407g-disco")
 set(TARGET_STM32G071_NUCLEO OFF CACHE BOOL "Build for stm32g071-nucleo")
+set(TARGET_BLUE_PILL        ON  CACHE BOOL "Build for blue pill")
 set(TARGET_LAUNCHXL_CC1352P OFF CACHE BOOL "Build for launchxl_cc1352p")
 
 
@@ -267,6 +268,78 @@ set(TARGET_LAUNCHXL_CC1352P OFF CACHE BOOL "Build for launchxl_cc1352p")
 	
 	
   endif() # TARGET_STM32G071_NUCLEO
+# }}}
+
+
+
+
+
+
+# blue pill {{{
+  if(TARGET_BLUE_PILL)
+    
+    add_executable("blink_blue_pill.elf")
+    
+    
+    # Compile Definitions {{{
+      target_compile_options("blink_blue_pill.elf" PRIVATE "-mcpu=cortex-m3"   "-mthumb"   "-mfloat-abi=soft"  "-ggdb3" )
+      target_link_options   ("blink_blue_pill.elf" PRIVATE "-T${CMAKE_CURRENT_LIST_DIR}/board/blue_pill/memory.ld" "-Wl,-Map=blink_blue_pill.map" "-Wl,--cref")
+      target_link_options   ("blink_blue_pill.elf" PRIVATE "-mcpu=cortex-m0plus"   "-specs=nosys.specs"   "-specs=nano.specs"   "-mfloat-abi=soft"  )
+      target_link_libraries ("blink_blue_pill.elf" PRIVATE "common_interface_lib")
+    # }}}
+    
+
+
+
+    # Language standart {{{
+    set_target_properties("blink_blue_pill.elf"
+                          PROPERTIES
+                            C_STANDARD 11
+                            CXX_STANDARD 17
+                            CXX_STANDARD_REQUIRED YES)
+    # }}}
+
+
+
+
+    # Target Source {{{
+      target_include_directories ("blink_blue_pill.elf"
+                                   PRIVATE "${CMAKE_CURRENT_LIST_DIR}/src"
+	    							       "${CMAKE_CURRENT_LIST_DIR}/board/blue_pill")
+								 
+      target_sources("blink_blue_pill.elf"
+                      PRIVATE "${CMAKE_CURRENT_LIST_DIR}/src/main.cpp"
+	  				          "${CMAKE_CURRENT_LIST_DIR}/../../src/core/cortex_m.cpp"
+                              "${CMAKE_CURRENT_LIST_DIR}/board/blue_pill/startup_gcc.cpp"
+	  				          "${CMAKE_CURRENT_LIST_DIR}/board/blue_pill/board.cpp")
+    # }}}	
+  
+  
+  
+  
+    # Libraries {{{
+   
+      if(DEFINED ENV{CMSIS_STM32F1_PATH})
+        target_include_directories ("blink_blue_pill.elf"
+                                    PRIVATE "$ENV{CMSIS_STM32F1_PATH}")
+      endif()
+	
+    # }}} 
+  
+ 
+	
+	
+    # Post build command {{{
+      add_custom_command(TARGET blink_blue_pill.elf
+                           POST_BUILD
+                             COMMAND ${CMAKE_OBJCOPY} -Obinary blink_blue_pill.elf blink_blue_pill.bin
+                             COMMAND ${CMAKE_OBJCOPY} -Oihex   blink_blue_pill.elf blink_blue_pill.hex
+                             COMMAND ${CMAKE_SIZE_UTIL} blink_blue_pill.elf 
+							 COMMAND echo)
+    #}}}
+	
+	
+  endif() # TARGET_BLUE_PILL
 # }}}
 
 
