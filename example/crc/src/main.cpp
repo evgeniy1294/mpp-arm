@@ -1,15 +1,15 @@
-#include "board.hpp"
+#include "bsp.hpp"
 
 
 int main() {
 
-  if ((!board::TestSequenceCheck()) || (!board::TestSequencePartCheck()))
+  if ((!bsp::TestSequenceCheck()) || (!bsp::TestSequencePartCheck()))
   {
-	board::ErrorSignal();  
+    bsp::ErrorSignal();  
   }
   else
   {
-	board::OkSignal();  
+    bsp::OkSignal();  
   }
 
 

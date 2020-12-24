@@ -1,4 +1,4 @@
-#include "board.hpp"
+#include "bsp.hpp"
 
 
 extern "C" {
@@ -42,7 +42,7 @@ extern "C" {
       bs++;
     }       
 
-    board::Init();
+    bsp::Init();
     
     //  Call static constructors
     __libc_init_array();
@@ -78,7 +78,7 @@ extern "C" {
     nullptr,                      // 12 Debug monitor handler
     nullptr,                      // 13 Reserved
     DefaultHandler,               // 14 The PendSV handler
-    board::Systick::Interrupt,    // 15 The SysTick handler
+    bsp::Systick::Interrupt,      // 15 The SysTick handler
 
     /******  STM32  specific Interrupt  ************/
     DefaultHandler,               // 16 Window WatchDog Interrupt                                         

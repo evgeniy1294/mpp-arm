@@ -1,7 +1,7 @@
 /**
   ***********************************************************
   @author Evgenii Fedoseev
-  @file   /board/blue_pill/board.hpp
+  @file   /bsp/blue_pill/bsp.hpp
   @brief  Compatible board: blue pill
   ***********************************************************
 **/
@@ -17,7 +17,7 @@
 int main();
 
 
-namespace board
+namespace bsp
 {
   // Systick and DWT
   struct FakeClk {

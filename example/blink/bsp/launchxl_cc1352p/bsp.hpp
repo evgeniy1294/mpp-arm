@@ -1,7 +1,7 @@
 /**
   ***********************************************************
   @author Evgenii Fedoseev
-  @file   /board/launchxl_cc1352p/board.hpp
+  @file   /bsp/launchxl_cc1352p/bsp.hpp
   @brief  Compatible board stm32f407-discovery 
   ***********************************************************
 **/
@@ -17,7 +17,7 @@
 int main();
 
 
-namespace board {
+namespace bsp {
   // Systick and DWT
   struct FakeClk {
     constexpr static std::uint32_t kSysClkHz     = 48'000'000u;

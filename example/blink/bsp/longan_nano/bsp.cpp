@@ -1,23 +1,22 @@
-#include "board.hpp"
+#include "bsp.hpp"
 
 
-void board::Init()
+void bsp::Init()
 {
   Eclic::Init<MachineTimerInterrupt>();
 
   // Настраиваем машинный таймер. Таймер будет переполнятся раз в 1 мс.     
-  board::Systick::Init();
+  bsp::Systick::Init();
 
   //Разрешить прерывание таймера - прерывание номер 7
   MachineTimerInterrupt::Enable();
 
   // Разрешаем глобальное машинное прерывание 
-  auto tmp = MSTATUS::Read();
-  MSTATUS::Write(tmp | (1 << 3));
+  set_csr(CSR_MMISC_CTL, 3u);
   
   RCU->APB2EN |= RCU_APB2EN_PAEN | RCU_APB2EN_PCEN;
   
-  board::Leds::Init();
+  bsp::Leds::Init();
     
   return;
 }

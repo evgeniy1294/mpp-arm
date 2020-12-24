@@ -1,7 +1,7 @@
 /**
   ***********************************************************
   @author Evgenii Fedoseev
-  @file   /board/stm32f407g_disco/board.hpp
+  @file   /bsp/stm32f407g_disco/bsp.hpp
   @brief  Compatible board stm32f407-discovery 
   ***********************************************************
 **/
@@ -11,13 +11,13 @@
 
 //____________________INCLUDE_____________________//
 #include <cstdint>
-#include "mpp/stm32g071xx.hpp"
+#include "mpp/stm32f407xx.hpp"
 
 
 int main();
 
 
-namespace board
+namespace bsp
 {
   // Systick and DWT
   struct FakeClk {
@@ -25,7 +25,8 @@ namespace board
     constexpr static std::uint32_t kSysTickClkHz = 16'000'000u; 
   };
 
-  using Systick = mpp::core::Systick < FakeClk >;;
+  using Systick = mpp::core::Systick < FakeClk >;
+
     
   // Leds
   struct LedTrait final: mpp::gpio::LedTrait
@@ -33,13 +34,22 @@ namespace board
     constexpr static mpp::gpio::Inversion kInversion = mpp::gpio::Inversion::Off;
   };
     
+  struct LedInvTrait final: mpp::gpio::LedTrait
+  {
+    constexpr static mpp::gpio::Inversion kInversion = mpp::gpio::Inversion::On;
+  };
 
-  using LedGreen  = mpp::gpio::Gpio < mpp::gpio::PA5, LedTrait >;  
+  using LedBlue   = mpp::gpio::Gpio < mpp::gpio::PD15, LedTrait >;
+  using LedRed    = mpp::gpio::Gpio < mpp::gpio::PD14, LedInvTrait >;    
+  using LedOrange = mpp::gpio::Gpio < mpp::gpio::PD13, LedInvTrait >;   
+  using LedGreen  = mpp::gpio::Gpio < mpp::gpio::PD12, LedTrait >;  
 
-  using Leds = mpp::gpio::IoGroup < LedGreen >;
+  using Leds = mpp::gpio::IoGroup < LedBlue, LedRed, LedOrange, LedGreen >;
 	
 	
   // Specific function 
   void Init();
     
 } // namespace board
+
+

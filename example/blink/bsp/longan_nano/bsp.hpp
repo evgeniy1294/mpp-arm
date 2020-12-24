@@ -1,7 +1,7 @@
 /**
   ***********************************************************
   @author Evgenii Fedoseev
-  @file   /board/longan_nano/board.hpp
+  @file   /bsp/longan_nano/bsp.hpp
   @brief  Compatible board: longan nano
   ***********************************************************
 **/
@@ -17,7 +17,7 @@
 int main();
 
 
-namespace board
+namespace bsp
 {
   // Systick and DWT
   struct FakeClk {

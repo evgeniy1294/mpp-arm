@@ -59,7 +59,7 @@ set(TARGET_LAUNCHXL_CC1352P OFF CACHE BOOL "Build for launchxl_cc1352p")
     
     # Compile Definitions {{{
       target_compile_options("${CMAKE_PROJECT_NAME}_stm32f407_disco.elf" PRIVATE "-mcpu=cortex-m4" "-mthumb" "-mfloat-abi=hard" "-mfpu=fpv4-sp-d16" "-ggdb3")#"--pedantic")
-      target_link_options   ("${CMAKE_PROJECT_NAME}_stm32f407_disco.elf" PRIVATE "-T${CMAKE_CURRENT_LIST_DIR}/board/stm32f407g_disco/memory.ld" "-Wl,-Map=${CMAKE_PROJECT_NAME}_stm32f407_disco.map" "-Wl,--cref")
+      target_link_options   ("${CMAKE_PROJECT_NAME}_stm32f407_disco.elf" PRIVATE "-T${CMAKE_CURRENT_LIST_DIR}/bsp/stm32f407g_disco/memory.ld" "-Wl,-Map=${CMAKE_PROJECT_NAME}_stm32f407_disco.map" "-Wl,--cref")
       target_link_options   ("${CMAKE_PROJECT_NAME}_stm32f407_disco.elf" PRIVATE "-mcpu=cortex-m4" "-specs=nosys.specs" "-specs=nano.specs" "-mfloat-abi=hard" "-mfpu=fpv4-sp-d16" )
       target_link_libraries ("${CMAKE_PROJECT_NAME}_stm32f407_disco.elf" PRIVATE "common_interface_lib")
     # }}}
@@ -81,13 +81,13 @@ set(TARGET_LAUNCHXL_CC1352P OFF CACHE BOOL "Build for launchxl_cc1352p")
     # Target Source {{{
       target_include_directories ("${CMAKE_PROJECT_NAME}_stm32f407_disco.elf"
                                    PRIVATE "${CMAKE_CURRENT_LIST_DIR}/src"
-	    							       "${CMAKE_CURRENT_LIST_DIR}/board/stm32f407g_disco")
+	    							       "${CMAKE_CURRENT_LIST_DIR}/bsp/stm32f407g_disco")
 								 
       target_sources("${CMAKE_PROJECT_NAME}_stm32f407_disco.elf"
                       PRIVATE "${CMAKE_CURRENT_LIST_DIR}/src/main.cpp"
 	  				          "${CMAKE_CURRENT_LIST_DIR}/../../src/core/cortex_m.cpp"
-                              "${CMAKE_CURRENT_LIST_DIR}/board/stm32f407g_disco/startup_gcc.cpp"
-	  				          "${CMAKE_CURRENT_LIST_DIR}/board/stm32f407g_disco/board.cpp")
+                              "${CMAKE_CURRENT_LIST_DIR}/bsp/stm32f407g_disco/startup_gcc.cpp"
+	  				          "${CMAKE_CURRENT_LIST_DIR}/bsp/stm32f407g_disco/bsp.cpp")
     # }}}	
   
   
@@ -134,7 +134,7 @@ set(TARGET_LAUNCHXL_CC1352P OFF CACHE BOOL "Build for launchxl_cc1352p")
 
     # Compile Definitions {{{
       target_compile_options("launchxl_cc1352p.elf" PRIVATE "-mcpu=cortex-m4" "-mthumb" "-ggdb3")
-      target_link_options   ("launchxl_cc1352p.elf" PRIVATE "-T${CMAKE_CURRENT_LIST_DIR}/board/launchxl_cc1352p/cc26x2r1f.lds" "-Wl,-Map=launchxl_cc1352p.map" "-Wl,--cref")
+      target_link_options   ("launchxl_cc1352p.elf" PRIVATE "-T${CMAKE_CURRENT_LIST_DIR}/bsp/launchxl_cc1352p/cc26x2r1f.lds" "-Wl,-Map=launchxl_cc1352p.map" "-Wl,--cref")
       target_link_options   ("launchxl_cc1352p.elf" PRIVATE "-mcpu=cortex-m4" "-specs=nosys.specs" "-specs=nano.specs" )
       target_link_libraries ("launchxl_cc1352p.elf" PRIVATE "common_interface_lib")
     # }}} 
@@ -154,14 +154,14 @@ set(TARGET_LAUNCHXL_CC1352P OFF CACHE BOOL "Build for launchxl_cc1352p")
     # Target Source {{{
       target_include_directories ("launchxl_cc1352p.elf"
                                    PRIVATE "${CMAKE_CURRENT_LIST_DIR}/src"
-								           "${CMAKE_CURRENT_LIST_DIR}/board/launchxl_cc1352p")
+								           "${CMAKE_CURRENT_LIST_DIR}/bsp/launchxl_cc1352p")
 								 
       target_sources("launchxl_cc1352p.elf"
                       PRIVATE "${CMAKE_CURRENT_LIST_DIR}/src/main.cpp"
 					          "${CMAKE_CURRENT_LIST_DIR}/../../src/core/cortex_m.cpp"
-		   			          "${CMAKE_CURRENT_LIST_DIR}/board/launchxl_cc1352p/startup_gcc.cpp"					        
-                              "${CMAKE_CURRENT_LIST_DIR}/board/launchxl_cc1352p/ccfg.c"
-							  "${CMAKE_CURRENT_LIST_DIR}/board/launchxl_cc1352p/board.cpp")
+		   			          "${CMAKE_CURRENT_LIST_DIR}/bsp/launchxl_cc1352p/startup_gcc.cpp"					        
+                              "${CMAKE_CURRENT_LIST_DIR}/bsp/launchxl_cc1352p/ccfg.c"
+							  "${CMAKE_CURRENT_LIST_DIR}/bsp/launchxl_cc1352p/bsp.cpp")
     # }}} 
   
   
@@ -210,7 +210,7 @@ set(TARGET_LAUNCHXL_CC1352P OFF CACHE BOOL "Build for launchxl_cc1352p")
     
     # Compile Definitions {{{
       target_compile_options("${CMAKE_PROJECT_NAME}_stm32g071_nucleo.elf" PRIVATE "-mcpu=cortex-m0plus"   "-mthumb"   "-mfloat-abi=soft"  "-ggdb3" )
-      target_link_options   ("${CMAKE_PROJECT_NAME}_stm32g071_nucleo.elf" PRIVATE "-T${CMAKE_CURRENT_LIST_DIR}/board/nucleo_g071rb/memory.ld" "-Wl,-Map=${CMAKE_PROJECT_NAME}_stm32g071_nucleo.map" "-Wl,--cref")
+      target_link_options   ("${CMAKE_PROJECT_NAME}_stm32g071_nucleo.elf" PRIVATE "-T${CMAKE_CURRENT_LIST_DIR}/bsp/nucleo_g071rb/memory.ld" "-Wl,-Map=${CMAKE_PROJECT_NAME}_stm32g071_nucleo.map" "-Wl,--cref")
       target_link_options   ("${CMAKE_PROJECT_NAME}_stm32g071_nucleo.elf" PRIVATE "-mcpu=cortex-m0plus"   "-specs=nosys.specs"   "-specs=nano.specs"   "-mfloat-abi=soft"  )
       target_link_libraries ("${CMAKE_PROJECT_NAME}_stm32g071_nucleo.elf" PRIVATE "common_interface_lib")
     # }}}
@@ -232,13 +232,13 @@ set(TARGET_LAUNCHXL_CC1352P OFF CACHE BOOL "Build for launchxl_cc1352p")
     # Target Source {{{
       target_include_directories ("${CMAKE_PROJECT_NAME}_stm32g071_nucleo.elf"
                                    PRIVATE "${CMAKE_CURRENT_LIST_DIR}/src"
-	    							       "${CMAKE_CURRENT_LIST_DIR}/board/nucleo_g071rb")
+	    							       "${CMAKE_CURRENT_LIST_DIR}/bsp/nucleo_g071rb")
 								 
       target_sources("${CMAKE_PROJECT_NAME}_stm32g071_nucleo.elf"
                       PRIVATE "${CMAKE_CURRENT_LIST_DIR}/src/main.cpp"
 	  				          "${CMAKE_CURRENT_LIST_DIR}/../../src/core/cortex_m.cpp"
-                              "${CMAKE_CURRENT_LIST_DIR}/board/nucleo_g071rb/startup_gcc.cpp"
-	  				          "${CMAKE_CURRENT_LIST_DIR}/board/nucleo_g071rb/board.cpp")
+                              "${CMAKE_CURRENT_LIST_DIR}/bsp/nucleo_g071rb/startup_gcc.cpp"
+	  				          "${CMAKE_CURRENT_LIST_DIR}/bsp/nucleo_g071rb/bsp.cpp")
     # }}}	
   
   

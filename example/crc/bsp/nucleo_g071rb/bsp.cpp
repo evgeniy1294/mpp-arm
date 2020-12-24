@@ -1,4 +1,4 @@
-#include "board.hpp"
+#include "bsp.hpp"
 
 // Checksum models
 std::array<std::uint8_t, 9> TestSequence = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
@@ -7,14 +7,14 @@ std::array<std::uint8_t, 9> TestSequence = {'1', '2', '3', '4', '5', '6', '7', '
 
 
 
-void board::Init()
+void bsp::Init()
 {
   RCC->AHBENR |= RCC_AHBENR_CRCEN;
   RCC->IOPENR |= RCC_IOPENR_GPIOAEN;
   RCC->IOPSMENR |= RCC_IOPSMENR_GPIOASMEN;
   
-  board::Systick::Init();
-  board::Leds::Init();
+  Systick::Init();
+  Leds::Init();
 	
   return;
 }
@@ -23,7 +23,7 @@ void board::Init()
 
 
 
-bool board::TestSequenceCheck()
+bool bsp::TestSequenceCheck()
 {
   // [ Name: Posix32, Poly = 0x4C11DB7, Seed = 0x00, XorOut = 0xFFFFFFFF, RefIn = false, RefOut = false, Check = 0x765E7680 ] 
   /*mpp::crc::HardwareLogic::Configure< mpp::crc::POSIX_32 >(CRC);
@@ -49,7 +49,7 @@ bool board::TestSequenceCheck()
 
 
 
-bool board::TestSequencePartCheck()
+bool bsp::TestSequencePartCheck()
 {
   /*mpp::crc::HardwareLogic::Configure< mpp::crc::POSIX_32 >(CRC);
   mpp::crc::HardwareLogic::Calculate(CRC, TestSequence.data(), TestSequence.end()-1);
@@ -66,7 +66,7 @@ bool board::TestSequencePartCheck()
 
 
 
-void board::ErrorSignal() {
+void bsp::ErrorSignal() {
   LedGreen::Reset();	
 }
 
@@ -74,7 +74,7 @@ void board::ErrorSignal() {
 
 
 
-void board::OkSignal() {
+void bsp::OkSignal() {
   LedGreen::Set();	
 }
 

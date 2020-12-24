@@ -1,4 +1,4 @@
-#include "board.hpp"
+#include "bsp.hpp"
 
 
 extern "C" {
@@ -29,7 +29,7 @@ extern "C" {
     nullptr,                      // 4  Reserved
     nullptr,                      // 5  Reserved
     nullptr,                      // 6  Reserved
-    board::Systick::Interrupt,    // 7  CPU Timer interrupt
+    bsp::Systick::Interrupt,      // 7  CPU Timer interrupt
     nullptr,                      // 8  Reserved
     nullptr,                      // 9  Reserved
     nullptr,                      // 10 Reserved
@@ -139,9 +139,13 @@ extern "C" {
   
   
   [[gnu::interrupt]] void InterruptEntry() {
-    const auto mcause = MCAUSE::Read(); 
-    const auto mepc   = MEPC::Read(); 
-    const auto msubm  = MSUBM::Read(); 
+    clear_csr(CSR_MMISC_CTL, 3u);
+    
+    const auto mcause = read_csr(CSR_MCAUSE);
+    const auto mepc   = read_csr(CSR_MEPC);
+    const auto msubm  = read_csr(CSR_MSUBM);
+    
+    set_csr(CSR_MMISC_CTL, 3u);
   
     const auto exceptionCode =  mcause & 0xFFF ; 
     
@@ -154,10 +158,13 @@ extern "C" {
       }
     }
     
-    __disable_interrupt();
-    MCAUSE::Write(mcause); 
-    MEPC::Write(mepc); 
-    MSUBM::Write(msubm) ; 
+    clear_csr(CSR_MMISC_CTL, 3u);
+    
+    write_csr(CSR_MCAUSE, mcause);
+    write_csr(CSR_MEPC, mepc);
+    write_csr(CSR_MSUBM, msubm);
+    
+    set_csr(CSR_MMISC_CTL, 3u);
     
     return;
   }
@@ -170,9 +177,13 @@ extern "C" {
   
   [[gnu::interrupt]] void ExceptionEntry()
   {
-    const auto mcause = MCAUSE::Read();
-    const auto mepc   = MEPC::Read();
-    const auto msubm  = MSUBM::Read();
+    clear_csr(CSR_MMISC_CTL, 3u);
+    
+    const auto mcause = read_csr(CSR_MCAUSE);
+    const auto mepc   = read_csr(CSR_MEPC);
+    const auto msubm  = read_csr(CSR_MSUBM);
+    
+    set_csr(CSR_MMISC_CTL, 3u);
 
     const auto exceptionCode =  mcause & 0xFFF ;
     
@@ -190,10 +201,13 @@ extern "C" {
       DefaultHandler() ;
     }
 
-    __disable_interrupt();
-    MCAUSE::Write(mcause); 
-    MEPC::Write(mepc); 
-    MSUBM::Write(msubm) ; 
+    clear_csr(CSR_MMISC_CTL, 3u);
+    
+    write_csr(CSR_MCAUSE, mcause);
+    write_csr(CSR_MEPC, mepc);
+    write_csr(CSR_MSUBM, msubm);
+    
+    set_csr(CSR_MMISC_CTL, 3u);
     
     return;
   }
@@ -206,27 +220,21 @@ extern "C" {
   
   [[noreturn]] void ResetHandler() {
     
-    // Устанавливаем указание адреса обработчика NMI через общий обработчик, 
-   // адрес которого указан в mtvec. Номер обработчика NMI будет 0xFFF
-    MMISC_CTL::Write( 1u << 9); 
+    /* Устанавливаем указание адреса обработчика NMI через общий обработчик, 
+       адрес которого указан в mtvec. Номер обработчика NMI будет 0xFFF */
+    set_csr(CSR_MMISC_CTL, 9u /* CSR_MMISC_CTL_NMI_CAUSE_FFF */);
 
-    // Настраиваем адрес единого обработчика прерываний. 
-    // Указываем, что он будет находится в регистре MTVT2
-    MTVT2::Write(
-        (1u << 0) |
-        reinterpret_cast<std::uintptr_t>(&InterruptEntry)
-    );
-
-    // Переключаемся на режим работы с ECLIC и устанавливаем 
-    // адрес единого обработчика исключений
-    MTVEC::Write(
-        0b000011u |
-        (reinterpret_cast<std::uintptr_t>(&ExceptionEntry) & 0xffff'ffc0);
-    );
-
-    // Включаем машинный таймер и счетчик команд
-    MCOUNTINHIBIT::Write(0u);
+    /* Настраиваем адрес единого обработчика прерываний. 
+       Указываем, что он будет находится в регистре MTVT2 */
+    write_csr(CSR_MTVT2, reinterpret_cast<std::uintptr_t>(&InterruptEntry));
+    set_csr(CSR_MMISC_CTL, 0u /* CSR_MMISC_CTL_NMI_CAUSE_FFF */);
     
+    /* Переключаемся на режим работы с ECLIC и устанавливаем 
+       адрес единого обработчика исключений */
+    write_csr( CSR_MTVEC, 0b000011u | (reinterpret_cast<std::uintptr_t>(&ExceptionEntry) & 0xffff'ffc0) );
+    
+    // Включаем машинный таймер и счетчик команд
+    clear_csr(CSR_MCOUNTINHIBIT, 2 /* CSR_MCOUNTINHIBIT_IR */);
     
     //  Relocate the .data section 
     std::uint32_t*  dl = & __data_load__;
@@ -249,7 +257,7 @@ extern "C" {
       bs++;
     }       
 
-    board::Init();
+    bsp::Init();
     
     //  Call static constructors
     __libc_init_array();

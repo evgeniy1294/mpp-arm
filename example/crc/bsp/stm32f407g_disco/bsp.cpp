@@ -1,9 +1,9 @@
-#include "board.hpp"
+#include "bsp.hpp"
 
 std::array<std::uint8_t, 9> TestSequence = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
 
-void board::Init()
+void bsp::Init()
 {
   RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN | RCC_AHB1ENR_CRCEN;
   
@@ -16,7 +16,7 @@ void board::Init()
 
 
 
-bool board::TestSequenceCheck()
+bool bsp::TestSequenceCheck()
 {
   return true;	
 }
@@ -25,7 +25,7 @@ bool board::TestSequenceCheck()
 
 
 
-bool board::TestSequencePartCheck()
+bool bsp::TestSequencePartCheck()
 {
   return true;	
 }
@@ -36,7 +36,7 @@ bool board::TestSequencePartCheck()
 
 
 
-void board::ErrorSignal() {
+void bsp::ErrorSignal() {
   LedGreen::Reset();
   LedRed::Set();	
 }
@@ -45,7 +45,7 @@ void board::ErrorSignal() {
 
 
 
-void board::OkSignal() {
+void bsp::OkSignal() {
   LedRed::Reset();
   LedGreen::Set();	
 }

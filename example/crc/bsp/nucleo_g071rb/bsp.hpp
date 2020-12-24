@@ -1,7 +1,7 @@
 /**
   ***********************************************************
   @author Evgenii Fedoseev
-  @file   /board/stm32f407g_disco/board.hpp
+  @file   /bsp/stm32f407g_disco/bsp.hpp
   @brief  Compatible board stm32g071-nucleo 
   ***********************************************************
 **/
@@ -17,7 +17,7 @@
 int main();
 
 
-namespace board
+namespace bsp
 {
   // Systick
   struct FakeClk {
@@ -53,7 +53,7 @@ namespace board
 	
 	
     
-} // namespace board
+} // namespace bsp
 
 
 

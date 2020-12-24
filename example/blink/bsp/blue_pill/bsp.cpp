@@ -1,12 +1,12 @@
-#include "board.hpp"
+#include "bsp.hpp"
 
 
-void board::Init()
+void bsp::Init()
 {
   RCC->APB2ENR |= RCC_APB2ENR_IOPAEN | RCC_APB2ENR_IOPBEN | RCC_APB2ENR_IOPCEN;
   
-  board::Systick::Init();
-  board::Leds::Init();
+  bsp::Systick::Init();
+  bsp::Leds::Init();
 	
   return;
 }

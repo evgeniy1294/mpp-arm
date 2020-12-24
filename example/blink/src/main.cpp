@@ -1,7 +1,7 @@
-#include "board.hpp"
+#include "bsp.hpp"
 
 
-mpp::utils::Timer< board::Systick > tim;
+mpp::utils::Timer< bsp::Systick > tim;
 
 
 int main() {
@@ -12,7 +12,7 @@ int main() {
     if (tim.IsTimeOut())
     {
       tim.Reload();
-      board::Leds::Toggle();
+      bsp::Leds::Toggle();
     } 
   } 
 }

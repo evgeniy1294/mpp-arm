@@ -1,7 +1,7 @@
 /**
   ***********************************************************
   @author Evgenii Fedoseev
-  @file   /board/stm32f407g_disco/board.hpp
+  @file   /bsp/stm32f407g_disco/bsp.hpp
   @brief  Compatible board stm32f407-discovery 
   ***********************************************************
 **/
@@ -17,7 +17,7 @@
 int main();
 
 
-namespace board
+namespace bsp
 {
   // Systick and DWT
   struct FakeClk {
@@ -54,4 +54,4 @@ namespace board
   void OkSignal();
 	
     
-} // namespace board
+} // namespace bsp
