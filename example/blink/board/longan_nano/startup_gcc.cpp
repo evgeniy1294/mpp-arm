@@ -18,9 +18,216 @@ extern "C" {
     
     
     
-  [[noreturn]] void ResetHandler() {
-    __set_MSP(reinterpret_cast<std::uint32_t>(&__initial_sp__));
+  using tInterruptFunction = void(*)() ;
+  constexpr std::array<tInterruptFunction, 87> InterruptVectorTable
+  {
+    /******  RISC-V Interrupt   ************/ 
+    nullptr,                      // 0  RISC-V reserved
+    nullptr,                      // 1  Reserved
+    nullptr,                      // 2  Reserved
+    DefaultHandler,               // 3  Software interrupt
+    nullptr,                      // 4  Reserved
+    nullptr,                      // 5  Reserved
+    nullptr,                      // 6  Reserved
+    board::Systick::Interrupt,    // 7  CPU Timer interrupt
+    nullptr,                      // 8  Reserved
+    nullptr,                      // 9  Reserved
+    nullptr,                      // 10 Reserved
+    nullptr,                      // 11 Reserved
+    nullptr,                      // 12 Reserved
+    nullptr,                      // 13 Reserved
+    nullptr,                      // 14 Reserved
+    nullptr,                      // 15 Reserved
+    nullptr,                      // 16 Reserved
+    DefaultHandler,               // 17 Bus Error interrupt
+    DefaultHandler,               // 18 Performance Monitor
+    
 
+    /******  GD32VF103  specific Interrupt  ************/
+    DefaultHandler,               // 19 window watchDog timer interrupt                          
+    DefaultHandler,               // 20 LVD through EXTI line detect interrupt                   
+    DefaultHandler,               // 21 tamper through EXTI line detect                          
+    DefaultHandler,               // 22 RTC alarm interrupt                                      
+    DefaultHandler,               // 23 FMC interrupt                                            
+    DefaultHandler,               // 24 RCU and CTC interrupt                                    
+    DefaultHandler,               // 25 EXTI line 0 interrupts                                   
+    DefaultHandler,               // 26 EXTI line 1 interrupts                                   
+    DefaultHandler,               // 27 EXTI line 2 interrupts                                   
+    DefaultHandler,               // 28 EXTI line 3 interrupts                                   
+    DefaultHandler,               // 29 EXTI line 4 interrupts                                   
+    DefaultHandler,               // 30 DMA0 channel0 interrupt                                  
+    DefaultHandler,               // 31 DMA0 channel1 interrupt                                  
+    DefaultHandler,               // 32 DMA0 channel2 interrupt                                  
+    DefaultHandler,               // 33 DMA0 channel3 interrupt                                  
+    DefaultHandler,               // 34 DMA0 channel4 interrupt                                  
+    DefaultHandler,               // 35 DMA0 channel5 interrupt                                  
+    DefaultHandler,               // 36 DMA0 channel6 interrupt                                  
+    DefaultHandler,               // 37 ADC0 and ADC1 interrupt                                  
+    DefaultHandler,               // 38 CAN0 TX interrupts                                       
+    DefaultHandler,               // 39 CAN0 RX0 interrupts                                      
+    DefaultHandler,               // 40 CAN0 RX1 interrupts                                      
+    DefaultHandler,               // 41 CAN0 EWMC interrupts                                     
+    DefaultHandler,               // 42 EXTI[9:5] interrupts                                     
+    DefaultHandler,               // 43 TIMER0 break interrupts                                  
+    DefaultHandler,               // 44 TIMER0 update interrupts                                 
+    DefaultHandler,               // 45 TIMER0 trigger and commutation interrupts                
+    DefaultHandler,               // 46 TIMER0 channel capture compare interrupts                
+    DefaultHandler,               // 47 TIMER1 interrupt                                         
+    DefaultHandler,               // 48 TIMER2 interrupt                                         
+    DefaultHandler,               // 49 TIMER3 interrupts                                        
+    DefaultHandler,               // 50 I2C0 event interrupt                                     
+    DefaultHandler,               // 51 I2C0 error interrupt                                     
+    DefaultHandler,               // 52 I2C1 event interrupt                                     
+    DefaultHandler,               // 53 I2C1 error interrupt                                     
+    DefaultHandler,               // 54 SPI0 interrupt                                           
+    DefaultHandler,               // 55 SPI1 interrupt                                           
+    DefaultHandler,               // 56 USART0 interrupt                                         
+    DefaultHandler,               // 57 USART1 interrupt                                         
+    DefaultHandler,               // 58 USART2 interrupt                                         
+    DefaultHandler,               // 59 EXTI[15:10] interrupts                                   
+    DefaultHandler,               // 60 RTC alarm interrupt EXTI                                 
+    DefaultHandler,               // 61 USBFS wakeup interrupt                                   
+    nullptr,                      // 62 Reserved 
+    nullptr,                      // 63 Reserved
+    nullptr,                      // 64 Reserved
+    nullptr,                      // 65 Reserved
+    nullptr,                      // 66 Reserved
+    DefaultHandler,               // 67 EXMC global interrupt                                    
+    nullptr,                      // 68 Reserved
+    DefaultHandler,               // 69 TIMER4 global interrupt                                  
+    DefaultHandler,               // 70 SPI2 global interrupt                                    
+    DefaultHandler,               // 71 UART3 global interrupt                                   
+    DefaultHandler,               // 72 UART4 global interrupt                                   
+    DefaultHandler,               // 73 TIMER5 global interrupt                                  
+    DefaultHandler,               // 74 TIMER6 global interrupt                                  
+    DefaultHandler,               // 75 DMA1 channel0 global interrupt                           
+    DefaultHandler,               // 76 DMA1 channel1 global interrupt                           
+    DefaultHandler,               // 77 DMA1 channel2 global interrupt                           
+    DefaultHandler,               // 78 DMA1 channel3 global interrupt                           
+    DefaultHandler,               // 79 DMA1 channel3 global interrupt                           
+    nullptr,                      // 80 Unused
+    nullptr,                      // 81 Unused
+    DefaultHandler,               // 82 CAN1 TX interrupt                                        
+    DefaultHandler,               // 83 CAN1 RX0 interrupt                                       
+    DefaultHandler,               // 84 CAN1 RX1 interrupt                                       
+    DefaultHandler,               // 85 CAN1 EWMC interrupt                                      
+    DefaultHandler,               // 86 USBFS global interrupt                                   
+  };
+
+  
+  
+  
+  constexpr std::array<tInterruptFunction, 12> ExceptionVectorTable
+  {
+    DefaultHandler,               // 0 Instruction address misaligned
+    DefaultHandler,               // 1 Instruction access fault
+    DefaultHandler,               // 2 Illegal instruction
+    DefaultHandler,               // 3 Breakpoint
+    DefaultHandler,               // 4 Load address misaligned
+    DefaultHandler,               // 5 Load access fault
+    DefaultHandler,               // 6 Store/AMO address  misaligned
+    DefaultHandler,               // 7 Store/AMO access fault
+    DefaultHandler,               // 8 Environment call from  U-mode
+    nullptr,
+    nullptr,
+    DefaultHandler,               // 11 Environment call from  M-mode
+  };
+  
+  
+  
+  
+  
+  
+  [[gnu::interrupt]] void InterruptEntry() {
+    const auto mcause = MCAUSE::Read(); 
+    const auto mepc   = MEPC::Read(); 
+    const auto msubm  = MSUBM::Read(); 
+  
+    const auto exceptionCode =  mcause & 0xFFF ; 
+    
+    if (exceptionCode < InterruptVectorTable.size());
+    {
+      tInterruptFunction fp = InterruptVectorTable[exceptionCode];
+      if (fp != nullptr)
+      {
+        fp(); // вызываем обработчик
+      }
+    }
+    
+    __disable_interrupt();
+    MCAUSE::Write(mcause); 
+    MEPC::Write(mepc); 
+    MSUBM::Write(msubm) ; 
+    
+    return;
+  }
+   
+  
+  
+  
+  
+  
+  
+  [[gnu::interrupt]] void ExceptionEntry()
+  {
+    const auto mcause = MCAUSE::Read();
+    const auto mepc   = MEPC::Read();
+    const auto msubm  = MSUBM::Read();
+
+    const auto exceptionCode =  mcause & 0xFFF ;
+    
+    if (exceptionCode != 0xFFF) {
+      if (exceptionCode < ExceptionVectorTable.size()) 
+      {
+        tInterruptFunction fp = ExceptionVectorTable[exceptionCode];
+        if (fp != nullptr)
+        {
+          fp();
+        }
+      }
+    } 
+    else {
+      DefaultHandler() ;
+    }
+
+    __disable_interrupt();
+    MCAUSE::Write(mcause); 
+    MEPC::Write(mepc); 
+    MSUBM::Write(msubm) ; 
+    
+    return;
+  }
+  
+  
+  
+  
+  
+  
+  
+  [[noreturn]] void ResetHandler() {
+    
+    // Устанавливаем указание адреса обработчика NMI через общий обработчик, 
+   // адрес которого указан в mtvec. Номер обработчика NMI будет 0xFFF
+    MMISC_CTL::Write( 1u << 9); 
+
+    // Настраиваем адрес единого обработчика прерываний. 
+    // Указываем, что он будет находится в регистре MTVT2
+    MTVT2::Write(
+        (1u << 0) |
+        reinterpret_cast<std::uintptr_t>(&InterruptEntry)
+    );
+
+    // Переключаемся на режим работы с ECLIC и устанавливаем 
+    // адрес единого обработчика исключений
+    MTVEC::Write(
+        0b000011u |
+        (reinterpret_cast<std::uintptr_t>(&ExceptionEntry) & 0xffff'ffc0);
+    );
+
+    // Включаем машинный таймер и счетчик команд
+    MCOUNTINHIBIT::Write(0u);
+    
+    
     //  Relocate the .data section 
     std::uint32_t*  dl = & __data_load__;
     std::uint32_t*  ds = & __data_start__;
@@ -51,111 +258,8 @@ extern "C" {
 
     while(1) __NOP();
   }
-    
-    
-    
   
-    
-    
-  __attribute__ ((section(".isr_flash"), used)) 
-  void (* const InterruptTable[])(void) =
-  {
-    /*  0 The initial stack pointer */
-    reinterpret_cast< void(*)() >(&__initial_sp__),      
-     
-    /******  Cortex Interrupt   ************/ 
-    nullptr,                      // 0  RISC-V reserved
-    nullptr,                      // 1  Reserved
-    nullptr,                      // 2  Reserved
-    DefaultHandler,               // 3  Software interrupt
-    nullptr,                      // 4  Reserved
-    nullptr,                      // 5  Reserved
-    nullptr,                      // 6  Reserved
-    board::Systick::Interrupt,    // 7  CPU Timer interrupt
-    nullptr,                      // 8  Reserved
-    nullptr,                      // 9  Reserved
-    nullptr,                      // 10 Reserved
-    nullptr,                      // 11 Reserved
-    nullptr,                      // 12 Reserved
-    nullptr,                      // 13 Reserved
-    nullptr,                      // 14 Reserved
-    nullptr,                      // 15 Reserved
-    nullptr,                      // 16 Reserved
-    DefaultHandler,               // 17 Bus Error interrupt
-    DefaultHandler,               // 18 Performance Monitor
-    
-
-    /******  GD32VF103  specific Interrupt  ************/
-    WWDGT_IRQn,                   // 19 window watchDog timer interrupt                          
-    LVD_IRQn,                     // 20 LVD through EXTI line detect interrupt                   
-    TAMPER_IRQn,                  // 21 tamper through EXTI line detect                          
-    RTC_IRQn,                     // 22 RTC alarm interrupt                                      
-    FMC_IRQn,                     // 23 FMC interrupt                                            
-    RCU_CTC_IRQn,                 // 24 RCU and CTC interrupt                                    
-    EXTI0_IRQn,                   // 25 EXTI line 0 interrupts                                   
-    EXTI1_IRQn,                   // 26 EXTI line 1 interrupts                                   
-    EXTI2_IRQn,                   // 27 EXTI line 2 interrupts                                   
-    EXTI3_IRQn,                   // 28 EXTI line 3 interrupts                                   
-    EXTI4_IRQn,                   // 29 EXTI line 4 interrupts                                   
-    DMA0_Channel0_IRQn,           // 30 DMA0 channel0 interrupt                                  
-    DMA0_Channel1_IRQn,           // 31 DMA0 channel1 interrupt                                  
-    DMA0_Channel2_IRQn,           // 32 DMA0 channel2 interrupt                                  
-    DMA0_Channel3_IRQn,           // 33 DMA0 channel3 interrupt                                  
-    DMA0_Channel4_IRQn,           // 34 DMA0 channel4 interrupt                                  
-    DMA0_Channel5_IRQn,           // 35 DMA0 channel5 interrupt                                  
-    DMA0_Channel6_IRQn,           // 36 DMA0 channel6 interrupt                                  
-    ADC0_1_IRQn,                  // 37 ADC0 and ADC1 interrupt                                  
-    CAN0_TX_IRQn,                 // 38 CAN0 TX interrupts                                       
-    CAN0_RX0_IRQn,                // 39 CAN0 RX0 interrupts                                      
-    CAN0_RX1_IRQn,                // 40 CAN0 RX1 interrupts                                      
-    CAN0_EWMC_IRQn,               // 41 CAN0 EWMC interrupts                                     
-    EXTI5_9_IRQn,                 // 42 EXTI[9:5] interrupts                                     
-    TIMER0_BRK_IRQn,              // 43 TIMER0 break interrupts                                  
-    TIMER0_UP_IRQn,               // 44 TIMER0 update interrupts                                 
-    TIMER0_TRG_CMT_IRQn,          // 45 TIMER0 trigger and commutation interrupts                
-    TIMER0_Channel_IRQn,          // 46 TIMER0 channel capture compare interrupts                
-    TIMER1_IRQn,                  // 47 TIMER1 interrupt                                         
-    TIMER2_IRQn,                  // 48 TIMER2 interrupt                                         
-    TIMER3_IRQn,                  // 49 TIMER3 interrupts                                        
-    I2C0_EV_IRQn,                 // 50 I2C0 event interrupt                                     
-    I2C0_ER_IRQn,                 // 51 I2C0 error interrupt                                     
-    I2C1_EV_IRQn,                 // 52 I2C1 event interrupt                                     
-    I2C1_ER_IRQn,                 // 53 I2C1 error interrupt                                     
-    SPI0_IRQn,                    // 54 SPI0 interrupt                                           
-    SPI1_IRQn,                    // 55 SPI1 interrupt                                           
-    USART0_IRQn,                  // 56 USART0 interrupt                                         
-    USART1_IRQn,                  // 57 USART1 interrupt                                         
-    USART2_IRQn,                  // 58 USART2 interrupt                                         
-    EXTI10_15_IRQn,               // 59 EXTI[15:10] interrupts                                   
-    RTC_ALARM_IRQn,               // 60 RTC alarm interrupt EXTI                                 
-    USBFS_WKUP_IRQn,              // 61 USBFS wakeup interrupt                                   
-    nullptr,                      // 62 Reserved 
-    nullptr,                      // 63 Reserved
-    nullptr,                      // 64 Reserved
-    nullptr,                      // 65 Reserved
-    nullptr,                      // 66 Reserved
-    EXMC_IRQn,                    // 67 EXMC global interrupt                                    
-    nullptr,                      // 68 Reserved
-    TIMER4_IRQn,                  // 69 TIMER4 global interrupt                                  
-    SPI2_IRQn,                    // 70 SPI2 global interrupt                                    
-    UART3_IRQn,                   // 71 UART3 global interrupt                                   
-    UART4_IRQn,                   // 72 UART4 global interrupt                                   
-    TIMER5_IRQn,                  // 73 TIMER5 global interrupt                                  
-    TIMER6_IRQn,                  // 74 TIMER6 global interrupt                                  
-    DMA1_Channel0_IRQn,           // 75 DMA1 channel0 global interrupt                           
-    DMA1_Channel1_IRQn,           // 76 DMA1 channel1 global interrupt                           
-    DMA1_Channel2_IRQn,           // 77 DMA1 channel2 global interrupt                           
-    DMA1_Channel3_IRQn,           // 78 DMA1 channel3 global interrupt                           
-    DMA1_Channel4_IRQn,           // 79 DMA1 channel3 global interrupt                           
-    nullptr,                      // 80 Unused
-    nullptr,                      // 81 Unused
-    CAN1_TX_IRQn,                 // 82 CAN1 TX interrupt                                        
-    CAN1_RX0_IRQn,                // 83 CAN1 RX0 interrupt                                       
-    CAN1_RX1_IRQn,                // 84 CAN1 RX1 interrupt                                       
-    CAN1_EWMC_IRQn,               // 85 CAN1 EWMC interrupt                                      
-    USBFS_IRQn,                   // 86 USBFS global interrupt                                   
-  };
-      
+  
 } //  extern "C"
 
 

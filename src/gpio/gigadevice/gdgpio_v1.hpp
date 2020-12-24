@@ -27,7 +27,7 @@
 
 namespace mpp::gpio
 {
-  inline namespace gdgpio_v1
+  inline namespace gd32v_gpio_v1
   {      
     
     enum class Type         { Output = 0b0111u, Alternate = 0b1111u, Analog = 0b0000, Input = 0b1100 };
