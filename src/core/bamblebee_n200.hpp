@@ -62,22 +62,25 @@ namespace mpp::core {
       
       
       
-   /*
     template< class ClockSystem >
     class MachineTickCounter {
       public:
         constexpr static std::uint32_t TickPerSec = ClockSystem::kSysClkHz;
         
         inline static void Init() { 
-          
+          clear_csr(CSR_MCOUNTINHIBIT, 2 /* CSR_MCOUNTINHIBIT_IR */);
         }
         
         inline static std::uint32_t GetTick() { 
+          //auto mcountinhibit = read_csr(CSR_MCOUNTINHIBIT);
           
+          //set_csr(CSR_MCOUNTINHIBIT, 2 /* CSR_MCOUNTINHIBIT_IR */);
+          std::uint32_t tmp = read_csr(CSR_INSTRET); 
+          
+          //write_csr(CSR_MCOUNTINHIBIT, mcountinhibit);
         }
     };
     
-    */
     
     
     

@@ -233,9 +233,6 @@ extern "C" {
        адрес единого обработчика исключений */
     write_csr( CSR_MTVEC, 0b000011u | (reinterpret_cast<std::uintptr_t>(&ExceptionEntry) & 0xffff'ffc0) );
     
-    // Включаем машинный таймер и счетчик команд
-    clear_csr(CSR_MCOUNTINHIBIT, 2 /* CSR_MCOUNTINHIBIT_IR */);
-    
     //  Relocate the .data section 
     std::uint32_t*  dl = & __data_load__;
     std::uint32_t*  ds = & __data_start__;

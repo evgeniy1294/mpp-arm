@@ -67,9 +67,11 @@ namespace mpp::core {
         }
         
         inline static std::uint32_t GetTick() { 
+          std::uint32_t ctrl = DWT->CTRL;
+
           DWT->CTRL &= ~DWT_CTRL_CYCCNTENA_Msk;
           std::uint32_t tmp = DWT->CYCCNT; 
-          DWT->CTRL |=  DWT_CTRL_CYCCNTENA_Msk;
+          DWT->CTRL = ctrl;
 
           return tmp;
         }
