@@ -35,6 +35,9 @@ OF SUCH DAMAGE.
 #ifndef GD32VF103_LIBOPT_H
 #define GD32VF103_LIBOPT_H
 
+#include "riscv_encoding.h"
+#include "riscv_bits.h"
+#include "n200_func.h"
 #include "Include/gd32vf103_adc.h"
 #include "Include/gd32vf103_bkp.h"
 #include "Include/gd32vf103_can.h"
@@ -56,6 +59,5 @@ OF SUCH DAMAGE.
 #include "Include/gd32vf103_timer.h"
 #include "Include/gd32vf103_usart.h"
 #include "Include/gd32vf103_wwdgt.h"
-#include "n200_func.h"
 
 #endif /* GD32VF103_LIBOPT_H */

@@ -1,12 +1,12 @@
+ENTRY(ResetHandler)
 
 MEMORY
 {
-  FLASH  (rx) : ORIGIN = 0x08000000, LENGTH = 0x100000
-  RAM    (xrw): ORIGIN = 0x20000000, LENGTH = 0x20000
-  CCMRAM (xrw): ORIGIN = 0x10000000, LENGTH = 0x10000
+  FLASH  (rx) : ORIGIN = 0x08000000, LENGTH = 1M
+  RAM    (xrw): ORIGIN = 0x20000000, LENGTH = 128k
+  CCMRAM (xrw): ORIGIN = 0x10000000, LENGTH = 64k
 }
 
-ENTRY(ResetHandler)
 
 __initial_sp__   = ORIGIN(RAM) + LENGTH(RAM); 
 __firmware_end__ = ORIGIN(FLASH) + SIZEOF(.isr_flash) + SIZEOF(.text) + SIZEOF(.rodata) + 16; /* arm + init_array + fini_array = 16 bytes */
@@ -55,16 +55,6 @@ SECTIONS
     *(.rodata)         
     *(.rodata*)        
     . = ALIGN(4);
-  } >FLASH
-
-
-
-
-  .ARM.extab   : { *(.ARM.extab* .gnu.linkonce.armextab.*) } >FLASH
-  .ARM : {
-    __exidx_start = .;
-    *(.ARM.exidx*)
-    __exidx_end = .;
   } >FLASH
 
 

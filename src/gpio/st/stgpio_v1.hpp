@@ -331,9 +331,9 @@ namespace mpp::gpio
                                static_cast<std::uint32_t>(kSpeed)) & static_cast<std::uint32_t>(kType);
           
         static constexpr std::uint32_t kCrlMask       = (kPin < 8u) ? CR << (kPin << 2u) : 0u;
-        static constexpr std::uint32_t kCrlClearMask  = ~((kPin < 8u) ? ~(0b1111 << (kPin << 2ul)) : 0u);
+        static constexpr std::uint32_t kCrlClearMask  = ~((kPin < 8u) ? 0b1111 << (kPin << 2ul) : 0u);
         static constexpr std::uint32_t kCrhMask       = (kPin > 7u) ? CR << ((kPin-8) << 2u) : 0u;
-        static constexpr std::uint32_t kCrhClearMask  = ~((kPin > 7u) ? ~(0b1111 << ((kPin-8) << 2ul)) : 0u);
+        static constexpr std::uint32_t kCrhClearMask  = ~((kPin > 7u) ? 0b1111 << ((kPin-8) << 2ul) : 0u);
         static constexpr std::uint32_t kOdrMask       = (kType != Type::Output) ? 0u : 1ul << kPin;
         static constexpr std::uint32_t kIdrMask       = (kType != Type::Input)  ? 0u : 1ul << kPin;
         static constexpr std::uint32_t kBsrrSetMask   = (kType != Type::Output) ? 0u : (kInversion == Inversion::On) ? 0b1ul << (kPin+16u) : 0b1ul << kPin;
@@ -351,13 +351,19 @@ namespace mpp::gpio
           
           if constexpr (kPin < 8) 
           {
-            regs->CRL &= kCrlClearMask;
-            if constexpr (kCrlMask != 0) regs->CRL |= kCrlMask;
+            if constexpr (kCrlClearMask != 0xffff'ffff) 
+              regs->CRL &= kCrlClearMask;
+
+            if constexpr (kCrlMask != 0) 
+              regs->CRL |= kCrlMask;
           }
           else
           {
-            regs->CRH &= kCrhClearMask;
-            if constexpr (kCrhMask != 0) regs->CRH |= kCrhMask;
+            if constexpr (kCrhClearMask != 0xffff'ffff) 
+              regs->CRH &= kCrhClearMask;
+
+            if constexpr (kCrhMask != 0)
+              regs->CRH |= kCrhMask;
           }
           
           regs->BSRR = kBsrrInitMask;

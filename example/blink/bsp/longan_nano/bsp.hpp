@@ -21,8 +21,8 @@ namespace bsp
 {
   // Systick and DWT
   struct FakeClk {
-    constexpr static std::uint32_t kSysClkHz     = 8'000'000u;
-    constexpr static std::uint32_t kSysTickClkHz = 8'000'000u; 
+    constexpr static std::uint32_t kSysClkHz = 8'000'000u;
+    constexpr static std::uint32_t kMachineTimerClkHz = 2'000'000u; 
   };
 
   using Systick = mpp::core::MachineTimer < FakeClk >;
@@ -30,14 +30,14 @@ namespace bsp
   
   // Interrupt controller and source
   struct MachineTimerIntTrait final {
-    constexpr static HandleMode   kHandleMode = HandleMode::NonVectored;
-    constexpr static Trigger      kTrigger    = Trigger::Level;
+    constexpr static mpp::irq::HandleMode kHandleMode = mpp::irq::HandleMode::NonVectored;
+    constexpr static mpp::irq::Trigger    kTrigger    = mpp::irq::Trigger::Level;
     constexpr static std::uint8_t kPriorityLevel = 0b0010;
   };
   
   
   struct EclicTrait final {
-    constexpr static PriorityLevelGroup kPriorityLevelGroup = mpp::core::PriorityLevelGroup::L3P1;
+    constexpr static mpp::core::PriorityLevelGroup kPriorityLevelGroup = mpp::core::PriorityLevelGroup::L3P1;
     constexpr static std::size_t kThresholdLevel  = 0;
   };
   
@@ -47,18 +47,15 @@ namespace bsp
   
     
   // Leds
-  struct LedTrait final: mpp::gpio::LedTrait
-  {
-    constexpr static mpp::gpio::Inversion kInversion = mpp::gpio::Inversion::Off;
-  };
-    
-
-  using LedRed   = mpp::gpio::Gpio < mpp::gpio::IO< mpp::gpio::Port::C, 13 >,  LedTrait >;  
-  using LedGreen = mpp::gpio::Gpio < mpp::gpio::IO< mpp::gpio::Port::A, 1  >,  LedTrait >;  
+  using LedTraitInv = mpp::gpio::LedTrait<mpp::gpio::Inversion::On>;
+  using LedTrait    = mpp::gpio::LedTrait<mpp::gpio::Inversion::Off>;
+  
+  using LedRed   = mpp::gpio::Gpio < mpp::gpio::IO< mpp::gpio::Port::C, 13 >,  LedTraitInv >;  
+  using LedGreen = mpp::gpio::Gpio < mpp::gpio::IO< mpp::gpio::Port::A, 1  >,  LedTraitInv >;  
   using LedBlue  = mpp::gpio::Gpio < mpp::gpio::IO< mpp::gpio::Port::A, 2  >,  LedTrait >;  
   
   
-  using Leds = mpp::gpio::IoSet < LedRed, LedGreen, LedBlue >;
+  using Leds = mpp::utils::IoSet < LedRed, LedBlue, LedGreen >;
   
   
   // Specific function 

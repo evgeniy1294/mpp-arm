@@ -23,11 +23,11 @@ namespace mpp::gpio
   inline namespace gd32vf103xx
   {
     enum class Port { 
-      A = GPIOA_BASE,
-      B = GPIOB_BASE,
-      C = GPIOC_BASE,
-      D = GPIOD_BASE,
-      E = GPIOE_BASE,
+      A = GPIOA,
+      B = GPIOB,
+      C = GPIOC,
+      D = GPIOD,
+      E = GPIOE,
     };
 
     template< typename IO >

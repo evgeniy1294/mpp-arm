@@ -53,8 +53,8 @@ namespace mpp::irq {
         constexpr static std::uint8_t kIntCfgMask  = kPriorityLevel << (8 - ECLICINTCTLBITS);
                               
         inline static void Init() {
-          constexpr std::uintptr_t intcfg  = ECLIC_ADDR_BASE + ECLIC_INT_IE_OFFSET + static_cast< std::uintptr_t >(kInterruptSource) * 4;
-          constexpr std::uintptr_t intattr = ECLIC_ADDR_BASE + ECLIC_INT_IE_OFFSET + static_cast< std::uintptr_t >(kInterruptSource) * 4;
+          constexpr std::uintptr_t intcfg  = ECLIC_ADDR_BASE + ECLIC_INT_CTRL_OFFSET + static_cast< std::uintptr_t >(kInterruptSource) * 4;
+          constexpr std::uintptr_t intattr = ECLIC_ADDR_BASE + ECLIC_INT_ATTR_OFFSET + static_cast< std::uintptr_t >(kInterruptSource) * 4;
           
           *(volatile uint8_t*)intcfg  = kIntCfgMask;
           *(volatile uint8_t*)intattr = kIntAttrMask;

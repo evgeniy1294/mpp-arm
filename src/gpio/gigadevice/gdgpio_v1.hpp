@@ -70,15 +70,12 @@ namespace mpp::gpio
       Inherit your LedTrait from this struct. 
       Child must contain fields: kInversion.
     */
+    template < Inversion tInversion >
     struct LedTrait: OutputTrait {
       constexpr static Driver kDriver = Driver::PushPull;
       constexpr static Speed kSpeed = Speed::Low;
       constexpr static DefaultState kDefaultState = DefaultState::Low;    
-        
-      /*
-        Your trait must contain this field:
-          constexpr static Inversion kInversion = Inversion::Off, On;
-      */
+      constexpr static Inversion kInversion = tInversion;
     };
       
       
@@ -288,9 +285,9 @@ namespace mpp::gpio
                                static_cast<std::uint32_t>(kSpeed)) & static_cast<std::uint32_t>(kType);
           
         static constexpr std::uint32_t kCtl0Mask       = (kPin < 8u) ? CR << (kPin << 2u) : 0u;
-        static constexpr std::uint32_t kCtl0ClearMask  = ~((kPin < 8u) ? ~(0b1111 << (kPin << 2ul)) : 0u);
+        static constexpr std::uint32_t kCtl0ClearMask  = ~((kPin < 8u) ? (0b1111u << (kPin << 2ul)) : 0u);
         static constexpr std::uint32_t kCtl1Mask       = (kPin > 7u) ? CR << ((kPin-8) << 2u) : 0u;
-        static constexpr std::uint32_t kCtl1ClearMask  = ~((kPin > 7u) ? ~(0b1111 << ((kPin-8) << 2ul)) : 0u);
+        static constexpr std::uint32_t kCtl1ClearMask  = ~((kPin > 7u) ? (0b1111u << ((kPin-8) << 2ul)) : 0u);
         static constexpr std::uint32_t kOctlMask       = (kType != Type::Output) ? 0u : 1ul << kPin;
         static constexpr std::uint32_t kIstatMask      = (kType != Type::Input)  ? 0u : 1ul << kPin;
         static constexpr std::uint32_t kBopSetMask     = (kType != Type::Output) ? 0u : (kInversion == Inversion::On) ? 0b1ul << (kPin+16u) : 0b1ul << kPin;
@@ -309,13 +306,19 @@ namespace mpp::gpio
           if constexpr (kPin < 8) 
           {
               
-            GPIO_CTL0(regs) &= kCtl0ClearMask;
-            if constexpr (kCtl0Mask != 0) GPIO_CTL0(regs) |= kCtl0Mask;
+            if constexpr (kCtl0ClearMask != 0xffff'ffff)
+              GPIO_CTL0(regs) = GPIO_CTL0(regs) & kCtl0ClearMask;
+            
+            if constexpr (kCtl0Mask != 0) 
+              GPIO_CTL0(regs) = GPIO_CTL0(regs) | kCtl0Mask;
           }
           else
           {
-            GPIO_CTL1(regs) &= kCtl1ClearMask;
-            if constexpr (kCtl1Mask != 0) GPIO_CTL1(regs) |= kCtl1Mask;
+            if constexpr (kCtl1ClearMask != 0xffff'ffff) 
+              GPIO_CTL1(regs) = GPIO_CTL1(regs) & kCtl1ClearMask;
+            
+            if constexpr (kCtl1Mask != 0) 
+              GPIO_CTL1(regs) = GPIO_CTL1(regs) | kCtl1Mask;
           }
           
           GPIO_BOP(regs) = kBopInitMask;
@@ -343,7 +346,7 @@ namespace mpp::gpio
           static_assert((kType == Type::Output), "This gpio not output, check 'Type' field");   
           
           constexpr std::uint32_t regs{static_cast<std::uint32_t>(kPort)};
-          GPIO_OCTL(regs) ^= kOctlMask;            
+          GPIO_OCTL(regs) = GPIO_OCTL(regs) ^ kOctlMask;            
         }
       
       
@@ -398,16 +401,16 @@ namespace mpp::gpio
           constexpr std::uint32_t regs{static_cast<std::uint32_t>(kPort)};
           
           if constexpr (kCtl0ClearMask != 0xffff'ffff) 
-            GPIO_CTL0(regs) &= kCtl0ClearMask;
+            GPIO_CTL0(regs) = GPIO_CTL0(regs) & kCtl0ClearMask;
           
           if constexpr (kCtl1ClearMask != 0xffff'ffff) 
-            GPIO_CTL1(regs) &= kCtl1ClearMask;
+            GPIO_CTL1(regs) = GPIO_CTL1(regs) & kCtl1ClearMask;
           
           if constexpr (kCtl0Mask != 0)
-            GPIO_CTL0(regs) |= kCtl0Mask;
+            GPIO_CTL0(regs) = GPIO_CTL0(regs) | kCtl0Mask;
           
           if constexpr (kCtl1Mask != 0)
-            GPIO_CTL1(regs) |= kCtl1Mask;
+            GPIO_CTL1(regs) = GPIO_CTL1(regs) | kCtl1Mask;
              
           GPIO_BOP(regs) = kBopInitMask;
         }
@@ -433,7 +436,7 @@ namespace mpp::gpio
           static_assert((kOctlMask != 0u), "IoGroup haven't output pin");        
           constexpr std::uint32_t regs{static_cast<std::uint32_t>(kPort)};
           
-          GPIO_OCTL(regs) ^= kOctlMask;            
+          GPIO_OCTL(regs) = GPIO_OCTL(regs) ^ kOctlMask;            
         }
         
       

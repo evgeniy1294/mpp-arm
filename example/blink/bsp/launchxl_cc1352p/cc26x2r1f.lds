@@ -84,17 +84,6 @@ SECTIONS
         _etext = .;
     } > FLASH = 0
 
-   .ARM.exidx :
-    {
-        __exidx_start = .;
-        *(.ARM.exidx* .gnu.linkonce.armexidx.*)
-        __exidx_end = .;
-    } > FLASH
-
-    .ARM.extab :
-    {
-        *(.ARM.extab* .gnu.linkonce.armextab.*)
-    } > FLASH
 
     .init_array :
     {
