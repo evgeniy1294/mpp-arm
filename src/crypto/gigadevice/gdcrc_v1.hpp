@@ -1,8 +1,8 @@
 /**
   ***********************************************************
   @author Evgenii Fedoseev
-  @file  /src/crypto/st/stgpiof4.hpp
-  @brief   Compatible series: STM32F4, STM32F1
+  @file  /src/crypto/gigadevice/gdcrc_v1.hpp
+  @brief   Compatible series: gd32vf103
   ***********************************************************
 **/
 
@@ -15,22 +15,22 @@
 
 namespace mpp::crc
 {
-  inline namespace stcrc_v1 
+  inline namespace gdcrc_v1 
   {
       
       
     class HardwareLogic final {
       public:
 
-        inline static void Reset(CRC_TypeDef* crc) {
-          crc->CR = CRC_CR_RESET; 
+        inline static void Reset() {
+          CRC_CTL = CRC_CTL_RST; 
         }
 
 
-        inline static std::uint32_t Finalize(CRC_TypeDef* crc) noexcept(true)
+        inline static std::uint32_t Finalize() noexcept(true)
         {
-          std::uint32_t ret = crc->DR; 
-          crc->CR = CRC_CR_RESET; 
+          std::uint32_t ret = CRC_DATA; 
+          CRC_CTL = CRC_CTL_RST; 
         
           return ret;
         }
@@ -38,22 +38,21 @@ namespace mpp::crc
         
         
         template< typename T >
-        static void Calculate( CRC_TypeDef* crc, const T* first, const T* last ) noexcept(true)
+        static void Calculate( const T* first, const T* last ) noexcept(true)
         {
           static_assert( sizeof(T) % 4 == 0 );
           const std::uint32_t* pu32 = reinterpret_cast< const std::uint32_t* >(first);
           
           while ( pu32 < reinterpret_cast<const std::uint32_t*>(last) )
-            crc->DR = *pu32++;
-        
-          return;
+            CRC_DATA = *pu32++;
         }
         
         
 
 
         template< typename T >
-        static std::uint32_t CalculateEther( CRC_TypeDef* crc, const T* first, const T* last )
+        __attribute__((noinline)) 
+        static std::uint32_t CalculateEther( const T* first, const T* last )
         {
           std::size_t SzInByte = (last - first) * sizeof(T);
           const std::uint32_t* pu32 = reinterpret_cast< const std::uint32_t* >(first);
@@ -61,36 +60,36 @@ namespace mpp::crc
           
   
           while ( pu32 < lu32 )
-            crc->DR = __REV(*pu32++);
+            CRC_DATA = __builtin_bswap32(*pu32++);
             
-          std::uint32_t result = __REV(crc->DR);
+          std::uint32_t result = __builtin_bswap32(CRC_DATA);
   
           if constexpr ( (sizeof(T) % 4u) != 0u )
           {
             std::size_t TailByte = SzInByte & 0b11u;
             
             if ( TailByte != 0u ) {
-              crc->DR = crc->DR;
+              CRC_DATA = CRC_DATA;
             
               switch(TailByte) {
                 case 1:
-                  crc->DR = __REV((*pu32 & 0xFFu) ^ result) >> 24;
-                  result = ( result >> 8 ) ^ __REV(crc->DR);
+                  CRC_DATA = __builtin_bswap32((*pu32 & 0xFFu) ^ result) >> 24;
+                  result = ( result >> 8 ) ^ __builtin_bswap32(CRC_DATA);
                   break;
                 case 2:
-                  crc->DR = __REV((*pu32 & 0xFFFFu) ^ result) >> 16;
-                  result = ( result >> 16 ) ^ __REV(crc->DR);
+                  CRC_DATA = __builtin_bswap32((*pu32 & 0xFFFFu) ^ result) >> 16;
+                  result = ( result >> 16 ) ^ __builtin_bswap32(CRC_DATA);
                   break;
                 case 3:
-                  crc->DR = __REV((*pu32 & 0xFFFFFFu) ^ result) >> 8;
-                  result = ( result >> 24 ) ^ __REV(crc->DR);
+                  CRC_DATA = __builtin_bswap32((*pu32 & 0xFFFFFFu) ^ result) >> 8;
+                  result = ( result >> 24 ) ^ __builtin_bswap32(CRC_DATA);
                 break;
               }
             }
           }
   
-          crc->CR = CRC_CR_RESET;  // Not used with Finalize
-          return ~__REV(result);
+          CRC_CTL = CRC_CTL_RST;  // Not used with Finalize
+          return ~__builtin_bswap32(result);
         }
     }; 
         

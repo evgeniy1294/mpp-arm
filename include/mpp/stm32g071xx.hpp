@@ -12,6 +12,7 @@
 #define STM32G071xx          (1ul)
 
 //____________________INCLUDE_____________________//
+#include <cstdint>
 #include "stm32g071xx.h"
 #include "../../src/utils/ioutils.hpp"
 #include "../../src/utils/timutils.hpp"

@@ -15,6 +15,7 @@
 #define HXTAL_VALUE          (8000000ul)
 
 //____________________INCLUDE_____________________//
+#include <cstdint>
 #include "gd32vf103.h"
 
 #include "../../src/utils/ioutils.hpp"
@@ -23,6 +24,7 @@
 #include "../../src/core/bamblebee_n200.hpp"
 #include "../../src/irq/gigadevice/gd32v_irq_v1.hpp"
 #include "../../src/gpio/gigadevice/gdgpio_v1.hpp"
+#include "../../src/crypto/gigadevice/gdcrc_v1.hpp"
 #include "../../src/crypto/crc_logic.hpp"
 #include "../../src/crypto/crc_models.hpp"
 

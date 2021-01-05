@@ -1,15 +1,18 @@
 #include "bsp.hpp"
 
+
+
 std::array<std::uint8_t, 9> TestSequence = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
 
 void bsp::Init()
 {
-  RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN | RCC_AHB1ENR_CRCEN;
+  RCC->AHBENR  |= RCC_AHBENR_CRCEN;
+  RCC->APB2ENR |= RCC_APB2ENR_IOPAEN | RCC_APB2ENR_IOPBEN | RCC_APB2ENR_IOPCEN;
   
   Systick::Init();
-  Leds::Init();
-  Leds::Reset();
+  LedGreen::Init();
+  LedGreen::Reset();
     
   return;
 }
@@ -40,8 +43,7 @@ bool bsp::TestSequenceCheck()
 
 
 void bsp::ErrorSignal() {
-  LedGreen::Reset();
-  LedRed::Set();    
+  LedGreen::Reset();  
 }
 
 
@@ -49,11 +51,6 @@ void bsp::ErrorSignal() {
 
 
 void bsp::OkSignal() {
-  LedRed::Reset();
   LedGreen::Set();  
 }
-
-
-
-
 

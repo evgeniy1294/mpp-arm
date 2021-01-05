@@ -48,10 +48,10 @@ namespace mpp::crc {
   };
 
 
-	
+    
 
   struct ITU_4 {
-	using result_type = std::uint8_t;
+    using result_type = std::uint8_t;
     static constexpr std::size_t kWidth = 4u;
     
     static constexpr result_type kPoly   = 0x03;
@@ -61,13 +61,13 @@ namespace mpp::crc {
     static constexpr bool kRefOut = true;
     static constexpr result_type kCheck = 0x7;  
   };
-	
-	
-	
-	
-	
+    
+    
+    
+    
+    
   struct EPC_5 {
-	using result_type = std::uint8_t;
+    using result_type = std::uint8_t;
     static constexpr std::size_t kWidth = 5u;
     
     static constexpr result_type kPoly   = 0x09;
@@ -77,13 +77,13 @@ namespace mpp::crc {
     static constexpr bool kRefOut = false;
     static constexpr result_type kCheck = 0x0;  
   };
-	
-	
-	
-	
-	
+    
+    
+    
+    
+    
   struct ITU_5 {
-	using result_type = std::uint8_t;
+    using result_type = std::uint8_t;
     static constexpr std::size_t kWidth = 5u;
     
     static constexpr result_type kPoly   = 0x15;
@@ -93,12 +93,12 @@ namespace mpp::crc {
     static constexpr bool kRefOut = true;
     static constexpr result_type kCheck = 0x7;  
   };
-		
-	
-	
+        
+    
+    
 
   struct USB_5 {
-	using result_type = std::uint8_t;
+    using result_type = std::uint8_t;
     static constexpr std::size_t kWidth = 5u;
     
     static constexpr result_type kPoly   = 0x05;
@@ -108,13 +108,13 @@ namespace mpp::crc {
     static constexpr bool kRefOut = true;
     static constexpr result_type kCheck = 0x19;  
   };
-	
-	
-	
-	
-	
+    
+    
+    
+    
+    
   struct CDMA2000A_6 {
-	using result_type = std::uint8_t;
+    using result_type = std::uint8_t;
     static constexpr std::size_t kWidth = 6u;
     
     static constexpr result_type kPoly   = 0x27;
@@ -124,14 +124,14 @@ namespace mpp::crc {
     static constexpr bool kRefOut = false;
     static constexpr result_type kCheck = 0x0D;  
   };
-	
-	
-	
-	
-	
+    
+    
+    
+    
+    
 
   struct CDMA2000B_6 {
-	using result_type = std::uint8_t;
+    using result_type = std::uint8_t;
     static constexpr std::size_t kWidth = 6u;
     
     static constexpr result_type kPoly   = 0x07;
@@ -141,10 +141,10 @@ namespace mpp::crc {
     static constexpr bool kRefOut = false;
     static constexpr result_type kCheck = 0x3B;  
   };
-	
-	
-	
-	
+    
+    
+    
+    
   struct DARC_6
   {
     using result_type = std::uint8_t;
@@ -157,10 +157,10 @@ namespace mpp::crc {
     static constexpr bool kRefOut = true;
     static constexpr result_type kCheck = 0x26;
   };
-	
-	
-	
-	
+    
+    
+    
+    
   struct ITU_6
   {
     using result_type = std::uint8_t;
@@ -173,12 +173,12 @@ namespace mpp::crc {
     static constexpr bool kRefOut = true;
     static constexpr result_type kCheck = 0x6;
   };
-	
-	
+    
+    
 
-	
+    
   struct CRC_7 {
-	using result_type = std::uint8_t;
+    using result_type = std::uint8_t;
     static constexpr std::size_t kWidth = 7u;
     
     static constexpr result_type kPoly   = 0x09;
@@ -186,14 +186,14 @@ namespace mpp::crc {
     static constexpr result_type kXorOut = 0x00;
     static constexpr bool kRefIn  = false;
     static constexpr bool kRefOut = false;
-    static constexpr result_type kCheck = 0x53;  
+    static constexpr result_type kCheck = 0x75;  
   };
-	
-	
-	
-	
+    
+    
+    
+    
   struct ROHC_7 {
-	using result_type = std::uint8_t;
+    using result_type = std::uint8_t;
     static constexpr std::size_t kWidth = 7u;
     
     static constexpr result_type kPoly   = 0x4f;
@@ -203,10 +203,10 @@ namespace mpp::crc {
     static constexpr bool kRefOut = true;
     static constexpr result_type kCheck = 0x53;  
   };
-	
-	
-	
-	
+    
+    
+    
+    
   struct CRC_8: public BaseCrc8
   {
     static constexpr result_type kPoly   = 0x07;

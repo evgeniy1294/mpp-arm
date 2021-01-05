@@ -12,6 +12,7 @@
 #define STM32F407xx          (1ul)
 
 //____________________INCLUDE_____________________//
+#include <cstdint>
 #include "stm32f407xx.h"
 #include "../../src/utils/ioutils.hpp"
 #include "../../src/utils/timutils.hpp"

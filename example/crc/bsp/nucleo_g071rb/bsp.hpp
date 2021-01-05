@@ -10,7 +10,6 @@
 
 
 //____________________INCLUDE_____________________//
-#include <cstdint>
 #include "mpp/stm32g071xx.hpp"
 
 
@@ -24,12 +23,9 @@ namespace bsp
     constexpr static std::uint32_t kSysClkHz     = 16'000'000u;
     constexpr static std::uint32_t kSysTickClkHz = 16'000'000u; 
   };
-
   using Systick = mpp::core::Systick < FakeClk >;
     
-	
-	
-	
+    
   // Leds
   struct LedTrait final: mpp::gpio::LedTrait
   {
@@ -37,21 +33,17 @@ namespace bsp
   };
     
   using LedGreen  = mpp::gpio::Gpio < mpp::gpio::PA5, LedTrait >;  
-
   using Leds = mpp::gpio::IoGroup < LedGreen >;
-	
-	
-	
-	
+    
+    
+    
+    
   // Specific function 
   void Init();
   bool TestSequenceCheck();
-  bool TestSequencePartCheck();
   void ErrorSignal();
   void OkSignal();
-	
-	
-	
+    
     
 } // namespace bsp
 

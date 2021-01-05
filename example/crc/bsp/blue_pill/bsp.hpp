@@ -1,8 +1,8 @@
 /**
   ***********************************************************
   @author Evgenii Fedoseev
-  @file   /bsp/stm32f407g_disco/bsp.hpp
-  @brief  Compatible board stm32f407-discovery 
+  @file   /bsp/blue_pill/bsp.hpp
+  @brief  Compatible board: blue pill
   ***********************************************************
 **/
 
@@ -10,7 +10,7 @@
 
 
 //____________________INCLUDE_____________________//
-#include "mpp/stm32f407xx.hpp"
+#include "mpp/stm32f103xb.hpp"
 
 
 int main();
@@ -20,27 +20,23 @@ namespace bsp
 {
   // Systick and DWT
   struct FakeClk {
-    constexpr static std::uint32_t kSysClkHz     = 16'000'000u;
-    constexpr static std::uint32_t kSysTickClkHz = 16'000'000u; 
+    constexpr static std::uint32_t kSysClkHz     = 8'000'000u;
+    constexpr static std::uint32_t kSysTickClkHz = 8'000'000u; 
   };
 
   using Systick = mpp::core::Systick < FakeClk >;
+	
+	
+	
     
   // Leds
   struct LedTrait final: mpp::gpio::LedTrait
   {
-    constexpr static mpp::gpio::Inversion kInversion = mpp::gpio::Inversion::Off;
-  };
-    
-  struct LedInvTrait final: mpp::gpio::LedTrait
-  {
     constexpr static mpp::gpio::Inversion kInversion = mpp::gpio::Inversion::On;
   };
+    
 
-  using LedRed    = mpp::gpio::Gpio < mpp::gpio::PD14, LedTrait >;    
-  using LedGreen  = mpp::gpio::Gpio < mpp::gpio::PD12, LedTrait >;  
-
-  using Leds = mpp::gpio::IoGroup < LedRed, LedGreen >;
+  using LedGreen  = mpp::gpio::Gpio < mpp::gpio::IO< mpp::gpio::Port::C, 13 >,  LedTrait >;  
 	
 	
   // Specific function 
@@ -48,6 +44,5 @@ namespace bsp
   bool TestSequenceCheck();
   void ErrorSignal();
   void OkSignal();
-	
     
-} // namespace bsp
+} // namespace board
