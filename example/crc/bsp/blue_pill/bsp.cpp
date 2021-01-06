@@ -2,7 +2,7 @@
 
 
 
-std::array<std::uint8_t, 9> TestSequence = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+std::array<std::uint32_t, 9> TestSequence = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
 
 void bsp::Init()
@@ -28,9 +28,10 @@ bool bsp::TestSequenceCheck()
   volatile std::uint32_t crc = 0;
 
   HardwareLogic::Reset(CRC);
-  crc = HardwareLogic::CalculateEther(CRC, TestSequence.data(), TestSequence.end());
-  
-  if (crc != 0xFC891918)
+  HardwareLogic::Calculate(CRC, TestSequence.data(), TestSequence.end());
+  crc = HardwareLogic::Finalize(CRC); 
+	  
+  if (crc != 0x1556f485)
     return false;
   
   return true;  

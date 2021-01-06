@@ -1,6 +1,6 @@
 #include "bsp.hpp"
 
-std::array<std::uint8_t, 9> TestSequence = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+std::array<std::uint32_t, 9> TestSequence = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
 void bsp::Init()
 {
@@ -35,9 +35,10 @@ bool bsp::TestSequenceCheck()
 
   //HardwareLogic::Reset();
   CRC_CTL = CRC_CTL_RST;
-  crc = HardwareLogic::CalculateEther(TestSequence.data(), TestSequence.end());
-  
-  if (crc != 0xFC891918)
+  HardwareLogic::Calculate(TestSequence.data(), TestSequence.end());
+  crc = HardwareLogic::Finalize(); 
+	
+  if (crc != 0x1556f485)
     return false;
   
   return true;  

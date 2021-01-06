@@ -2,7 +2,7 @@
 
 // Checksum models
 std::array<std::uint8_t, 9> TestSequence = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
-
+std::array<std::uint8_t, 11> TestSequenceUnaligned = {0, 0, '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
 
 void bsp::Init()
@@ -41,7 +41,15 @@ bool bsp::TestSequenceCheck()
   if (crc != POSIX_32::kCheck)
     return false;
 
-
+  // Unaligned data test
+  HardwareLogic::Configure< POSIX_32 >(CRC);
+  HardwareLogic::Calculate(CRC, TestSequenceUnaligned.data()+2, TestSequenceUnaligned.end());
+  crc = HardwareLogic::Finalize(CRC);
+  
+  if (crc != POSIX_32::kCheck)
+    return false;
+	
+	
   // [ Name: ZLib, Poly = 0x4C11DB7, Seed = 0xFFFFFFFF, XorOut = 0xFFFFFFFF, RefIn = true, RefOut = true, Check = 0xCBF43926 ]
   HardwareLogic::Configure< ZLIB_32 >(CRC);
   HardwareLogic::Calculate(CRC, TestSequence.data(), TestSequence.end());
@@ -81,8 +89,6 @@ bool bsp::TestSequenceCheck()
   // Test complete!!!
   return true;
 }
-
-
 
 
 

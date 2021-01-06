@@ -88,34 +88,23 @@ namespace mpp::crc {
       
       
       template< typename T >
-      static void Calculate( CRC_TypeDef* crc, const T* first, const T* last ) noexcept(true)
+      static void Calculate( CRC_TypeDef* crc, const T* data, const T* end ) noexcept(true)
       {
-        #if (__CORTEX_M == 0u)
-          // Input data may be unaligned. Use safety function
-          CalculateByByte(crc, first, last);
-        #else
-          std::size_t SzInByte = (last - first) * sizeof(T);
-          const std::uint32_t* pu32 = reinterpret_cast< const std::uint32_t* >(first);
-          const std::uint32_t* lu32 = pu32 + ( SzInByte >> 2u );
-            
+        std::size_t unaligned = (reinterpret_cast<std::uintptr_t>(data) & 0b11u) ? 
+                                  4u - reinterpret_cast<std::uintptr_t>(data) & 0b11u : 0u;
+        
+        const std::uint8_t*  pu8  = reinterpret_cast< const std::uint8_t*  >(data);
+        while ( unaligned-- )
+          *reinterpret_cast< volatile std::uint8_t* >(&crc->DR) = *pu8++;
           
-          while ( pu32 < lu32 )
-            crc->DR = __REV(*pu32++);
+        const std::uint32_t* pu32 = reinterpret_cast< const std::uint32_t* >(pu8);
+        const std::uint32_t* pe32 = reinterpret_cast< const std::uint32_t* >( reinterpret_cast<std::uintptr_t>(end) & ~0b11 );
+        while (pu32 < pe32)
+           crc->DR = __REV(*pu32++);
           
-          
-          if constexpr ( (sizeof(T) % 4u) != 0u )
-          {
-            std::size_t TailByte = SzInByte & 0b11u;
-              
-            if ( TailByte != 0u ) {
-              const std::uint8_t* pu8 = reinterpret_cast< const std::uint8_t* >(lu32);
-  
-              while ( TailByte-- )  
-                *reinterpret_cast< volatile std::uint8_t* >(&crc->DR) = *pu8++;
-              
-            }
-          }
-        #endif
+        pu8 = reinterpret_cast< const std::uint8_t*  >(pe32);
+        while (pu8 < reinterpret_cast< const std::uint8_t* >(end))
+           *reinterpret_cast< volatile std::uint8_t* >(&crc->DR) = *pu8++;
         
         return;
       }
@@ -139,19 +128,11 @@ namespace mpp::crc {
         
         
         
-        
-        
-      template< typename T >
-      static void CalculateFast( CRC_TypeDef* crc, const T* first, const T* last ) noexcept(true)
+      static void CalculateFast( CRC_TypeDef* crc, const std::uint32_t* data, const std::uint32_t* end ) 
+      noexcept(true)
       { 
-        static_assert( sizeof(T) % 4 == 0 );
-        const std::uint32_t* pu32 = reinterpret_cast< const std::uint32_t* >(first);
-          
-        while ( pu32 < reinterpret_cast<const std::uint32_t*>(last) )
-          crc->DR = *pu32++;
-        
-        
-        return;
+        while ( data < end )
+          crc->DR = *data++;
       }
         
         
