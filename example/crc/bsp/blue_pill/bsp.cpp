@@ -28,7 +28,7 @@ bool bsp::TestSequenceCheck()
   volatile std::uint32_t crc = 0;
 
   HardwareLogic::Reset(CRC);
-  HardwareLogic::Calculate(CRC, TestSequence.data(), TestSequence.end());
+  HardwareLogic::Calculate(CRC, TestSequence.data(), TestSequence.size());
   crc = HardwareLogic::Finalize(CRC); 
 	  
   if (crc != 0x1556f485)

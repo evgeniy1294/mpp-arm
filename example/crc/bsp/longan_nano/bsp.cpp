@@ -35,7 +35,7 @@ bool bsp::TestSequenceCheck()
 
   //HardwareLogic::Reset();
   CRC_CTL = CRC_CTL_RST;
-  HardwareLogic::Calculate(TestSequence.data(), TestSequence.end());
+  HardwareLogic::Calculate(TestSequence.data(), TestSequence.size());
   crc = HardwareLogic::Finalize(); 
 	
   if (crc != 0x1556f485)

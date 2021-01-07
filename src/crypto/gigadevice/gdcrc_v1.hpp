@@ -37,10 +37,10 @@ namespace mpp::crc
         
         
         
-        static void Calculate( const std::uint32_t* data, const std::uint32_t* end ) 
+        static void Calculate( const std::uint32_t* data, std::size_t size ) 
         noexcept(true)
         {
-          while ( data < end )
+          while ( size-- )
             CRC_DATA = *data++;
         }
     };

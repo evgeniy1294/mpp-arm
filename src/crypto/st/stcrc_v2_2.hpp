@@ -88,8 +88,9 @@ namespace mpp::crc {
       
       
       template< typename T >
-      static void Calculate( CRC_TypeDef* crc, const T* data, const T* end ) noexcept(true)
+      static void Calculate( CRC_TypeDef* crc, const T* data, std::size_t size ) noexcept(true)
       {
+        const std::uint8_t* end = reinterpret_cast< const std::uint8_t* >(data + static_cast<std::ptrdiff_t>(size));
         std::size_t unaligned = (reinterpret_cast<std::uintptr_t>(data) & 0b11u) ? 
                                   4u - reinterpret_cast<std::uintptr_t>(data) & 0b11u : 0u;
         
@@ -102,9 +103,9 @@ namespace mpp::crc {
         while (pu32 < pe32)
            crc->DR = __REV(*pu32++);
           
-        pu8 = reinterpret_cast< const std::uint8_t*  >(pe32);
-        while (pu8 < reinterpret_cast< const std::uint8_t* >(end))
-           *reinterpret_cast< volatile std::uint8_t* >(&crc->DR) = *pu8++;
+        pu8 = reinterpret_cast< const std::uint8_t* >(pe32);
+        while (pu8 < end)
+          *reinterpret_cast< volatile std::uint8_t* >(&crc->DR) = *pu8++;
         
         return;
       }
@@ -115,11 +116,12 @@ namespace mpp::crc {
      
         
       template< typename T >
-      static void CalculateByByte( CRC_TypeDef* crc, const T* first, const T* last ) noexcept(true)
+      static void CalculateByByte( CRC_TypeDef* crc, const T* data, std::size_t size ) noexcept(true)
       { 
-        const std::uint8_t* pu8 = reinterpret_cast< const std::uint8_t* >(first);
-          
-        while ( pu8 < reinterpret_cast<const std::uint8_t*>(last) )
+        const std::uint8_t* pu8 = reinterpret_cast< const std::uint8_t* >(data);
+        const std::uint8_t* end = reinterpret_cast< const std::uint8_t* >(data + static_cast<std::ptrdiff_t>(size));
+
+        while ( pu8 < end )
           *reinterpret_cast< volatile std::uint8_t* >(&crc->DR) = *pu8++;
         
         return;
@@ -128,10 +130,10 @@ namespace mpp::crc {
         
         
         
-      static void CalculateFast( CRC_TypeDef* crc, const std::uint32_t* data, const std::uint32_t* end ) 
+      static void CalculateFast( CRC_TypeDef* crc, const std::uint32_t* data, std::size_t size ) 
       noexcept(true)
       { 
-        while ( data < end )
+        while ( size-- )
           crc->DR = *data++;
       }
         

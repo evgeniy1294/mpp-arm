@@ -102,13 +102,13 @@ namespace mpp::crc {
       
     
       template< typename T >
-      void Calculate( const T* first, const T* last ) noexcept(true)
+      void Calculate( const T* data, const T* end ) noexcept(true)
       { 
-        const std::uint8_t* ptr = reinterpret_cast< const std::uint8_t* >( first );
+        const std::uint8_t* ptr = reinterpret_cast< const std::uint8_t* >( data );
 
         if constexpr (kRefIn)
         { 
-          while ( ptr < reinterpret_cast< const std::uint8_t* >( last ) ) {
+          while ( ptr < reinterpret_cast< const std::uint8_t* >( end ) ) {
             crc = crc ^ ( static_cast < result_type >(*ptr++) << 0 );
               
             crc = (crc >> 4u) ^ Table[ crc & 0b1111u ];
@@ -119,7 +119,7 @@ namespace mpp::crc {
         {
           constexpr std::size_t shift_data = (kWidth < 8) ? kWidth - 4 : kWidth - 8u;
             
-          while ( ptr < reinterpret_cast< const std::uint8_t* >( last ) ) {
+          while ( ptr < reinterpret_cast< const std::uint8_t* >( end ) ) {
             if constexpr ( kWidth  < 8 ) {
               std::size_t tbl_idx = (crc >> shift_data) ^ (*ptr >> 4);
               crc = (crc << 4u) ^ Table[ tbl_idx & 0b1111 ];
